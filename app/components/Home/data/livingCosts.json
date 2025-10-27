@@ -1,0 +1,137 @@
+{
+  "USA": {
+    "currency": "USD",
+    "symbol": "$",
+    "accommodation": {
+      "on-campus": 1000,
+      "shared-apartment": { "2": 800, "3": 650, "4": 500 },
+      "studio-apartment": 1500,
+      "homestay": 600
+    },
+    "groceries": { "low": 350, "medium": 500, "high": 700 },
+    "eatingOut": { "rarely": 100, "occasionally": 250, "frequently": 500 },
+    "transportation": { "public-transport": 80, "walk-cycle": 30, "ride-sharing": 200 },
+    "personal": { "rarely": 100, "occasionally": 200, "frequently": 350 },
+    "trips": { "rarely": 500, "occasionally": 1500, "frequently": 3000 }
+  },
+  "UK": {
+    "currency": "GBP",
+    "symbol": "£",
+    "accommodation": {
+      "on-campus": 900,
+      "shared-apartment": { "2": 700, "3": 550, "4": 400 },
+      "studio-apartment": 1200,
+      "homestay": 500
+    },
+    "groceries": { "low": 300, "medium": 450, "high": 600 },
+    "eatingOut": { "rarely": 80, "occasionally": 200, "frequently": 400 },
+    "transportation": { "public-transport": 70, "walk-cycle": 20, "ride-sharing": 150 },
+    "personal": { "rarely": 80, "occasionally": 150, "frequently": 250 },
+    "trips": { "rarely": 400, "occasionally": 1200, "frequently": 2500 }
+  },
+  "Canada": {
+    "currency": "CAD",
+    "symbol": "C$",
+    "accommodation": {
+      "on-campus": 850,
+      "shared-apartment": { "2": 650, "3": 500, "4": 380 },
+      "studio-apartment": 1100,
+      "homestay": 450
+    },
+    "groceries": { "low": 320, "medium": 480, "high": 650 },
+    "eatingOut": { "rarely": 90, "occasionally": 220, "frequently": 450 },
+    "transportation": { "public-transport": 75, "walk-cycle": 25, "ride-sharing": 180 },
+    "personal": { "rarely": 90, "occasionally": 170, "frequently": 300 },
+    "trips": { "rarely": 450, "occasionally": 1400, "frequently": 2800 }
+  },
+  "Dubai": {
+    "currency": "AED",
+    "symbol": "AED",
+    "accommodation": {
+      "on-campus": 1200,
+      "shared-apartment": { "2": 900, "3": 700, "4": 550 },
+      "studio-apartment": 1800,
+      "homestay": 700
+    },
+    "groceries": { "low": 400, "medium": 600, "high": 800 },
+    "eatingOut": { "rarely": 150, "occasionally": 350, "frequently": 600 },
+    "transportation": { "public-transport": 100, "walk-cycle": 40, "ride-sharing": 300 },
+    "personal": { "rarely": 150, "occasionally": 280, "frequently": 450 },
+    "trips": { "rarely": 600, "occasionally": 2000, "frequently": 4000 }
+  },
+  "Australia": {
+    "currency": "AUD",
+    "symbol": "A$",
+    "accommodation": {
+      "on-campus": 950,
+      "shared-apartment": { "2": 750, "3": 600, "4": 450 },
+      "studio-apartment": 1300,
+      "homestay": 550
+    },
+    "groceries": { "low": 380, "medium": 550, "high": 750 },
+    "eatingOut": { "rarely": 120, "occasionally": 300, "frequently": 550 },
+    "transportation": { "public-transport": 80, "walk-cycle": 30, "ride-sharing": 200 },
+    "personal": { "rarely": 100, "occasionally": 200, "frequently": 350 },
+    "trips": { "rarely": 550, "occasionally": 1800, "frequently": 3500 }
+  },
+  "France": {
+    "currency": "EUR",
+    "symbol": "€",
+    "accommodation": {
+      "on-campus": 700,
+      "shared-apartment": { "2": 550, "3": 450, "4": 350 },
+      "studio-apartment": 900,
+      "homestay": 400
+    },
+    "groceries": { "low": 250, "medium": 350, "high": 500 },
+    "eatingOut": { "rarely": 60, "occasionally": 180, "frequently": 350 },
+    "transportation": { "public-transport": 50, "walk-cycle": 15, "ride-sharing": 100 },
+    "personal": { "rarely": 60, "occasionally": 120, "frequently": 200 },
+    "trips": { "rarely": 300, "occasionally": 900, "frequently": 1800 }
+  },
+  "Italy": {
+    "currency": "EUR",
+    "symbol": "€",
+    "accommodation": {
+      "on-campus": 600,
+      "shared-apartment": { "2": 450, "3": 350, "4": 280 },
+      "studio-apartment": 800,
+      "homestay": 350
+    },
+    "groceries": { "low": 220, "medium": 320, "high": 450 },
+    "eatingOut": { "rarely": 50, "occasionally": 150, "frequently": 300 },
+    "transportation": { "public-transport": 40, "walk-cycle": 10, "ride-sharing": 80 },
+    "personal": { "rarely": 50, "occasionally": 100, "frequently": 180 },
+    "trips": { "rarely": 250, "occasionally": 750, "frequently": 1500 }
+  },
+  "Sweden": {
+    "currency": "SEK",
+    "symbol": "kr",
+    "accommodation": {
+      "on-campus": 7000,
+      "shared-apartment": { "2": 5500, "3": 4500, "4": 3500 },
+      "studio-apartment": 10000,
+      "homestay": 4000
+    },
+    "groceries": { "low": 2800, "medium": 4000, "high": 5500 },
+    "eatingOut": { "rarely": 800, "occasionally": 1800, "frequently": 3000 },
+    "transportation": { "public-transport": 800, "walk-cycle": 200, "ride-sharing": 2000 },
+    "personal": { "rarely": 1000, "occasionally": 2000, "frequently": 3500 },
+    "trips": { "rarely": 4000, "occasionally": 8000, "frequently": 15000 }
+  },
+  "Germany": {
+    "currency": "EUR",
+    "symbol": "€",
+    "accommodation": {
+      "on-campus": 650,
+      "shared-apartment": { "2": 500, "3": 400, "4": 300 },
+      "studio-apartment": 850,
+      "homestay": 380
+    },
+    "groceries": { "low": 240, "medium": 340, "high": 480 },
+    "eatingOut": { "rarely": 55, "occasionally": 160, "frequently": 320 },
+    "transportation": { "public-transport": 60, "walk-cycle": 20, "ride-sharing": 120 },
+    "personal": { "rarely": 70, "occasionally": 140, "frequently": 220 },
+    "trips": { "rarely": 350, "occasionally": 1000, "frequently": 2000 }
+  }
+}

@@ -1,0 +1,42 @@
+[
+    {
+      "id": "1",
+      "name": "University of South Alabama",
+      "description": "A prestigious university focused on innovation.",
+      "location": "New York",
+      "country": "USA",
+      "website": "https://www.uok.edu",
+      "established": "1990-09-01",
+      "banner": "https://uok.edu/banner.jpg",
+      "logoUrl": "https://uok.edu/logo.png",
+      "imageUrls": ["https://uok.edu/image1.jpg", "https://uok.edu/image2.jpg"],
+      "facilities": ["Library", "Sports Complex", "Hostel", "Cafeteria"],
+      "courses": [
+        {
+          "id": "1",
+          "name": "M.S. in System Engineering",
+          "description": "An in-depth program in computer science.",
+          "fees": "11232",
+          "duration": "24 Month",
+          "degreeType": "Bachelor",
+          "ieltsScore": "6.5",
+          "ranking": "1",
+          "intake": ["Fall", "Spring"],
+          "websiteLink": "https://uok.edu/cs"
+        },
+        {
+          "id": "2",
+          "name": "Business Administration",
+          "description": "A globally recognized business program.",
+          "fees": "12000 USD",
+          "duration": "3 Years",
+          "degreeType": "Bachelor",
+          "ieltsScore": "6.0",
+          "ranking": "2",
+          "intake": ["Fall", "Winter"],
+          "websiteLink": "https://uok.edu/ba"
+        }
+      ]
+    }
+  ]
+  

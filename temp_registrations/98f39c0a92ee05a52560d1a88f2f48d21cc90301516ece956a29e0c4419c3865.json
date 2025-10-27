@@ -1,0 +1,45 @@
+{
+  "email": "devfathima1@gamil.com",
+  "phoneNumber": "9030456789",
+  "name": "United Kingdom",
+  "username": "user_devfathima_aarcu6l9",
+  "hashedPassword": "$2a$10$VVFVtfYnEdEUidk.NcGBj.BZyRRmQMBOJd/da6WkNY3v9rhsnOfGO",
+  "role": "STUDENT",
+  "countryCode": "+91",
+  "quizAnswers": [
+    {
+      "questionId": 0,
+      "answer": "simranfathima"
+    },
+    {
+      "questionId": 1,
+      "answer": "United Kingdom"
+    },
+    {
+      "questionId": 2,
+      "answer": "70-80%: A couple of cakes"
+    },
+    {
+      "questionId": 3,
+      "answer": "Engineer (PCM)"
+    },
+    {
+      "questionId": 4,
+      "answer": "A (3.7 - 4.0) – Above and beyond!"
+    },
+    {
+      "questionId": 5,
+      "answer": "3-6 months—quick o the mark!"
+    },
+    {
+      "questionId": 6,
+      "answer": "A techie role—coding, building, and innovating."
+    },
+    {
+      "questionId": 7,
+      "answer": "{\"email\":\"devfathima1@gamil.com\",\"phoneNumber\":\"9030456789\",\"password\":\"12345@Sam\"}"
+    }
+  ],
+  "tempRegistrationToken": "98f39c0a92ee05a52560d1a88f2f48d21cc90301516ece956a29e0c4419c3865",
+  "createdAt": "2025-10-16T16:32:09.153Z"
+}

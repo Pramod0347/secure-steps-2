@@ -1,0 +1,1086 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma-client"
+}
+
+datasource db {
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+// Rating model for Accommodations (consolidated with AccommodationReview)
+model AccommodationRating {
+  id              String        @id @default(cuid())
+  rating          Float
+  review          String?
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accommodationId String
+  accommodation   Accommodation @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@unique([userId, accommodationId])
+  @@index([accommodationId])
+  @@index([userId])
+}
+
+model CareerOutcome {
+  id          String @id @default(cuid())
+  iconName    String
+  iconImage   String
+  title       String
+  value       String
+  description String
+  details     String
+  color       String
+  bgColor     String
+
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  universityId String
+
+  @@index([universityId])
+}
+
+model Faq {
+  id       String @id @default(cuid())
+  question String
+  answer   String
+
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  universityId String
+
+  @@index([universityId])
+}
+
+model University {
+  id          String   @id @default(cuid())
+  slug        String?  @unique
+  name        String
+  description String
+  location    String
+  country     String
+  website     String
+  established DateTime
+  banner      String
+  logoUrl     String?
+  youtubeLink String?
+  imageUrls   String[]
+  facilities  String[]
+
+  // Relations
+  careerOutcomes CareerOutcome[]
+  faqs           Faq[]
+  applications   UniversityApplications[]
+  loans          Loan[]
+  users          User[]
+  courses        Course[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Course {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  image       String?
+
+  fees        String?
+  duration    String?
+  degreeType  String?
+  ieltsScore  String?
+  ranking     String?
+  intake      String[]
+  websiteLink String?
+
+  applications UniversityApplications[]
+  favByUsers   FavCourse[]
+
+  universityId String
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([universityId])
+}
+
+// University Course Applications
+model UniversityApplications {
+  id           String @id @default(cuid())
+  userId       String
+  universityId String
+  courseId     String
+
+  status    ApplicationStatus @default(PENDING)
+  appliedAt DateTime          @default(now())
+
+  loanRequired Boolean @default(false)
+
+  documents       String[] // Supporting documents for application
+  additionalNotes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Define relations
+  user       User       @relation(fields: [userId], references: [id])
+  university University @relation(fields: [universityId], references: [id])
+  course     Course     @relation(fields: [courseId], references: [id])
+
+  @@index([userId])
+  @@index([universityId])
+  @@index([courseId])
+}
+
+// ( STAY )
+model Accommodation {
+  id            String            @id @default(cuid())
+  title         String
+  description   String
+  type          AccommodationType
+  address       String
+  city          String
+  country       String
+  banner        String
+  includeBills  Boolean?
+  deposit       Float?
+  furnishing    FurnishingType?
+  bathrooms     Int
+  bedrooms      Int
+  size          Float?
+  amenities     String[]
+  rules         String[]
+  images        String[]
+  availableFrom DateTime
+  minTerm       Int
+  maxTerm       Int?
+  isAvailable   Boolean           @default(true) // Added availability status
+
+  landlordId String
+  landlord   User                  @relation("LandlordAccommodations", fields: [landlordId], references: [id])
+  reviews    AccommodationReview[]
+
+  averageRating Float?
+  totalRatings  Int                   @default(0)
+  ratings       AccommodationRating[]
+  likedBy       LikedAccommodations[]
+
+  pricingPlans PricingPlan[] // Relation to the PricingPlan model
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([landlordId])
+}
+
+model PricingPlan {
+  id              String        @id @default(cuid())
+  accommodation   Accommodation @relation(fields: [accommodationId], references: [id])
+  accommodationId String
+
+  type  String // Changed from enum to String
+  price Float // Price for this tier
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([accommodationId])
+}
+
+model AccommodationApplication {
+  id              String @id @default(cuid())
+  userId          String
+  accommodationId String
+
+  interestedFrom    DateTime
+  interestedTill    DateTime
+  numberOfOccupants Int
+  additionalNotes   String?
+
+  status    ApplicationStatus @default(PENDING)
+  createdAt DateTime          @default(now())
+}
+
+model AccommodationReview {
+  id        String   @id @default(cuid())
+  rating    Float
+  review    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accommodationId String
+  accommodation   Accommodation @relation(fields: [accommodationId], references: [id])
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+
+  @@index([accommodationId])
+  @@index([userId])
+}
+
+// ( CONNECT || COMMUNITY )
+model Message {
+  id          String   @id @default(cuid())
+  content     String
+  attachments String[]
+  isRead      Boolean  @default(false)
+
+  senderId   String
+  sender     User   @relation("SentMessages", fields: [senderId], references: [id])
+  receiverId String
+  receiver   User   @relation("ReceivedMessages", fields: [receiverId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([senderId])
+  @@index([receiverId])
+}
+
+// ( CONNECT )
+model Follow {
+  id          String   @id @default(cuid())
+  followerId  String
+  follower    User     @relation("Following", fields: [followerId], references: [id])
+  followingId String
+  following   User     @relation("Followers", fields: [followingId], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+}
+
+// ( LENDERS )
+model Loan {
+  id                  String    @id @default(cuid())
+  title               String
+  description         String
+  amount              Float
+  interestRate        Float
+  duration            Int // in months
+  eligibilityCriteria String[]
+  documents           String[]
+  deadline            DateTime?
+  maxApplications     Int?
+  isActive            Boolean   @default(true)
+
+  // University relation
+  universityId String?
+  university   University? @relation(fields: [universityId], references: [id])
+
+  applications LoanApplication[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([universityId])
+}
+
+model LoanApplication {
+  id            String            @id @default(cuid())
+  status        ApplicationStatus @default(PENDING)
+  documents     String[]
+  academicInfo  Json
+  financialInfo Json
+  notes         String?
+
+  loanId String
+  loan   Loan   @relation(fields: [loanId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([loanId])
+  @@index([userId])
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  userId    String
+  articleId String
+  status    VoteType
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, articleId]) // Prevent multiple votes from same user
+  @@index([articleId])
+  @@index([userId])
+}
+
+// Enhanced Group Model -  ( COMMUNITY )
+model Group {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  slug        String       @unique // For SEO-friendly URLs
+  banner      String?
+  logo        String?
+  description String
+  privacy     GroupPrivacy @default(PUBLIC)
+
+  // Enhanced Metrics
+  followersCount Int @default(0)
+  postsCount     Int @default(0)
+
+  // Relationships
+  createdById String
+  createdBy   User   @relation("GroupCreator", fields: [createdById], references: [id])
+
+  events   Event[]
+  articles Article[]
+  forums   Forum[] // New relation to Forums
+
+  // Keep existing membership relation
+  members GroupMember[]
+
+  // Moderation
+  isPinned   Boolean @default(false)
+  isActive   Boolean @default(true)
+  moderators User[]  @relation("GroupAdmins")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdById])
+  @@index([privacy])
+  @@index([isActive])
+}
+
+// Enhanced Membership Model
+model GroupMember {
+  id       String          @id @default(cuid())
+  groupId  String
+  group    Group           @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role     GroupMemberRole @default(MEMBER)
+  joinedAt DateTime        @default(now())
+
+  @@unique([groupId, userId])
+  @@index([groupId])
+  @@index([userId])
+}
+
+// Enhanced Event Model
+model Event {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String
+  description String
+  date        DateTime
+  startTime   DateTime
+  endTime     DateTime?
+  image       String?
+  location    String
+
+  // Event Specifics
+  eventType        EventType        @default(ONLINE)
+  registrationType RegistrationType @default(FREE)
+
+  // Capacity Management
+  totalSlots      Int
+  registeredSlots Int  @default(0)
+  waitlistSlots   Int?
+
+  // Pricing and Ticketing
+  ticketPrice Float?
+  currency    String?
+
+  // Detailed Location
+  address     String?
+  virtualLink String?
+
+  // Organizer and Group Context
+  contactById String
+  contactBy   User   @relation("EventHost", fields: [contactById], references: [id])
+
+  groupId String
+  group   Group  @relation(fields: [groupId], references: [id])
+
+  // Event Interactions
+  registrations EventRegistration[]
+
+  // Event Status and Tracking
+  status EventStatus @default(UPCOMING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([contactById])
+  @@index([groupId])
+  @@index([date])
+  @@index([status])
+}
+
+// Event Registration Model
+model EventRegistration {
+  id      String @id @default(cuid())
+  eventId String
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId  String
+
+  status         EventRegistrationStatus @default(CONFIRMED)
+  additionalInfo Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([eventId, userId])
+  @@index([eventId])
+  @@index([userId])
+}
+
+// Forum Model
+model Forum {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+  groupId     String
+  group       Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  // Forum Specific Attributes
+  type    ForumType    @default(DISCUSSION)
+  privacy ForumPrivacy @default(GROUP)
+
+  attachments String[]
+
+  creatorId String
+  creator   User   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  // Enhanced Metrics
+  viewCount   Int       @default(0)
+  topicCount  Int       @default(0)
+  replyCount  Int       @default(0)
+  lastReplyAt DateTime?
+
+  // Relations
+  topics       ForumTopic[]
+  forumReplies ForumReply[]
+
+  // Moderation
+  isLocked Boolean @default(false)
+
+  tags String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([groupId])
+  @@index([type])
+  @@index([privacy])
+}
+
+// Forum Topic Model
+model ForumTopic {
+  id      String @id @default(cuid())
+  title   String
+  content String
+
+  forumId String
+  forum   Forum  @relation(fields: [forumId], references: [id], onDelete: Cascade)
+
+  creatorId String
+  creator   User   @relation("UserForumTopics", fields: [creatorId], references: [id], onDelete: Cascade)
+
+  // Topic Attributes
+  type     TopicType @default(DISCUSSION)
+  isPinned Boolean   @default(false)
+  isClosed Boolean   @default(false)
+
+  // Interaction Metrics
+  viewCount   Int       @default(0)
+  replyCount  Int       @default(0)
+  lastReplyAt DateTime?
+
+  // Moderation
+  status TopicStatus @default(ACTIVE)
+
+  // Relations
+  posts   ForumPost[]
+  replies ForumReply[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([forumId])
+  @@index([creatorId])
+  @@index([type])
+  @@index([status])
+}
+
+// Forum Reply Model (Centralized Replies)
+model ForumReply {
+  id String @id @default(cuid())
+
+  // Forum and Topic Context
+  forumId String
+  forum   Forum  @relation(fields: [forumId], references: [id], onDelete: Cascade)
+
+  topicId String
+  topic   ForumTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  // User and Content
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  content     String
+  attachments String[]
+
+  // Interactions
+  likes     Int                  @default(0)
+  reactions ForumReplyReaction[]
+
+  // Hierarchy for threaded discussions
+  parentReplyId String?
+  parentReply   ForumReply?  @relation("ReplyThreads", fields: [parentReplyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  childReplies  ForumReply[] @relation("ReplyThreads")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([forumId])
+  @@index([topicId])
+  @@index([userId])
+  @@index([parentReplyId])
+}
+
+// Forum Post Model (for more granular discussions)
+model ForumPost {
+  id      String @id @default(cuid())
+  content String
+
+  topicId String
+  topic   ForumTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  creatorId String
+  creator   User   @relation("ForumPostCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+
+  // Interaction
+  likes     Int                 @default(0)
+  reactions ForumPostReaction[]
+
+  // Hierarchy for threaded discussions
+  parentPostId String?
+  parentPost   ForumPost?  @relation("PostReplies", fields: [parentPostId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  replies      ForumPost[] @relation("PostReplies")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([topicId])
+  @@index([creatorId])
+  @@index([parentPostId])
+}
+
+// Forum Reply Reaction Model
+model ForumReplyReaction {
+  id String @id @default(cuid())
+
+  forumReplyId String
+  forumReply   ForumReply @relation(fields: [forumReplyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  userId String
+  user   User   @relation("UserReplyReactions", fields: [userId], references: [id], onDelete: Cascade)
+
+  type ReactionType
+
+  @@unique([forumReplyId, userId, type])
+  @@index([forumReplyId])
+  @@index([userId])
+}
+
+// Forum Post Reaction Model
+model ForumPostReaction {
+  id String @id @default(cuid())
+
+  forumPostId String
+  forumPost   ForumPost @relation(fields: [forumPostId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  userId String
+  user   User   @relation("UserPostReactions", fields: [userId], references: [id], onDelete: Cascade)
+
+  type ReactionType
+
+  @@unique([forumPostId, userId, type])
+  @@index([forumPostId])
+  @@index([userId])
+}
+
+// Article Model with Enhanced Constraints
+model Article {
+  id          String   @id @default(cuid())
+  title       String   @db.VarChar(255)
+  description String?  @db.VarChar(500)
+  content     String   @db.Text
+  bannerImg   String?  @db.VarChar(500)
+  images      String[] @db.VarChar(500)
+  tags        String[] @db.VarChar(50)
+
+  type   ArticleType   @default(COMMUNITY)
+  status ArticleStatus @default(DRAFT)
+
+  creatorId String
+  creator   User   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  groupId String?
+  group   Group?  @relation(fields: [groupId], references: [id], onDelete: SetNull)
+
+  upVotes   Int @default(0)
+  downVotes Int @default(0)
+  views     Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  votes Vote[]
+
+  @@index([creatorId])
+  @@index([groupId])
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade) // Add onDelete Cascade
+  sessionToken String    @unique
+  refreshToken String?   @unique
+  expires      DateTime
+  lastActivity DateTime?
+  userAgent    String?
+  ipAddress    String?
+  createdAt    DateTime  @default(now())
+
+  @@index([userId])
+  @@index([sessionToken])
+  @@index([refreshToken])
+}
+
+model Notification {
+  id      String           @id @default(cuid())
+  userId  String
+  title   String
+  message String
+  type    NotificationType
+  isRead  Boolean          @default(false)
+  data    Json? // Additional data related to notification
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // lastActivity   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model FavCourse {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  universityId   String?
+  universityName String?
+
+  course     Course  @relation(fields: [courseId], references: [id])
+  courseName String?
+  courseId   String
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, courseId]) // prevent duplicate favorites
+}
+
+model User {
+  id          String      @id @default(cuid())
+  username    String      @unique
+  email       String      @unique
+  password    String?
+  countryCode String?     @default("+91")
+  phoneNumber String? // Added missing phone number field
+  name        String
+  header      String?     @default("default_header")
+  bio         String?
+  avatarUrl   String?
+  banner      String?
+  role        UserRole    @default(STUDENT)
+  favCourses  FavCourse[]
+
+  // OAuth-specific fields
+  emailVerified      DateTime?
+  image              String?
+  googleId           String?   @unique
+  googleAccessToken  String?   @db.Text
+  googleRefreshToken String?   @db.Text
+  googleTokenExpiry  DateTime?
+
+  // Authentication and verification
+  resetPasswordToken   String?
+  resetPasswordExpiry  DateTime?
+  lastPasswordChangeAt DateTime?
+  isVerified           Boolean   @default(false)
+  isPhoneVerified      Boolean   @default(false)
+  isEmailVerified      Boolean   @default(false)
+
+  // quiz answer relation
+  quizAnswers QuizAnswer[]
+
+  // OTP related
+  otpRetryCount   Int       @default(0)
+  otpLastSentAt   DateTime?
+  otpBlockedUntil DateTime? // Added for rate limiting
+
+  // Social
+  followersCount Int @default(0)
+  followingCount Int @default(0)
+
+  // NEW: Forum-related Relations
+  createdForums      Forum[]
+  createdForumTopics ForumTopic[] @relation("UserForumTopics")
+  forumReplies       ForumReply[]
+  forumPosts         ForumPost[]  @relation("ForumPostCreator")
+
+  // Reactions
+  forumReplyReactions ForumReplyReaction[] @relation("UserReplyReactions")
+  forumPostReactions  ForumPostReaction[]  @relation("UserPostReactions")
+
+  // Student-specific fields (null if LANDLORD)
+  universityId     String?
+  university       University?       @relation(fields: [universityId], references: [id])
+  department       String?
+  program          String?
+  graduationYear   Int?
+  loanApplications LoanApplication[]
+
+  accommodationRatings AccommodationRating[]
+  applications         UniversityApplications[]
+
+  lastLoginAt   DateTime?
+  loginAttempts Int       @default(0)
+  isLocked      Boolean   @default(false)
+  lockUntil     DateTime?
+  tokens        Token[]
+
+  // Landlord-specific fields
+  isLandlordVerified Boolean         @default(false)
+  accommodations     Accommodation[] @relation("LandlordAccommodations")
+
+  // Common relations
+  accounts         Account[]
+  sessions         Session[]
+  otps             OTP[]
+  notifications    Notification[] // Added missing relation
+  followers        Follow[]       @relation("Following")
+  following        Follow[]       @relation("Followers")
+  sentMessages     Message[]      @relation("SentMessages")
+  receivedMessages Message[]      @relation("ReceivedMessages")
+  createdGroups    Group[]        @relation("GroupCreator")
+
+  adminOf          Group[]       @relation("GroupAdmins")
+  // Group Membership (Corrected)
+  groupMemberships GroupMember[]
+
+  // Content Creation
+  // events               Event[]
+  hostedEvents         Event[]               @relation("EventHost")
+  articles             Article[]
+  accommodationReviews AccommodationReview[] // Only for students reviewing accommodations
+  likedAccommodations  LikedAccommodations[]
+
+  lastLogin DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([email])
+  @@index([username])
+  @@index([universityId])
+  @@index([isVerified])
+  @@index([countryCode])
+  @@index([department])
+}
+
+model QuizAnswer {
+  id         Int    @id @default(autoincrement())
+  userId     String // Changed from Int to String
+  questionId Int
+  answer     String
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model LikedAccommodations {
+  id              String        @id @default(cuid())
+  userId          String
+  accommodationId String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accommodation   Accommodation @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@unique([userId, accommodationId])
+  @@index([userId])
+  @@index([accommodationId])
+}
+
+model Token {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  type      TokenType
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+
+  @@index([userId, type])
+}
+
+enum TokenType {
+  REFRESH
+  PASSWORD_RESET
+  EMAIL_VERIFICATION
+}
+
+model OTP {
+  id          String     @id @default(cuid())
+  userId      String
+  otpCode     String
+  type        OTPType
+  purpose     OTPPurpose
+  verified    Boolean    @default(false)
+  attempts    Int        @default(0)
+  expiresAt   DateTime
+  verifiedAt  DateTime?
+  invalidated Boolean    @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([otpCode])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Blog {
+  id            String         @id @default(uuid()) @db.Uuid
+  title         String
+  slug          String         @unique
+  summary       String
+  coverImage    String?
+  published     Boolean        @default(false)
+  createdAt     DateTime       @default(now()) @db.Timestamptz
+  updatedAt     DateTime       @default(now()) @db.Timestamptz
+  contentBlocks ContentBlock[]
+}
+
+model ContentBlock {
+  id        String   @id @default(uuid()) @db.Uuid
+  type      String
+  content   String
+  order     Int
+  blogId    String   @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @default(now()) @db.Timestamptz
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  action     String
+  entityType String
+  entityId   String
+  details    String
+  createdAt  DateTime @default(now())
+}
+
+enum UniversityType {
+  PUBLIC
+  PRIVATE
+}
+
+enum UserRole {
+  STUDENT
+  LANDLORD
+  ADMIN
+}
+
+enum AccommodationType {
+  PRIVATE_ROOM
+  SHARED_ROOM
+  STUDIO
+  APARTMENT
+  HOUSE
+}
+
+enum FurnishingType {
+  FURNISHED
+  UNFURNISHED
+  PARTIAL
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  UNDER_REVIEW
+}
+
+enum OTPType {
+  EMAIL
+  PHONE
+}
+
+enum OTPPurpose {
+  SIGNUP_VERIFICATION
+  LOGIN_VERIFICATION
+  PASSWORD_RESET
+  EMAIL_CHANGE
+  PHONE_CHANGE
+  PROFILE_UPDATE
+}
+
+enum NotificationType {
+  OTP_SENT
+  OTP_VERIFIED
+  OTP_EXPIRED
+  OTP_INVALID
+  ACCOUNT_VERIFIED
+  LOGIN_ALERT
+  PASSWORD_CHANGED
+  EMAIL_CHANGED
+  PHONE_CHANGED
+  PROFILE_UPDATED
+  SECURITY_ALERT
+  LENDERS
+}
+
+enum ArticleType {
+  COMMUNITY
+  LENDERS
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum VoteType {
+  UP_VOTE
+  DOWN_VOTE
+}
+
+// Enums for Enhanced Models
+enum GroupPrivacy {
+  PUBLIC
+  PRIVATE
+  RESTRICTED
+}
+
+enum GroupMemberRole {
+  MEMBER
+  MODERATOR
+  ADMIN
+  OWNER
+}
+
+enum EventType {
+  ONLINE
+  OFFLINE
+  HYBRID
+}
+
+enum RegistrationType {
+  FREE
+  PAID
+  INVITE_ONLY
+}
+
+enum EventStatus {
+  UPCOMING
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum EventRegistrationStatus {
+  CONFIRMED
+  WAITLISTED
+  CANCELLED
+}
+
+enum ForumType {
+  DISCUSSION
+  Q_AND_A
+  SUPPORT
+}
+
+enum ForumPrivacy {
+  GROUP
+  MEMBERS_ONLY
+  PRIVATE
+  PUBLIC
+}
+
+enum TopicType {
+  DISCUSSION
+  ANNOUNCEMENT
+  POLL
+}
+
+enum TopicStatus {
+  ACTIVE
+  LOCKED
+  ARCHIVED
+}
+
+enum ReactionType {
+  LIKE
+  LOVE
+  HAHA
+  WOW
+  SAD
+  ANGRY
+}
+
+enum PricingPlanType {
+  BASIC
+  PREMIUM
+  ENTERPRISE
+}
