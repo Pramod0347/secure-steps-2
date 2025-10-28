@@ -258,12 +258,24 @@ export default function Page() {
               </select>
             </div>
 
-            {tuitionFee > 0 && (
-              <p style={{ color: "#666", marginBottom: "20px" }}>
-                Estimated Tuition: {(livingCosts as any)[selectedCountry]?.symbol}
-                {tuitionFee.toLocaleString()}
-              </p>
-            )}
+            <div className="mb-6">
+              <label className="block font-medium mb-2 text-gray-800">
+                Estimated Annual Tuition Fee
+              </label>
+              <input
+                type="text"
+                readOnly
+                value={
+                  tuitionFee > 0
+                    ? `${
+                        (livingCosts as any)[selectedCountry]?.symbol
+                      }${tuitionFee.toLocaleString()}`
+                    : ""
+                }
+                placeholder=""
+                className="w-full p-3 border rounded-lg bg-gray-100 text-gray-700 cursor-not-allowed"
+              />
+            </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <button
                 onClick={() => setStep(1)}
@@ -677,18 +689,14 @@ export default function Page() {
               <li>Bills: {results.symbol}{results.bills.toLocaleString()}</li>
               <li>Miscellaneous: {results.symbol}{results.misc.toLocaleString()}</li>
             </ul>
-            <button
-              onClick={() => setStep(1)}
-              style={{
-                marginTop: "30px",
-                backgroundColor: "#9C1B3C",
-                color: "#fff",
-                padding: "14px 25px",
-                borderRadius: "10px",
-                border: "none",
-                fontWeight: 600,
-                cursor: "pointer",
-                boxShadow: "0 4px 10px rgba(156,27,60,0.3)",
+           <button
+              className="mt-6 bg-red-700 text-white px-6 py-3 rounded-lg"
+              onClick={() => {
+                setStep(1); // Go to Step 1
+                setSelectedCountry(""); // Clear country selection
+                setSelectedUniversity(null); // Clear university selection
+                setTuitionFee(0); // Reset tuition fee
+                setResults(null); // Clear previous results
               }}
             >
               Start Over
