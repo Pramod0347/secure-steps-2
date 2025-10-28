@@ -35,6 +35,14 @@ export const VerifyOTPSchema = z.object({
   userId: z.string(),
   otpCode: z.string(),
   purpose: z.enum(["SIGNUP_VERIFICATION", "LOGIN_VERIFICATION", "PASSWORD_RESET"]),
+  email:z.string(),
+  phoneNumber:z.string(),
+  name:z.string(),
+   username:z.string(),
+    hashedPassword:z.string(),
+     role:z.enum(["STUDENT", "LANDLORD", "ADMIN"]).optional(),
+      countryCode:z.string(),
+       quizAnswers:z.any(),
 });
 
 export const LoginSchema = z.object({

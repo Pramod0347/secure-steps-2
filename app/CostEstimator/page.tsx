@@ -689,18 +689,7 @@ export default function Page() {
               <li>Bills: {results.symbol}{results.bills.toLocaleString()}</li>
               <li>Miscellaneous: {results.symbol}{results.misc.toLocaleString()}</li>
             </ul>
-           <button
-              className="mt-6 bg-red-700 text-white px-6 py-3 rounded-lg"
-              onClick={() => {
-                setStep(1); // Go to Step 1
-                setSelectedCountry(""); // Clear country selection
-                setSelectedUniversity(null); // Clear university selection
-                setTuitionFee(0); // Reset tuition fee
-                setResults(null); // Clear previous results
-              }}
-            >
-              Start Over
-            </button>
+          
           </div>
         )}
       </div>
