@@ -125,13 +125,13 @@ export async function POST(req: NextRequest) {
           // Load registration data from temporary storage
           const tempDir = path.join(process.cwd(), 'temp_registrations');
           
-          // try {
-          //   const filePath = path.join(tempDir, `${tempToken}.json`);
-          //   await fs.readFile(filePath, 'utf-8');
-          // } catch (fileError) {
-          //   console.error("[VERIFY_OTP_ERROR] Failed to load registration data:", fileError);
-          //   throw new Error("REGISTRATION_DATA_NOT_FOUND");
-          // }
+          try {
+            const filePath = path.join(tempDir, `${tempToken}.json`);
+            await fs.readFile(filePath, 'utf-8');
+          } catch (fileError) {
+            console.error("[VERIFY_OTP_ERROR] Failed to load registration data:", fileError);
+            throw new Error("REGISTRATION_DATA_NOT_FOUND");
+          }
 
           user = null; // No existing user for temporary registrations
         } else {

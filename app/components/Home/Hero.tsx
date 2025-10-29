@@ -241,7 +241,7 @@ const Hero: React.FC = () => {
   }, [])
 
   return (
-    <div className="relative z-50 md:h-screen h-[85vh] w-full overflow-hidden bg-gray-800">
+    <div className="relative z-50 md:h-screen h-[85vh] w-full overflow-hidden bg-gray-800 max-w-full ">
       {videoError && <div className="absolute top-0 left-0 w-full bg-red-500 text-white p-2 z-50">{videoError}</div>}
       <video
         ref={videoRef}

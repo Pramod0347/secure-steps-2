@@ -1,82 +1,82 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import Image, { type StaticImageData } from "next/image"
+import type React from "react";
+import { useState, useEffect } from "react";
+import Image, { type StaticImageData } from "next/image";
 
 // Last Three Card
-import rec2 from "@/app/assets/Home/BudgetCal_Img.jpg"
-import rec1 from "@/app/assets/Home/LoanImg.jpg"
-import rec3 from "@/app/assets/Home/DocuCheckImg.jpeg"
+import rec2 from "@/app/assets/Home/BudgetCal_Img.jpg";
+import rec1 from "@/app/assets/Home/LoanImg.jpg";
+import rec3 from "@/app/assets/Home/DocuCheckImg.jpeg";
 
-import { motion, AnimatePresence } from "framer-motion"
-import TiltedCard from "../../ui/titlecard"
-import { SOPImg, LORImg, GuideImg } from "@/app/assets/Home"
-import UnisImg from "@/app/assets/Home/UNIS.png"
+import { motion, AnimatePresence } from "framer-motion";
+import TiltedCard from "../../ui/titlecard";
+import { SOPImg, LORImg, GuideImg } from "@/app/assets/Home";
+import UnisImg from "@/app/assets/Home/UNIS.png";
 
-import UnisImg_Ob from "@/app/assets/Home/UNIS_OBJECT.png"
-import CardObjectImg1 from "@/app/assets/Home/The Ultimate Guide_Object.png"
-import CardObjectImg2 from "@/app/assets/Home/SOP_OBJECT.png"
-import CardObjectImg3 from "@/app/assets/Home/LOR_OBJECT.png"
-import CostEstimatorPage from "../CostEstimator/page"
-import Link from "next/link"
+import UnisImg_Ob from "@/app/assets/Home/UNIS_OBJECT.png";
+import CardObjectImg1 from "@/app/assets/Home/The Ultimate Guide_Object.png";
+import CardObjectImg2 from "@/app/assets/Home/SOP_OBJECT.png";
+import CardObjectImg3 from "@/app/assets/Home/LOR_OBJECT.png";
+import CostEstimatorPage from "../CostEstimator/page";
+import Link from "next/link";
 
 const Cards = () => {
-  const [cursorText, setCursorText] = useState("")
-  const [cursorColor, setCursorColor] = useState({ bg: "", text: "" })
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [isPopupOpen, setIsPopupOpen] = useState(false)
-  const [selectedCard, setSelectedCard] = useState<number | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [cursorText, setCursorText] = useState("");
+  const [cursorColor, setCursorColor] = useState({ bg: "", text: "" });
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
-    const originalStyle = window.getComputedStyle(document.body).overflow
+    const originalStyle = window.getComputedStyle(document.body).overflow;
     if (isPopupOpen) {
-      document.body.style.overflow = "hidden"
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = originalStyle
+      document.body.style.overflow = originalStyle;
     }
     return () => {
-      document.body.style.overflow = originalStyle
-    }
-  }, [isPopupOpen])
+      document.body.style.overflow = originalStyle;
+    };
+  }, [isPopupOpen]);
 
   const handleMouseMove = (event: React.MouseEvent) => {
-    setMousePosition({ x: event.clientX, y: event.clientY })
-  }
+    setMousePosition({ x: event.clientX, y: event.clientY });
+  };
 
   const handleCardClick = (index: number) => {
-    setSelectedCard(index)
-    setIsPopupOpen(true)
-  }
+    setSelectedCard(index);
+    setIsPopupOpen(true);
+  };
 
   const handleClosePopup = () => {
-    setIsPopupOpen(false)
-    setSelectedCard(null)
-    setIsSubmitting(false)
-    setIsSubmitted(false)
-  }
+    setIsPopupOpen(false);
+    setSelectedCard(null);
+    setIsSubmitting(false);
+    setIsSubmitted(false);
+  };
 
   const handleCardHover = (index: number) => {
     switch (index) {
       case 1:
-        setCursorText("Ultimate Guide")
-        setCursorColor({ bg: "#BE243C", text: "#FFFFFF" })
-        break
+        setCursorText("Ultimate Guide");
+        setCursorColor({ bg: "#BE243C", text: "#FFFFFF" });
+        break;
       case 2:
-        setCursorText("SOP")
-        setCursorColor({ bg: "#3B367D", text: "#FFFFFF" })
-        break
+        setCursorText("SOP");
+        setCursorColor({ bg: "#3B367D", text: "#FFFFFF" });
+        break;
       case 3:
-        setCursorText("LOR")
-        setCursorColor({ bg: "#22344F", text: "#FFFFFF" })
-        break
+        setCursorText("LOR");
+        setCursorColor({ bg: "#22344F", text: "#FFFFFF" });
+        break;
       default:
-        setCursorText("")
-        setCursorColor({ bg: "", text: "" })
+        setCursorText("");
+        setCursorColor({ bg: "", text: "" });
     }
-  }
+  };
 
   const CardWithAnimation = ({
     image,
@@ -85,11 +85,11 @@ const Cards = () => {
     showAnimation = false,
     animationClass,
   }: {
-    image: StaticImageData
-    title: string
-    description: React.ReactNode
-    showAnimation?: boolean
-    animationClass?: string
+    image: StaticImageData;
+    title: string;
+    description: React.ReactNode;
+    showAnimation?: boolean;
+    animationClass?: string;
   }) => (
     <div className="flex flex-col md:flex-row md:gap-4 lg:gap-6 bg-[#F6F6F6] rounded-[10px] md:rounded-[24px] p-4 md:p-5 items-start md:items-center relative h-full">
       <div className="w-[58px] h-[58px] md:w-[100px] md:h-[100px] lg:w-[120px] lg:h-[120px] xl:w-[150px] xl:h-[150px] relative mb-2 md:mb-0 flex-shrink-0">
@@ -102,42 +102,52 @@ const Cards = () => {
           />
         )}
         <div className="relative w-full h-full z-10 rounded-full overflow-hidden border-2 outline-1 outline-[#F6F6F6] border-[#F6F6F6]">
-          <Image className="object-cover rounded-full w-full h-full" src={image || "/placeholder.svg"} alt={title} />
+          <Image
+            className="object-cover rounded-full w-full h-full"
+            src={image || "/placeholder.svg"}
+            alt={title}
+          />
         </div>
       </div>
       <div className="flex-1">
-        <h1 className="text-[#B81D24] text-[12px] md:text-[16px] lg:text-[18px] xl:text-[21px] font-bold">{title}</h1>
+        <h1 className="text-[#B81D24] text-[12px] md:text-[16px] lg:text-[18px] xl:text-[21px] font-bold">
+          {title}
+        </h1>
         <p className="text-[#22344F] text-[10px] md:text-[14px] lg:text-[16px] xl:text-[17px] font-normal">
           {description}
         </p>
       </div>
     </div>
-  )
+  );
 
   const Popup = () => {
-    const [email, setEmail] = useState("")
-    const [phone, setPhone] = useState("")
-    const [selectedOptions, setSelectedOptions] = useState<string[]>([])
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+    const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
     const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault()
+      e.preventDefault();
       if (selectedOptions.length !== 1 && selectedOptions.length !== 3) {
-        return // Don't submit if the selection is invalid
+        return; // Don't submit if the selection is invalid
       }
-      setIsSubmitting(true)
+      setIsSubmitting(true);
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      console.log("Form submitted:", { email, phone, selectedOptions })
-      setIsSubmitting(false)
-      setIsSubmitted(true)
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      console.log("Form submitted:", { email, phone, selectedOptions });
+      setIsSubmitting(false);
+      setIsSubmitted(true);
       setTimeout(() => {
-        handleClosePopup()
-      }, 3000)
-    }
+        handleClosePopup();
+      }, 3000);
+    };
 
     const handleCheckboxChange = (option: string) => {
-      setSelectedOptions((prev) => (prev.includes(option) ? prev.filter((item) => item !== option) : [...prev, option]))
-    }
+      setSelectedOptions((prev) =>
+        prev.includes(option)
+          ? prev.filter((item) => item !== option)
+          : [...prev, option]
+      );
+    };
 
     return (
       <AnimatePresence>
@@ -163,8 +173,13 @@ const Cards = () => {
               transition={{ type: "spring", damping: 20, stiffness: 300 }}
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl md:text-2xl font-bold text-[#BE243C]">Get Resources</h2>
-                <button onClick={handleClosePopup} className="text-gray-500 hover:text-gray-700">
+                <h2 className="text-xl md:text-2xl font-bold text-[#BE243C]">
+                  Get Resources
+                </h2>
+                <button
+                  onClick={handleClosePopup}
+                  className="text-gray-500 hover:text-gray-700"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6"
@@ -172,7 +187,12 @@ const Cards = () => {
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
@@ -210,7 +230,12 @@ const Cards = () => {
                       viewBox="0 0 24 24"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <motion.p
                       className="mt-4 text-lg font-semibold text-gray-700"
@@ -222,10 +247,18 @@ const Cards = () => {
                     </motion.p>
                   </motion.div>
                 ) : (
-                  <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                  <motion.div
+                    key="form"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
                     <form onSubmit={handleSubmit} className="space-y-4">
                       <div>
-                        <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700">
+                        <label
+                          htmlFor="email"
+                          className="block mb-2 text-sm font-medium text-gray-700"
+                        >
                           Email
                         </label>
                         <input
@@ -239,7 +272,10 @@ const Cards = () => {
                         />
                       </div>
                       <div>
-                        <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-700">
+                        <label
+                          htmlFor="phone"
+                          className="block mb-2 text-sm font-medium text-gray-700"
+                        >
                           Phone Number
                         </label>
                         <input
@@ -253,7 +289,9 @@ const Cards = () => {
                         />
                       </div>
                       <div>
-                        <label className="block mb-2 text-sm font-medium text-gray-700">Choose Your Resources</label>
+                        <label className="block mb-2 text-sm font-medium text-gray-700">
+                          Choose Your Resources
+                        </label>
                         <div className="space-y-2">
                           {[
                             "Ultimate Guide",
@@ -270,24 +308,42 @@ const Cards = () => {
                                 checked={selectedOptions.includes(option)}
                                 onChange={() => handleCheckboxChange(option)}
                               />
-                              <span className="ml-2 text-gray-700">{option}</span>
+                              <span className="ml-2 text-gray-700">
+                                {option}
+                              </span>
                             </label>
                           ))}
                         </div>
                       </div>
                       {selectedOptions.length === 2 && (
-                        <p className="text-sm text-red-500">Please select either 1 or 3 options.</p>
+                        <p className="text-sm text-red-500">
+                          Please select either 1 or 3 options.
+                        </p>
                       )}
                       <motion.button
                         type="submit"
                         className={`w-full px-6 py-3 text-white rounded-full font-medium transition-colors duration-200 ${
-                          selectedOptions.length === 1 || selectedOptions.length === 3
+                          selectedOptions.length === 1 ||
+                          selectedOptions.length === 3
                             ? "bg-[#BE243C] hover:bg-[#A61F35]"
                             : "bg-gray-400 cursor-not-allowed"
                         }`}
-                        whileHover={selectedOptions.length === 1 || selectedOptions.length === 3 ? { scale: 1.05 } : {}}
-                        whileTap={selectedOptions.length === 1 || selectedOptions.length === 3 ? { scale: 0.95 } : {}}
-                        disabled={selectedOptions.length !== 1 && selectedOptions.length !== 3}
+                        whileHover={
+                          selectedOptions.length === 1 ||
+                          selectedOptions.length === 3
+                            ? { scale: 1.05 }
+                            : {}
+                        }
+                        whileTap={
+                          selectedOptions.length === 1 ||
+                          selectedOptions.length === 3
+                            ? { scale: 0.95 }
+                            : {}
+                        }
+                        disabled={
+                          selectedOptions.length !== 1 &&
+                          selectedOptions.length !== 3
+                        }
                       >
                         Submit
                       </motion.button>
@@ -299,8 +355,8 @@ const Cards = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -359,31 +415,68 @@ const Cards = () => {
                     />
                   </div>
 
-                  <div className="block bg-[#d3d3d3] w-[171px] h-[300px] rounded-[22px] overflow-hidden cursor-pointer relative konnectRegular" onClick={() => handleCardClick(1)}>
-                    <Image src={CardObjectImg1 || "/placeholder.svg"} alt="CardObjectImg1" className="w-full h-full" />
+                  <div
+                    className="block bg-[#d3d3d3] w-[171px] h-[300px] rounded-[22px] overflow-hidden cursor-pointer relative konnectRegular"
+                    onClick={() => handleCardClick(1)}
+                  >
+                    <Image
+                      src={CardObjectImg1 || "/placeholder.svg"}
+                      alt="CardObjectImg1"
+                      className="w-full h-full"
+                    />
                     <div className="absolute bottom-2 px-4 py-2 w-[90%] mx-auto flex flex-col -gap-1">
                       <p className="text-[8px] font-light">SECURE STEPS</p>
-                      <h2 className="font-semibold text-[12px]">The Ultimate Guide</h2>
-                      <p className="text-[8px] leading-1 font-light">Solutions to 8000 plus questions (includes what every newbie needs to know about moving abroad) </p>
+                      <h2 className="font-semibold text-[12px]">
+                        The Ultimate Guide
+                      </h2>
+                      <p className="text-[8px] leading-1 font-light">
+                        Solutions to 8000 plus questions (includes what every
+                        newbie needs to know about moving abroad){" "}
+                      </p>
                     </div>
                   </div>
 
-                  <div className="block bg-[#d3d3d3] w-[171px] h-[300px] rounded-[22px] overflow-hidden cursor-pointer relative konnectRegular" onClick={() => handleCardClick(2)}>
-                    <Image src={CardObjectImg2 || "/placeholder.svg"} alt="CardObjectImg2" className="w-full h-full" />
+                  <div
+                    className="block bg-[#d3d3d3] w-[171px] h-[300px] rounded-[22px] overflow-hidden cursor-pointer relative konnectRegular"
+                    onClick={() => handleCardClick(2)}
+                  >
+                    <Image
+                      src={CardObjectImg2 || "/placeholder.svg"}
+                      alt="CardObjectImg2"
+                      className="w-full h-full"
+                    />
                     <div className="absolute bottom-2 px-4 py-2 w-[90%] mx-auto flex flex-col -gap-1">
                       <p className="text-[8px] font-light">SECURE STEPS</p>
-                      <h2 className="font-semibold text-[12px]">Statement of Purpose</h2>
-                      <p className="text-[8px] leading-1 font-light">We interviewed 456 universities and curated free templates for you, because we want you to master at this life.
-                        changing document.</p>
+                      <h2 className="font-semibold text-[12px]">
+                        Statement of Purpose
+                      </h2>
+                      <p className="text-[8px] leading-1 font-light">
+                        We interviewed 456 universities and curated free
+                        templates for you, because we want you to master at this
+                        life. changing document.
+                      </p>
                     </div>
                   </div>
 
-                  <div className="block bg-[#d3d3d3] w-[171px] h-[300px] rounded-[22px] overflow-hidden cursor-pointer relative konnectRegular" onClick={() => handleCardClick(3)}>
-                    <Image src={CardObjectImg3 || "/placeholder.svg"} alt="CardObjectImg3" className="w-full h-full" />
+                  <div
+                    className="block bg-[#d3d3d3] w-[171px] h-[300px] rounded-[22px] overflow-hidden cursor-pointer relative konnectRegular"
+                    onClick={() => handleCardClick(3)}
+                  >
+                    <Image
+                      src={CardObjectImg3 || "/placeholder.svg"}
+                      alt="CardObjectImg3"
+                      className="w-full h-full"
+                    />
                     <div className="absolute bottom-2 px-4 py-2 w-[90%] mx-auto flex flex-col -gap-1">
                       <p className="text-[8px] font-light">SECURE STEPS</p>
-                      <h2 className="font-semibold text-[12px]">Letter of Recommendation</h2>
-                      <p className="text-[8px] leading-1 font-light">Why write a letter praising yourself, Get a template for every aspect be it a LOR from your university /Workplace or by an individual.</p>
+                      <h2 className="font-semibold text-[12px]">
+                        Letter of Recommendation
+                      </h2>
+                      <p className="text-[8px] leading-1 font-light">
+                        Why write a letter praising yourself, Get a template for
+                        every aspect be it a LOR from your university /Workplace
+                        or by an individual.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -398,13 +491,18 @@ const Cards = () => {
                 showAnimation={true}
                 animationClass="animate-spin-ease-out-1"
               />
-              <CardWithAnimation
-                image={rec2}
-                title="Cost Estimator"
-                description="Includes university fee, living & miscellaneous expense"
-                showAnimation={true}
-                animationClass="animate-spin-ease-out-2"
-              />
+              <Link
+                href="/CostEstimator"
+                className="block hover:scale-[1.02] transition-transform"
+              >
+                <CardWithAnimation
+                  image={rec2}
+                  title="Cost Estimator"
+                  description="Includes university fee, living & miscellaneous expense"
+                  showAnimation={true}
+                  animationClass="animate-spin-ease-out-2"
+                />
+              </Link>
               <CardWithAnimation
                 image={rec3}
                 title="DocuCheck"
@@ -468,9 +566,12 @@ const Cards = () => {
                   />
                   <div className="flex flex-col gap-1 text-white absolute bottom-0 left-0 right-0 pb-5 px-4 py-4 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
                     <p className="text-xs">Secure steps</p>
-                    <h2 className="font-semibold text-sm md:text-base">Curated Ideal Universities</h2>
+                    <h2 className="font-semibold text-sm md:text-base">
+                      Curated Ideal Universities
+                    </h2>
                     <p className="text-xs leading-tight md:w-[60%]">
-                      Answer 6 Question in under 60 seconds, explore 600+ universities, and get your perfect 6. ALL BY YOURSELF!
+                      Answer 6 Question in under 60 seconds, explore 600+
+                      universities, and get your perfect 6. ALL BY YOURSELF!
                     </p>
                   </div>
                 </div>
@@ -507,13 +608,19 @@ const Cards = () => {
                       {/* Direct image implementation instead of TiltedCard for better control */}
                       <div className="w-full h-full bg-[#d3d3d3]">
                         <Image
-                          src={index === 1 ? GuideImg.src : index === 2 ? SOPImg.src : LORImg.src}
+                          src={
+                            index === 1
+                              ? GuideImg.src
+                              : index === 2
+                              ? SOPImg.src
+                              : LORImg.src
+                          }
                           alt={
                             index === 1
                               ? "The Ultimate Guide"
                               : index === 2
-                                ? "Statement of Purpose"
-                                : "Letter of Recommendation"
+                              ? "Statement of Purpose"
+                              : "Letter of Recommendation"
                           }
                           className="w-full h-full object-contain"
                           width={500}
@@ -523,13 +630,15 @@ const Cards = () => {
                       </div>
                       {/* Text overlay only visible on medium screens, hidden on large screens */}
                       <div className="absolute bottom-0 left-0 right-0 px-4 py-3 bg-white/80 md:block lg:hidden">
-                        <p className="text-xs text-black font-light">SECURE STEPS</p>
+                        <p className="text-xs text-black font-light">
+                          SECURE STEPS
+                        </p>
                         <h2 className="font-semibold text-sm text-black">
                           {index === 1
                             ? "The Ultimate Guide"
                             : index === 2
-                              ? "Statement of Purpose"
-                              : "Letter of Recommendation"}
+                            ? "Statement of Purpose"
+                            : "Letter of Recommendation"}
                         </h2>
                       </div>
                     </div>
@@ -547,15 +656,18 @@ const Cards = () => {
                 animationClass="animate-spin-ease-out-1"
               />
               {/* 👇 Wrap Cost Estimator Card with a Link */}
-      <Link href="/CostEstimator" className="block hover:scale-[1.02] transition-transform">
-        <CardWithAnimation
-          image={rec2}
-          title="Cost Estimator"
-          description="Includes university fee, living & miscellaneous expense"
-          showAnimation={true}
-          animationClass="animate-spin-ease-out-2"
-        />
-      </Link>
+              <Link
+                href="/CostEstimator"
+                className="block hover:scale-[1.02] transition-transform"
+              >
+                <CardWithAnimation
+                  image={rec2}
+                  title="Cost Estimator"
+                  description="Includes university fee, living & miscellaneous expense"
+                  showAnimation={true}
+                  animationClass="animate-spin-ease-out-2"
+                />
+              </Link>
               {/* <CostEstimatorPage/> */}
               <CardWithAnimation
                 image={rec3}
@@ -570,7 +682,7 @@ const Cards = () => {
       </section>
       <Popup />
     </>
-  )
-}
+  );
+};
 
-export default Cards
+export default Cards;
