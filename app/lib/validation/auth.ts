@@ -32,19 +32,23 @@ export const QuizRegistration = z.object({
 
 
 export const VerifyOTPSchema = z.object({
-  userId: z.string(),
-  otpCode: z.string(),
-  purpose: z.enum(["SIGNUP_VERIFICATION", "LOGIN_VERIFICATION", "PASSWORD_RESET"]),
-  registrationData: z.object({
-    email: z.string().email(),
-    phoneNumber: z.string(),
-    password: z.string(),
-    name: z.string(),
-    quizAnswers: z.array(z.object({
-      questionId: z.number(),
-      answer: z.string(),
-    })),
-  }).optional(),
+  userId: z.coerce.string().min(1),
+  otpCode: z.coerce.string().min(1),
+  purpose: z.enum(["SIGNUP_VERIFICATION", "LOGIN_VERIFICATION", "PASSWORD_RESET"]).default("SIGNUP_VERIFICATION"),
+  registrationData: z
+    .object({
+      email: z.string().email(),
+      phoneNumber: z.string(),
+      password: z.string(),
+      name: z.string(),
+      quizAnswers: z.array(
+        z.object({
+          questionId: z.number(),
+          answer: z.string(),
+        })
+      ),
+    })
+    .optional(),
 });
 
 export const LoginSchema = z.object({
