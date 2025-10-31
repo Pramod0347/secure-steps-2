@@ -43,6 +43,7 @@ const Page: React.FC = () => {
         <InfiniteLogoCarousel speed={30} gap={40} height={100} />
         <Test />
         <FAQ/>
+        {/* test */}
       </div>
     </>
   );
