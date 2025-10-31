@@ -3,13 +3,11 @@ import { type NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/app/lib/prisma"
 import { generateOTP } from "@/app/utils/otp"
 import { sendVerificationEmail } from "@/app/lib/email/sendEmail"
-import { OTPType, OTPPurpose, UserRole, Prisma } from "@prisma/client"
-import bcrypt from "bcryptjs"
+import { OTPType, OTPPurpose, Prisma } from "@prisma/client"
 import { z } from "zod"
 import crypto from "crypto"
 
 const OTP_EXPIRY_MS = 5 * 60 * 1000
-const SALT_ROUNDS = 10
 
 const EmailPhoneSchema = z.object({
     email: z.string().email("Invalid email format"),
@@ -53,7 +51,8 @@ export async function POST(req: NextRequest) {
         }
 
         const { email, phoneNumber, password } = emailPhoneAnswer;
-        const name = body[1] || "Anonymous User";
+        // Note: name is extracted from body[0] (question id 0 = "What's your name?")
+        // The name will be sent in registrationData during OTP verification
 
         try {
             console.log("Checking for existing user with email:", email);
@@ -78,9 +77,6 @@ export async function POST(req: NextRequest) {
                 }, { status: 409 });
             }
 
-            console.log("Hashing password...");
-            const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-
             const randomSuffix = Math.random().toString(36).substring(2, 10);
             const username = `user_${email.split('@')[0].substring(0, 10)}_${randomSuffix}`;
 
@@ -91,30 +87,9 @@ export async function POST(req: NextRequest) {
             console.log("Generated OTP:", otpCode);
             console.log("Generated temp token:", tempRegistrationToken);
 
-            // Store temporary registration data in a JSON field or separate table
-            // For now, we'll use a simple approach with the existing OTP table
-            // and store the registration data in the OTP data field
-            const registrationData = {
-                email,
-                phoneNumber,
-                name,
-                username,
-                hashedPassword,
-                role: UserRole.STUDENT,
-                countryCode: "+91",
-                quizAnswers: Object.entries(body)
-                    .filter(([key]) => !isNaN(Number(key)))
-                    .map(([key, value]) => ({
-                        questionId: Number(key),
-                        answer: typeof value === 'object' ? JSON.stringify(value) : String(value),
-                    })),
-                tempRegistrationToken,
-                createdAt: new Date().toISOString()
-            };
-
-            console.log("Starting transaction to store temporary registration...");
+            console.log("Starting transaction to create temporary OTP...");
             const result = await prisma.$transaction(async (tx) => {
-                // Create a temporary OTP record with registration data
+                // Create a temporary OTP record (password will be hashed only after OTP verification)
                 const tempOtp = await tx.oTP.create({
                     data: {
                         userId: "temp_" + tempRegistrationToken, // Temporary user ID
@@ -125,45 +100,21 @@ export async function POST(req: NextRequest) {
                         verified: false,
                         attempts: 0,
                         invalidated: false,
-                        // Store registration data in a custom field (we'll need to add this to schema)
-                        // For now, we'll use a workaround with the existing structure
                     },
                 });
-
-                // Store the registration data separately (we'll create a simple storage mechanism)
-                // Since we can't modify the schema right now, we'll use a different approach
-                // We'll store the data in a JSON file or use a different method
                 
                 return { 
                     tempOtpId: tempOtp.id, 
                     email, 
                     otpCode, 
                     tempRegistrationToken,
-                    registrationData 
                 };
             }, {
                 maxWait: 5000,
                 timeout: 10000
             });
 
-            // Store registration data temporarily (using a simple file-based approach for now)
-            // In production, you might want to use Redis or a dedicated temporary storage table
-            const fs = await import('fs/promises');
-            const path = await import('path');
-            const tempDir = path.join(process.cwd(), 'temp_registrations');
-            
-            try {
-                await fs.mkdir(tempDir, { recursive: true });
-                await fs.writeFile(
-                    path.join(tempDir, `${result.tempRegistrationToken}.json`),
-                    JSON.stringify(result.registrationData, null, 2)
-                );
-            } catch (fileError) {
-                console.error("Failed to store temporary registration data:", fileError);
-                // Continue with the process even if file storage fails
-            }
-
-            console.log("Temporary registration stored successfully. Sending verification email...");
+            console.log("Temporary OTP created successfully. Sending verification email...");
 
             try {
                 await sendVerificationEmail(result.email, result.otpCode);

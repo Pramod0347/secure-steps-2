@@ -21,6 +21,14 @@ type QuizState = {
   completedStages: { [key: number]: boolean }
   userId?: string
   password: string
+  registrationData?: {
+    email: string
+    phoneNumber: string
+    password: string
+    name: string
+    quizAnswers: { questionId: number; answer: string }[]
+  }
+  tempRegistrationToken?: string
 }
 
 const initialState: QuizState = {
@@ -120,18 +128,49 @@ export default function QuizPage() {
 
         if (response.ok && data.success) {
           toast.success("Registration data received. Please check your email for the OTP.")
+          
+          // Store registration data in component state
+          const emailPhoneAnswer = {
+            email: state.email,
+            phoneNumber: state.phoneNumber,
+            password: state.password,
+          }
+          
+          const registrationData = {
+            email: emailPhoneAnswer.email,
+            phoneNumber: emailPhoneAnswer.phoneNumber,
+            password: emailPhoneAnswer.password,
+            name: typeof state.answers[0] === 'string' ? state.answers[0] : "Anonymous User",
+            quizAnswers: Object.entries({
+              ...state.answers,
+              [currentQuestion.id]: emailPhoneAnswer,
+            })
+              .filter(([key]) => !isNaN(Number(key)))
+              .map(([key, value]) => ({
+                questionId: Number(key),
+                answer: typeof value === 'object' ? JSON.stringify(value) : String(value),
+              })),
+          }
+          
           setState((prev) => ({
             ...prev,
             stage: prev.stage + 1,
             answer: "",
             isTransitioning: false,
             userId: data.tempRegistrationToken ? `temp_${data.tempRegistrationToken}` : data.userId,
+            tempRegistrationToken: data.tempRegistrationToken,
+            registrationData,
           }))
         } else {
           toast.error(data.message || "Registration failed")
           throw new Error(data.message || "Registration failed")
         }
       } else if (state.stage === AuthQuestion.length - 1) {
+        if (!state.registrationData) {
+          toast.error("Registration data missing. Please start over.")
+          throw new Error("Registration data missing")
+        }
+        
         const response = await fetch("/api/auth/verify-otp", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -139,6 +178,7 @@ export default function QuizPage() {
             userId: state.userId,
             otpCode: state.answer,
             purpose: "SIGNUP_VERIFICATION",
+            registrationData: state.registrationData,
           }),
         })
 

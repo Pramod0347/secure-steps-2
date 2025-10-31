@@ -7,8 +7,7 @@ import { createSession } from "@/app/lib/session";
 import { OTP_CONSTANTS } from "@/app/lib/constants";
 import crypto from "crypto";
 import { sendWelcomeEmail } from "@/app/lib/email/sendEmail";
-import fs from "fs/promises";
-import path from "path";
+import bcrypt from "bcryptjs";
 
 // Add connection retry functionality
 async function withRetry<T>(
@@ -103,7 +102,11 @@ export async function POST(req: NextRequest) {
         
         if (isTemporaryRegistration) {
           // Handle temporary registration verification
-          const tempToken = validatedData.userId.replace("temp_", "");
+          // Registration data should come from request body
+          if (!validatedData.registrationData) {
+            console.error("[VERIFY_OTP_ERROR] Registration data not provided");
+            throw new Error("REGISTRATION_DATA_NOT_FOUND");
+          }
           
           // Find the temporary OTP record
           latestOtp = await tx.oTP.findFirst({
@@ -120,17 +123,6 @@ export async function POST(req: NextRequest) {
           if (!latestOtp) {
             console.error("[VERIFY_OTP_ERROR] No valid temporary OTP found");
             throw new Error("OTP_EXPIRED");
-          }
-
-          // Load registration data from temporary storage
-          const tempDir = path.join(process.cwd(), 'temp_registrations');
-          
-          try {
-            const filePath = path.join(tempDir, `${tempToken}.json`);
-            await fs.readFile(filePath, 'utf-8');
-          } catch (fileError) {
-            console.error("[VERIFY_OTP_ERROR] Failed to load registration data:", fileError);
-            throw new Error("REGISTRATION_DATA_NOT_FOUND");
           }
 
           user = null; // No existing user for temporary registrations
@@ -276,12 +268,15 @@ export async function POST(req: NextRequest) {
         };
         
         if (isTemporaryRegistration) {
-          // Create new user from temporary registration data
-          const tempToken = validatedData.userId.replace("temp_", "");
-          const tempDir = path.join(process.cwd(), 'temp_registrations');
-          const filePath = path.join(tempDir, `${tempToken}.json`);
-          const fileContent = await fs.readFile(filePath, 'utf-8');
-          const registrationData = JSON.parse(fileContent);
+          // Create new user from registration data in request body
+          const registrationData = validatedData.registrationData!;
+          
+          // Generate username from email
+          const randomSuffix = Math.random().toString(36).substring(2, 10);
+          const username = `user_${registrationData.email.split('@')[0].substring(0, 10)}_${randomSuffix}`;
+          
+          // Hash password before storing
+          const hashedPassword = await bcrypt.hash(registrationData.password, 10);
 
           console.log("Creating new user from registration data...");
           
@@ -290,13 +285,13 @@ export async function POST(req: NextRequest) {
               email: registrationData.email,
               phoneNumber: registrationData.phoneNumber,
               name: registrationData.name,
-              username: registrationData.username,
-              password: registrationData.hashedPassword,
-              role: registrationData.role,
+              username,
+              password: hashedPassword,
+              role: UserRole.STUDENT,
               isVerified: true,
               isEmailVerified: true,
               isPhoneVerified: false,
-              countryCode: registrationData.countryCode,
+              countryCode: "+91",
               notifications: {
                 create: [
                   {
@@ -334,7 +329,7 @@ export async function POST(req: NextRequest) {
 
           // Create quiz answers for the new user
           if (registrationData.quizAnswers && registrationData.quizAnswers.length > 0) {
-            const quizAnswers = registrationData.quizAnswers.map((answer: { questionId: number; answer: string }) => ({
+            const quizAnswers = registrationData.quizAnswers.map((answer) => ({
               userId: updatedUser.id,
               questionId: answer.questionId,
               answer: answer.answer,
@@ -343,13 +338,6 @@ export async function POST(req: NextRequest) {
             await tx.quizAnswer.createMany({
               data: quizAnswers
             });
-          }
-
-          // Clean up temporary registration data
-          try {
-            await fs.unlink(filePath);
-          } catch (cleanupError) {
-            console.warn("Failed to clean up temporary registration file:", cleanupError);
           }
 
           // Update the OTP record to point to the new user
