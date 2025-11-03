@@ -24,8 +24,8 @@ const InfiniteLogoCarousel: React.FC<LogoCarouselProps> = ({
   speed = 30, 
   gap = 40, 
   height = 80,
-  mobileHeight = 50, // Default mobile height
-  mobileMinWidth = 50 // Default mobile min-width
+  mobileHeight = 150, // Default mobile height
+  mobileMinWidth = 150 // Default mobile min-width
 }) => {
   // Refs
   const outerContainerRef = useRef<HTMLDivElement>(null)
@@ -356,9 +356,9 @@ const InfiniteLogoCarousel: React.FC<LogoCarouselProps> = ({
             <img
               src={getImageSrc(logo.url)}
               alt={logo.name}
-              className="h-full w-auto object-contain"
+              className="h-full w-auto object-contain "
               style={{
-                maxHeight: "100%",
+               maxHeight: isMobile ? `${mobileHeight}px` : "100%",
                 minWidth: isMobile ? `${mobileMinWidth}px` : "200px", // Responsive min-width
                 marginRight: "15px",
                 borderRadius: "4px",
@@ -383,7 +383,7 @@ const InfiniteLogoCarousel: React.FC<LogoCarouselProps> = ({
   const carouselHeight = isMobile ? mobileHeight : height
 
   return (
-    <div className="w-full text-center mb-16">
+    <div className="w-full text-center ">
       <h2 className="text-[20px] leading-[25.2px] md:text-5xl font-bold uppercase">
         Universities that&#160;
         <span className="bg-gradient-to-r from-[#DA202E] to-[#3B367D] bg-clip-text text-transparent inline-block">await your application</span>
@@ -391,7 +391,7 @@ const InfiniteLogoCarousel: React.FC<LogoCarouselProps> = ({
       <p>You name it, We have it</p>
       <div
         ref={outerContainerRef}
-        className="w-full overflow-hidden rounded-lg my-10 md:my-20"
+        className="w-full overflow-hidden rounded-lg  md:my-20  "
         style={{ height: `${carouselHeight}px` }}
         aria-label="University logos carousel"
       >
