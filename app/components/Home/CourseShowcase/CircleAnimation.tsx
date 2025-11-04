@@ -50,8 +50,8 @@ const CircleAnimation: React.FC<CircleAnimationProps> = ({ avatars }) => {
   }
 
   return (
-    <div className="relative w-full md:h-screen  flex flex-col items-center justify-center overflow-hidden">
-      <div className="text-[20px] md:text-5xl leading-[25.2px] font-bold text-center uppercase">
+    <div className="relative w-full md:h-screen  flex flex-col items-center justify-center overflow-hidden  ">
+      <div className="text-[20px] md:text-5xl leading-[25.2px] font-bold text-center uppercase  ">
 
         <TypeAnimation
           sequence={[

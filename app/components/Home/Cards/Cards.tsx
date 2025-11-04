@@ -361,9 +361,9 @@ const Cards = () => {
   return (
     <>
       {/* MOBILE VERSION FROM FIRST FILE */}
-      <div className="w-full overflow-x-hidden md:hidden">
+      <div className="w-full overflow-x-hidden md:hidden ">
         <div
-          className="flex py-20 flex-col items-center gap-6 justify-around w-full h-full"
+          className="flex py-6 flex-col items-center  justify-around w-full h-full"
           onMouseMove={handleMouseMove}
         >
           {cursorText && (
@@ -383,99 +383,110 @@ const Cards = () => {
             </motion.div>
           )}
           <div
-            className={`md:ml-10 sm:mx-2 items-center w-full gap-6 flex-col justify-center flex ${
+            className={`md:ml-10 sm:mx-2 items-center w-full gap-2 flex-col justify-center flex ${
               isPopupOpen ? "blur-sm" : ""
             }`}
           >
             {/* Mobile Title */}
-            <h1 className="font-extrabold text-center bg-white text-[18px] block uppercase w-[100%] mx-auto">
+            <h1 className="font-extrabold text-center bg-white text-[18px] sm:text-[22px] md:text-[26px] block uppercase w-full mx-auto leading-tight">
               Tools that decide your admit in your desired university
-              <p className="text-[18px] font-extrabold flex flex-row items-center justify-center">
-                <span className="text-sm font-normal lowercase text-black">
-                  <span className="uppercase">N</span>ow&#160;
-                  <span className="uppercase">A</span>t&#160;
+              <p className="text-[14px] sm:text-[16px] font-extrabold flex flex-row items-center justify-center mt-2">
+                <span className="text-xs sm:text-sm font-normal lowercase text-black">
+                  <span className="uppercase">N</span>ow&nbsp;
+                  <span className="uppercase">A</span>t&nbsp;
                 </span>
-                <span className="bg-gradient-to-r from-[#DA202E] to-[#3B367D] bg-clip-text text-transparent inline-block ">
+                <span className="bg-gradient-to-r from-[#DA202E] to-[#3B367D] bg-clip-text text-transparent inline-block">
                   FREE OF COST
                 </span>
               </p>
             </h1>
 
-            <div className="w-[100%] 2xl:h-[33rem] justify-center 2xl:justify-between items-end gap-1 flex relative">
+            {/* mobile cards */}
+            <div className="w-full 2xl:h-[33rem] flex justify-center 2xl:justify-between items-end gap-1 relative ">
               <div className="flex flex-col justify-between py-2 items-center h-full 2xl:w-[80%]">
-                <div className="grid grid-cols-2 gap-4 items-end justify-center">
-                  {/* Mobile logo image */}
-                  <div className="w-[175px] h-[300px] rounded-[26px] overflow-hidden ">
+                {/* Responsive Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 items-end justify-center">
+                  {/* First Card - University Image */}
+                  <div className="w-[130px] h-[180px] sm:w-[160px] sm:h-[200px] md:w-[175px] md:h-[300px] rounded-[20px] overflow-hidden">
                     <Image
                       src={UnisImg || "/placeholder.svg"}
                       alt=""
                       width={420}
                       height={520}
-                      className="w-full h-full object-fill rounded-[26px]"
+                      className="w-full h-full object-cover rounded-[20px]"
                     />
                   </div>
 
+                  {/* Card 1 */}
                   <div
-                    className="block bg-[#d3d3d3] w-[171px] h-[300px] rounded-[22px] overflow-hidden cursor-pointer relative konnectRegular"
+                    className="bg-[#d3d3d3] w-[130px] h-[180px] sm:w-[160px] sm:h-[50px] md:w-[171px] md:h-[300px] rounded-[20px] overflow-hidden cursor-pointer relative konnectRegular "
                     onClick={() => handleCardClick(1)}
                   >
                     <Image
                       src={CardObjectImg1 || "/placeholder.svg"}
                       alt="CardObjectImg1"
-                      className="w-full h-full"
+                      className="w-full h-full object-cover"
                     />
-                    <div className="absolute bottom-2 px-4 py-2 w-[90%] mx-auto flex flex-col -gap-1">
-                      <p className="text-[8px] font-light">SECURE STEPS</p>
-                      <h2 className="font-semibold text-[12px]">
+                    <div className="absolute bottom-1 sm:bottom-2 px-2 sm:px-3 py-1 sm:py-2 w-[90%] mx-auto flex flex-col gap-[2px]">
+                      <p className="text-[6px] sm:text-[8px] font-light">
+                        SECURE STEPS
+                      </p>
+                      <h2 className="font-semibold text-[9px] sm:text-[12px]">
                         The Ultimate Guide
                       </h2>
-                      <p className="text-[8px] leading-1 font-light">
+                      <p className="text-[6px] sm:text-[8px] leading-tight font-light">
                         Solutions to 8000 plus questions (includes what every
-                        newbie needs to know about moving abroad){" "}
+                        newbie needs to know about moving abroad)
                       </p>
                     </div>
                   </div>
 
+                  {/* Card 2 */}
                   <div
-                    className="block bg-[#d3d3d3] w-[171px] h-[300px] rounded-[22px] overflow-hidden cursor-pointer relative konnectRegular"
+                    className="bg-[#d3d3d3] w-[130px] h-[180px] sm:w-[160px] sm:h-[260px] md:w-[171px] md:h-[300px] rounded-[20px] overflow-hidden cursor-pointer relative konnectRegular"
                     onClick={() => handleCardClick(2)}
                   >
                     <Image
                       src={CardObjectImg2 || "/placeholder.svg"}
                       alt="CardObjectImg2"
-                      className="w-full h-full"
+                      className="w-full h-full object-cover"
                     />
-                    <div className="absolute bottom-2 px-4 py-2 w-[90%] mx-auto flex flex-col -gap-1">
-                      <p className="text-[8px] font-light">SECURE STEPS</p>
-                      <h2 className="font-semibold text-[12px]">
+                    <div className="absolute bottom-1 sm:bottom-2 px-2 sm:px-3 py-1 sm:py-2 w-[90%] mx-auto flex flex-col gap-[2px]">
+                      <p className="text-[6px] sm:text-[8px] font-light">
+                        SECURE STEPS
+                      </p>
+                      <h2 className="font-semibold text-[9px] sm:text-[12px]">
                         Statement of Purpose
                       </h2>
-                      <p className="text-[8px] leading-1 font-light">
+                      <p className="text-[6px] sm:text-[8px] leading-tight font-light">
                         We interviewed 456 universities and curated free
-                        templates for you, because we want you to master at this
-                        life. changing document.
+                        templates for you, because we want you to master this
+                        life-changing document.
                       </p>
                     </div>
                   </div>
 
+                  {/* Card 3 */}
                   <div
-                    className="block bg-[#d3d3d3] w-[171px] h-[300px] rounded-[22px] overflow-hidden cursor-pointer relative konnectRegular"
+                    className="bg-[#d3d3d3] w-[130px] h-[180px] sm:w-[160px] sm:h-[260px] md:w-[171px] md:h-[300px] rounded-[20px] overflow-hidden cursor-pointer relative konnectRegular"
                     onClick={() => handleCardClick(3)}
                   >
                     <Image
                       src={CardObjectImg3 || "/placeholder.svg"}
                       alt="CardObjectImg3"
-                      className="w-full h-full"
+                      className="w-full h-full object-cover"
                     />
-                    <div className="absolute bottom-2 px-4 py-2 w-[90%] mx-auto flex flex-col -gap-1">
-                      <p className="text-[8px] font-light">SECURE STEPS</p>
-                      <h2 className="font-semibold text-[12px]">
+                    <div className="absolute bottom-1 sm:bottom-2 px-2 sm:px-3 py-1 sm:py-2 w-[90%] mx-auto flex flex-col gap-[2px]">
+                      <p className="text-[6px] sm:text-[8px] font-light">
+                        SECURE STEPS
+                      </p>
+                      <h2 className="font-semibold text-[9px] sm:text-[12px]">
                         Letter of Recommendation
                       </h2>
-                      <p className="text-[8px] leading-1 font-light">
-                        Why write a letter praising yourself, Get a template for
-                        every aspect be it a LOR from your university /Workplace
-                        or by an individual.
+                      <p className="text-[6px] sm:text-[8px] leading-tight font-light">
+                        Get a template for every aspect — university, workplace,
+                        or individual — all covered with professional LOR
+                        examples.
                       </p>
                     </div>
                   </div>
@@ -483,17 +494,22 @@ const Cards = () => {
               </div>
             </div>
 
-            <div className="w-[90%] flex gap-5 justify-between">
-              <CardWithAnimation
-                image={rec1}
-                title="Loan Eligibility"
-                description="Collateral free loans at just 8.5% in just a click."
-                showAnimation={true}
-                animationClass="animate-spin-ease-out-1"
-              />
+            <div className="w-[90%] flex flex-col md:flex-row gap-3 md:gap-5 justify-center md:justify-between items-center md:items-stretch  ">
+              {/* Card 1 */}
+              <div className="w-[85%] md:w-[30%] scale-[0.9] md:scale-100">
+                <CardWithAnimation
+                  image={rec1}
+                  title="Loan Eligibility"
+                  description="Collateral free loans at just 8.5% in just a click."
+                  showAnimation={true}
+                  animationClass="animate-spin-ease-out-1"
+                />
+              </div>
+
+              {/* Card 2 */}
               <Link
                 href="/CostEstimator"
-                className="block hover:scale-[1.02] transition-transform"
+                className="block w-[85%] md:w-[30%] scale-[0.9] md:scale-100 hover:scale-[0.93] md:hover:scale-[1.02] transition-transform"
               >
                 <CardWithAnimation
                   image={rec2}
@@ -503,13 +519,17 @@ const Cards = () => {
                   animationClass="animate-spin-ease-out-2"
                 />
               </Link>
-              <CardWithAnimation
-                image={rec3}
-                title="DocuCheck"
-                description="Verify Your Study Abroad Readiness!"
-                showAnimation={true}
-                animationClass="animate-spin-ease-out-3"
-              />
+
+              {/* Card 3 */}
+              <div className="w-[85%] md:w-[30%] scale-[0.9] md:scale-100">
+                <CardWithAnimation
+                  image={rec3}
+                  title="DocuCheck"
+                  description="Verify Your Study Abroad Readiness!"
+                  showAnimation={true}
+                  animationClass="animate-spin-ease-out-3"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -647,7 +667,7 @@ const Cards = () => {
               </div>
             </div>
 
-            <div className="w-full max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mt-6 md:mt-10">
+            <div className="w-full max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mt-6 md:mt-10 ">
               <CardWithAnimation
                 image={rec1}
                 title="Loan Eligibility"

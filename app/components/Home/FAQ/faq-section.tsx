@@ -12,9 +12,9 @@ import FaqList from "./FaqList";
 
 function FAQ() {
     return (
-        <div className="w-full py-2 lg:pb-20 px-5">
+        <div className="w-full  lg:pb-20 px-5">
             <div className="container mx-auto">
-                <div className="flex flex-col md:flex-row gap-20">
+                <div className="flex flex-col md:flex-row ">
                     <div className="flex gap-10 flex-col md:w-[50%]">
                         <div className="flex gap-4 flex-col">
                             <div>

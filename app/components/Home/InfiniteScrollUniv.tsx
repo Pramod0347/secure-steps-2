@@ -24,8 +24,8 @@ const InfiniteLogoCarousel: React.FC<LogoCarouselProps> = ({
   speed = 30, 
   gap = 40, 
   height = 80,
-  mobileHeight = 150, // Default mobile height
-  mobileMinWidth = 150 // Default mobile min-width
+  mobileHeight = 100, // Default mobile height
+  mobileMinWidth = 100 // Default mobile min-width
 }) => {
   // Refs
   const outerContainerRef = useRef<HTMLDivElement>(null)

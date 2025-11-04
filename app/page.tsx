@@ -47,6 +47,7 @@ const Page: React.FC = () => {
       </div>
     </>
   );
+  
 };
 
 export default Page;
