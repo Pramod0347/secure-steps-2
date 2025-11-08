@@ -190,7 +190,127 @@ export async function GET(req: Request): Promise<NextResponse> {
 // POST route handler to create a new application
 export async function POST(req: Request): Promise<NextResponse> {
   try {
-    const body = await req.json();
+    // Get userId from headers (set by middleware)
+    const userId = req.headers.get("x-user-id");
+    if (!userId) {
+      return NextResponse.json(
+        { error: "User ID is required. Please ensure you are authenticated." },
+        { status: 401 }
+      );
+    }
+
+    // Get universityId from query parameter
+    const url = new URL(req.url);
+    const universityId = url.searchParams.get("id");
+    if (!universityId) {
+      return NextResponse.json(
+        { error: "University ID is required in query parameters" },
+        { status: 400 }
+      );
+    }
+
+    // Check Content-Type to handle both FormData and JSON
+    const contentType = req.headers.get("content-type") || "";
+    let body: any;
+
+    if (contentType.includes("multipart/form-data")) {
+      // Handle FormData
+      const formData = await req.formData();
+      
+      const courseId = formData.get("courseId") as string;
+      const loanRequired = formData.get("loanRequired") === "true";
+      const additionalNotes = formData.get("additionalNotes") as string | null;
+      
+      // Get all documents and their names
+      const documents = formData.getAll("documents") as File[];
+      const documentNames = formData.getAll("documentNames") as string[];
+
+      if (!courseId) {
+        return NextResponse.json(
+          { error: "Course ID is required" },
+          { status: 400 }
+        );
+      }
+
+      // Upload documents and get URLs
+      const documentUrls: string[] = [];
+      
+      if (documents.length > 0) {
+        // Upload each document
+        for (let i = 0; i < documents.length; i++) {
+          const file = documents[i];
+          if (file && file.size > 0) {
+            try {
+              // Determine file type (pdf or image)
+              // Check if it's a PDF
+              const isPdf = file.type === "application/pdf" || 
+                           file.name.toLowerCase().endsWith(".pdf");
+              // Check if it's an image
+              const isImage = file.type.startsWith("image/");
+              
+              const fileType = isPdf ? "pdf" : isImage ? "image" : "pdf"; // Default to pdf for documents
+              
+              // Create FormData for upload
+              const uploadFormData = new FormData();
+              uploadFormData.append("file", file);
+              uploadFormData.append("type", fileType);
+
+              // Upload to Cloudflare R2
+              // Use relative URL for internal API call
+              const baseUrl = process.env.NEXTAUTH_URL || url.origin;
+              const uploadResponse = await fetch(`${baseUrl}/api/upload`, {
+                method: "POST",
+                body: uploadFormData,
+              });
+
+              if (!uploadResponse.ok) {
+                const errorData = await uploadResponse.json();
+                throw new Error(`Failed to upload document: ${errorData.error || "Unknown error"}`);
+              }
+
+              const uploadResult = await uploadResponse.json();
+              if (uploadResult.url) {
+                documentUrls.push(uploadResult.url);
+              }
+            } catch (error) {
+              console.error(`Error uploading document ${i + 1}:`, error);
+            }
+          }
+        }
+      }
+
+      body = {
+        userId,
+        universityId,
+        courseId,
+        loanRequired,
+        documents: documentUrls,
+        additionalNotes: additionalNotes || undefined,
+        status: "PENDING",
+      };
+    } else {
+      // Handle JSON
+      try {
+        body = await req.json();
+      } catch (jsonError) {
+        // Handle JSON parsing errors
+        if (jsonError instanceof SyntaxError || jsonError instanceof Error) {
+          return NextResponse.json(
+            {
+              error: "Failed to create application",
+              message: "Invalid JSON in request body",
+              details: jsonError.message,
+            },
+            { status: 400 }
+          );
+        }
+        throw jsonError;
+      }
+      
+      // Override userId and universityId from headers/query if not provided in body
+      if (!body.userId) body.userId = userId;
+      if (!body.universityId) body.universityId = universityId;
+    }
 
     console.log("Received application data:", JSON.stringify(body, null, 2));
 
