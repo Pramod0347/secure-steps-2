@@ -248,8 +248,8 @@ const StickyScroll = () => {
 
   return (
     <ReactLenis root>
-      <div className="min-h-screen -mb-5 pt-6 md:py-10 pb-0 md:pb-11 w-screen">
-        <div className="flex flex-col items-center justify-center w-full mb-6 md:mb-10 gap-4 md:gap-6 px-4 md:px-8">
+      <div className="min-h-screen -mb-5  md:py-10  md:pb-11 w-screen">
+        <div className="flex flex-col items-center justify-center w-full  md:mb-10 gap-4 md:gap-6 px-4 md:px-8">
           <div className="text-xl md:text-4xl lg:text-5xl leading-tight font-extrabold text-center uppercase">
             <HorizontalScrollingText text="PRICING DESIGNED FOR AFFORDABILITY" />
           </div>

@@ -22,7 +22,7 @@ const TestiCard = ({
 }) => {
   return (
     <div
-      className={`p-4 transition-opacity duration-300 ${faded ? "opacity-50" : "opacity-100"}`}
+      className={`p-4 transition-opacity duration-300 ${faded ? "opacity-50" : "opacity-100"}   `}
     >
       <div className="flex flex-col md:flex-row relative overflow-hidden bg-white md:w-[750px] w-full mx-auto rounded-[15px]" style={{ boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.1)" }}>
         {/* Left side with image */}
@@ -146,7 +146,7 @@ const Test = () => {
   };
 
   return (
-    <div className="flex w-screen md:h-[90vh] h-[65vh] items-center flex-col overflow-hidden">
+    <div className="flex w-screen md:h-[90vh] h-[65vh] items-center flex-col overflow-hidden mb-30   ">
       {/* Content */}
       <div className="relative z-10 w-full">
         <h1 className="text-[20px] text-center leading-[25.2px] md:text-5xl my-10 md:my-0 uppercase md:font-semibold font-[800] ">

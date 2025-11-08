@@ -28,7 +28,7 @@ const inter = Inter({
 const Page: React.FC = () => {
   return (
     <>
-      <div className={`w-screen flex flex-col gap-5 items-center justify-center overflow-x-hidden ${inter.className}`}>
+      <div className={`w-screen flex flex-col  items-center justify-center overflow-x-hidden ${inter.className}`}>
 
         <Hero />
         {/* <NewHero /> */}
@@ -43,9 +43,11 @@ const Page: React.FC = () => {
         <InfiniteLogoCarousel speed={30} gap={40} height={100} />
         <Test />
         <FAQ/>
+        {/* test */}
       </div>
     </>
   );
+  
 };
 
 export default Page;
