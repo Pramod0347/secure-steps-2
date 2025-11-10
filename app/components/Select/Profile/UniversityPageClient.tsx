@@ -285,7 +285,11 @@ export default function UniversityPageClient({ slug }: UniversityPageClientProps
         </Suspense>
 
         <Suspense fallback={<div className="w-full h-64 animate-pulse bg-gray-200 rounded-lg"></div>}>
-          <UniversityCareerOutcomes universityData={university.careerOutcomes[0]} />
+          <UniversityCareerOutcomes 
+            universityData={university.careerOutcomes && university.careerOutcomes.length > 0 
+              ? university.careerOutcomes[0] 
+              : null} 
+          />
         </Suspense>
 
         <Suspense fallback={<div className="w-full h-96 animate-pulse bg-gray-200 rounded-lg"></div>}>

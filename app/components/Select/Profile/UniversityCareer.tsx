@@ -34,7 +34,7 @@ interface CareerOutcomeItem {
 // Correct type based on actual data structure
 type ActualCareerOutcomeData = {
   id: string;
-  type: "SALARY_CHART";
+  type: "SALARY_CHART" | "EMPLOYMENT_RATE_METER" | "COURSE_TIMELINE";
   universityId: string;
   salaryChartData?: Array<{
     id: string;
