@@ -170,7 +170,24 @@ export function UniversityForm() {
         return cleanedCourse
       })
 
-     
+      // Extract career outcome data if available
+      console.log("Current university career outcomes:", JSON.stringify(currentUniversity.careerOutcomes, null, 2))
+      console.log("Career outcomes array length:", currentUniversity.careerOutcomes?.length || 0)
+      console.log("First career outcome:", currentUniversity.careerOutcomes?.[0])
+      
+      const careerOutcomeData = currentUniversity.careerOutcomes?.[0]?.data || null
+      console.log("Extracted career outcome data:", JSON.stringify(careerOutcomeData, null, 2))
+      
+      // Always include careerOutcomeData if it exists, even if arrays are empty
+      // The API will validate if it has actual content
+      const hasCareerOutcomeData = careerOutcomeData !== null && careerOutcomeData !== undefined
+      console.log("Has career outcome data (exists):", hasCareerOutcomeData)
+      
+      if (careerOutcomeData) {
+        console.log("Salary chart data:", careerOutcomeData.salaryChartData?.length || 0, "items")
+        console.log("Employment rate meter:", careerOutcomeData.employmentRateMeterData ? "exists" : "null")
+        console.log("Course timeline data:", careerOutcomeData.courseTimelineData?.length || 0, "items")
+      }
 
       const universityData: any = {
         name: currentUniversity.name,
@@ -190,7 +207,15 @@ export function UniversityForm() {
           : {}),
       }
       
-  
+      // Always include careerOutcomeData if it exists
+      if (hasCareerOutcomeData && careerOutcomeData) {
+        universityData.careerOutcomeData = careerOutcomeData
+        console.log("✅ Adding careerOutcomeData to payload")
+      } else {
+        console.log("❌ NOT adding careerOutcomeData to payload - data is null/undefined")
+      }
+
+      console.log("Submitting university data:", JSON.stringify(universityData, null, 2))
 
       const response = await fetch("/api/universities", {
         method: "POST",
