@@ -607,34 +607,49 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     }
 
     // Delete all related data in the correct order
-    // Increase timeout to 30 seconds to handle large datasets
+    // First, get all career outcome IDs to optimize deletions (outside transaction for speed)
+    const careerOutcomes = await prisma.careerOutcome.findMany({
+      where: { universityId: id },
+      select: { id: true },
+    })
+    const careerOutcomeIds = careerOutcomes.map(co => co.id)
+
+    // Use transaction with extended timeout
+    // Note: Prisma transaction timeout is in milliseconds
+    const transactionOptions = {
+      maxWait: 30000, // 30 seconds
+      timeout: 30000, // 30 seconds
+    }
+
     await prisma.$transaction(async (tx) => {
-      // Delete CourseTimelineData first
-      await tx.courseTimelineData.deleteMany({
-        where: {
-          careerOutcome: {
-            universityId: id
+      // Delete CourseTimelineData first (optimized with direct IDs)
+      if (careerOutcomeIds.length > 0) {
+        await tx.courseTimelineData.deleteMany({
+          where: {
+            careerOutcomeId: {
+              in: careerOutcomeIds
+            }
           }
-        }
-      });
+        });
 
-      // Delete SalaryChartData
-      await tx.salaryChartData.deleteMany({
-        where: {
-          careerOutcome: {
-            universityId: id
+        // Delete SalaryChartData (optimized with direct IDs)
+        await tx.salaryChartData.deleteMany({
+          where: {
+            careerOutcomeId: {
+              in: careerOutcomeIds
+            }
           }
-        }
-      });
+        });
 
-      // Delete EmploymentRateMeterData
-      await tx.employmentRateMeterData.deleteMany({
-        where: {
-          careerOutcome: {
-            universityId: id
+        // Delete EmploymentRateMeterData (optimized with direct IDs)
+        await tx.employmentRateMeterData.deleteMany({
+          where: {
+            careerOutcomeId: {
+              in: careerOutcomeIds
+            }
           }
-        }
-      });
+        });
+      }
 
       // Delete CareerOutcome records
       await tx.careerOutcome.deleteMany({
@@ -655,10 +670,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
       await tx.university.delete({
         where: { id },
       });
-    }, {
-      maxWait: 30000,
-      timeout: 30000,
-    });
+    }, transactionOptions);
 
     return NextResponse.json({ message: "University deleted successfully" })
   } catch (error) {

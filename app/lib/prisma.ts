@@ -6,7 +6,13 @@ const prismaClientSingleton = () => {
     throw new Error('DATABASE_URL is not defined')
   }
 
-  return new PrismaClient().$extends({
+  return new PrismaClient({
+    // Set default transaction options to handle long-running operations
+    transactionOptions: {
+      maxWait: 30000, // 30 seconds - maximum time to wait for a transaction slot
+      timeout: 30000, // 30 seconds - maximum time the transaction can run
+    },
+  }).$extends({
     query: {
       university: {
         async create({ args, query }) {
