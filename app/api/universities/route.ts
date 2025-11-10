@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/app/lib/prisma"
+import { withTransaction } from "@/app/lib/prisma-transaction"
 import { UniversitySchema } from "@/app/lib/types/universities"
 import { z } from "zod"
 import type { Prisma } from "@prisma/client"
@@ -245,7 +246,8 @@ export async function POST(req: Request): Promise<NextResponse> {
     const finalSlug = existingSlug ? `${slug}-${Date.now().toString().slice(-4)}` : slug
 
     // Use transaction to create university with courses and career outcomes
-    const university = await prisma.$transaction(async (tx) => {
+    // Use withTransaction wrapper for consistent timeout handling in production
+    const university = await withTransaction(async (tx) => {
       // Create the university first
       const createdUniversity = await tx.university.create({
         data: {
@@ -410,6 +412,9 @@ export async function POST(req: Request): Promise<NextResponse> {
           },
         },
       })
+    }, {
+      maxWait: 30000,
+      timeout: 30000,
     })
 
     console.log("Created university:", JSON.stringify(university, null, 2))
@@ -695,12 +700,61 @@ export async function DELETE(req: Request): Promise<NextResponse> {
       return NextResponse.json({ error: "University ID is required" }, { status: 400 })
     }
 
-    // Delete all related courses first
+    // Delete all related data in the correct order
+    // Using sequential deletions outside transaction for better performance and to avoid timeout
+    // First, get all career outcome IDs to optimize deletions
+    const careerOutcomes = await prisma.careerOutcome.findMany({
+      where: { universityId: id },
+      select: { id: true },
+    })
+    const careerOutcomeIds = careerOutcomes.map(co => co.id)
+
+    // Delete related data in order (using individual operations for better error handling)
+    if (careerOutcomeIds.length > 0) {
+      // Delete CourseTimelineData first
+      await prisma.courseTimelineData.deleteMany({
+        where: {
+          careerOutcomeId: {
+            in: careerOutcomeIds
+          }
+        }
+      })
+
+      // Delete SalaryChartData
+      await prisma.salaryChartData.deleteMany({
+        where: {
+          careerOutcomeId: {
+            in: careerOutcomeIds
+          }
+        }
+      })
+
+      // Delete EmploymentRateMeterData
+      await prisma.employmentRateMeterData.deleteMany({
+        where: {
+          careerOutcomeId: {
+            in: careerOutcomeIds
+          }
+        }
+      })
+    }
+
+    // Delete CareerOutcome records
+    await prisma.careerOutcome.deleteMany({
+      where: { universityId: id },
+    })
+
+    // Delete FAQs
+    await prisma.faq.deleteMany({
+      where: { universityId: id },
+    })
+
+    // Delete courses
     await prisma.course.deleteMany({
       where: { universityId: id },
     })
 
-    // Then delete the university
+    // Finally delete the university
     await prisma.university.delete({
       where: { id },
     })
