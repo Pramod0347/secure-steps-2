@@ -607,70 +607,63 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     }
 
     // Delete all related data in the correct order
-    // First, get all career outcome IDs to optimize deletions (outside transaction for speed)
+    // Using sequential deletions outside transaction for better performance and to avoid timeout
+    // First, get all career outcome IDs to optimize deletions
     const careerOutcomes = await prisma.careerOutcome.findMany({
       where: { universityId: id },
       select: { id: true },
     })
     const careerOutcomeIds = careerOutcomes.map(co => co.id)
 
-    // Use transaction with extended timeout
-    // Note: Prisma transaction timeout is in milliseconds
-    const transactionOptions = {
-      maxWait: 30000, // 30 seconds
-      timeout: 30000, // 30 seconds
+    // Delete related data in order (using individual operations for better error handling)
+    if (careerOutcomeIds.length > 0) {
+      // Delete CourseTimelineData first
+      await prisma.courseTimelineData.deleteMany({
+        where: {
+          careerOutcomeId: {
+            in: careerOutcomeIds
+          }
+        }
+      });
+
+      // Delete SalaryChartData
+      await prisma.salaryChartData.deleteMany({
+        where: {
+          careerOutcomeId: {
+            in: careerOutcomeIds
+          }
+        }
+      });
+
+      // Delete EmploymentRateMeterData
+      await prisma.employmentRateMeterData.deleteMany({
+        where: {
+          careerOutcomeId: {
+            in: careerOutcomeIds
+          }
+        }
+      });
     }
 
-    await prisma.$transaction(async (tx) => {
-      // Delete CourseTimelineData first (optimized with direct IDs)
-      if (careerOutcomeIds.length > 0) {
-        await tx.courseTimelineData.deleteMany({
-          where: {
-            careerOutcomeId: {
-              in: careerOutcomeIds
-            }
-          }
-        });
+    // Delete CareerOutcome records
+    await prisma.careerOutcome.deleteMany({
+      where: { universityId: id },
+    });
 
-        // Delete SalaryChartData (optimized with direct IDs)
-        await tx.salaryChartData.deleteMany({
-          where: {
-            careerOutcomeId: {
-              in: careerOutcomeIds
-            }
-          }
-        });
+    // Delete FAQs
+    await prisma.faq.deleteMany({
+      where: { universityId: id },
+    });
 
-        // Delete EmploymentRateMeterData (optimized with direct IDs)
-        await tx.employmentRateMeterData.deleteMany({
-          where: {
-            careerOutcomeId: {
-              in: careerOutcomeIds
-            }
-          }
-        });
-      }
+    // Delete courses
+    await prisma.course.deleteMany({
+      where: { universityId: id },
+    });
 
-      // Delete CareerOutcome records
-      await tx.careerOutcome.deleteMany({
-        where: { universityId: id },
-      });
-
-      // Delete FAQs
-      await tx.faq.deleteMany({
-        where: { universityId: id },
-      });
-
-      // Delete courses
-      await tx.course.deleteMany({
-        where: { universityId: id },
-      });
-
-      // Finally delete the university
-      await tx.university.delete({
-        where: { id },
-      });
-    }, transactionOptions);
+    // Finally delete the university
+    await prisma.university.delete({
+      where: { id },
+    });
 
     return NextResponse.json({ message: "University deleted successfully" })
   } catch (error) {

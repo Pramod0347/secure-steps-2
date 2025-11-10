@@ -6,12 +6,20 @@ const prismaClientSingleton = () => {
     throw new Error('DATABASE_URL is not defined')
   }
 
+  // Production environments may have slower database connections
+  // Use longer timeouts for production, shorter for development
+  const isProduction = true
+  const transactionTimeout = isProduction ? 60000 : 30000 // 60s for production, 30s for dev
+
   return new PrismaClient({
     // Set default transaction options to handle long-running operations
+    // These are defaults, but individual transactions should use withTransaction() wrapper
     transactionOptions: {
-      maxWait: 30000, // 30 seconds - maximum time to wait for a transaction slot
-      timeout: 30000, // 30 seconds - maximum time the transaction can run
+      maxWait: transactionTimeout,
+      timeout: transactionTimeout,
     },
+    // Log queries in development for debugging
+    log: isProduction ? ['error', 'warn'] : ['query', 'error', 'warn'],
   }).$extends({
     query: {
       university: {
