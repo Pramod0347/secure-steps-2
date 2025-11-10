@@ -168,6 +168,8 @@ export async function POST(req: Request): Promise<NextResponse> {
       throw new Error("Request body is empty")
     }
 
+    const careerOutcomeData = (body as any).careerOutcomeData
+
     // Make sure UniversitySchema includes youtubeLink validation
     const validatedData = UniversitySchema.parse(body)
 
@@ -203,37 +205,147 @@ export async function POST(req: Request): Promise<NextResponse> {
     // If slug exists, append a unique identifier
     const finalSlug = existingSlug ? `${slug}-${Date.now().toString().slice(-4)}` : slug
 
-    const university = await prisma.university.create({
-      data: {
-        name: validatedData.name,
-        description: validatedData.description,
-        location: validatedData.location,
-        country: validatedData.country,
-        website: validatedData.website,
-        established: establishedDate,
-        banner: validatedData.banner,
-        logoUrl: validatedData.logoUrl,
-        imageUrls: validatedData.imageUrls,
-        facilities: validatedData.facilities,
-        youtubeLink: validatedData.youtubeLink,
-        slug: finalSlug,
-        courses: {
-          create: validatedData.courses?.map((course) => ({
-            name: course.name,
-            description: course.description,
-            fees: course.fees,
-            duration: course.duration,
-            degreeType: course.degreeType,
-            ieltsScore: course.ieltsScore,
-            ranking: course.ranking,
-            intake: course.intake,
-            websiteLink: course.websiteLink,
-          })),
+    // Use transaction to create university with courses and career outcomes
+    const university = await prisma.$transaction(async (tx) => {
+      // Create the university first
+      const createdUniversity = await tx.university.create({
+        data: {
+          name: validatedData.name,
+          description: validatedData.description,
+          location: validatedData.location,
+          country: validatedData.country,
+          website: validatedData.website,
+          established: establishedDate,
+          banner: validatedData.banner,
+          logoUrl: validatedData.logoUrl,
+          imageUrls: validatedData.imageUrls,
+          facilities: validatedData.facilities,
+          youtubeLink: validatedData.youtubeLink,
+          slug: finalSlug,
+          courses: {
+            create: validatedData.courses?.map((course) => ({
+              name: course.name,
+              description: course.description,
+              fees: course.fees,
+              duration: course.duration,
+              degreeType: course.degreeType,
+              ieltsScore: course.ieltsScore,
+              ranking: course.ranking,
+              intake: course.intake,
+              websiteLink: course.websiteLink,
+            })) || [],
+          },
         },
-      },
-      include: {
-        courses: true,
-      },
+        include: {
+          courses: true,
+        },
+      })
+
+      // Create career outcomes if provided
+      if (careerOutcomeData && 
+          (careerOutcomeData.salaryChartData?.length > 0 ||
+           careerOutcomeData.employmentRateMeterData ||
+           careerOutcomeData.courseTimelineData?.length > 0)) {
+        
+        console.log("Creating career outcome for new university...")
+        
+        // Determine the type based on what data is provided
+        let outcomeType: 'SALARY_CHART' | 'EMPLOYMENT_RATE_METER' | 'COURSE_TIMELINE' = 'SALARY_CHART'
+        if (careerOutcomeData.employmentRateMeterData) {
+          outcomeType = 'EMPLOYMENT_RATE_METER'
+        } else if (careerOutcomeData.courseTimelineData?.length > 0) {
+          outcomeType = 'COURSE_TIMELINE'
+        } else if (careerOutcomeData.salaryChartData?.length > 0) {
+          outcomeType = 'SALARY_CHART'
+        }
+
+        // Create the main CareerOutcome record
+        const careerOutcome = await tx.careerOutcome.create({
+          data: {
+            universityId: createdUniversity.id,
+            type: outcomeType,
+          },
+        })
+
+        console.log(`Created career outcome with ID: ${careerOutcome.id}`)
+
+        // Create salary chart data if provided
+        if (careerOutcomeData.salaryChartData && Array.isArray(careerOutcomeData.salaryChartData)) {
+          const validSalaryData = careerOutcomeData.salaryChartData.filter((item: any) => {
+            const isValid = item && 
+                   typeof item.sector === 'string' && item.sector.trim() !== '' &&
+                   typeof item.min === 'number' && !isNaN(item.min) &&
+                   typeof item.max === 'number' && !isNaN(item.max) &&
+                   typeof item.color === 'string' && item.color.trim() !== '' &&
+                   typeof item.percentage === 'number' && !isNaN(item.percentage)
+            return isValid
+          })
+
+          if (validSalaryData.length > 0) {
+            await tx.salaryChartData.createMany({
+              data: validSalaryData.map((item: any) => ({
+                sector: item.sector.trim(),
+                min: item.min,
+                max: item.max,
+                color: item.color.trim(),
+                percentage: item.percentage,
+                careerOutcomeId: careerOutcome.id
+              }))
+            })
+            console.log(`Created ${validSalaryData.length} salary chart data records`)
+          }
+        }
+
+        // Create employment rate meter data if provided
+        if (careerOutcomeData.employmentRateMeterData) {
+          const empData = careerOutcomeData.employmentRateMeterData
+          
+          if (typeof empData.targetRate === 'number' && !isNaN(empData.targetRate) &&
+              typeof empData.size === 'number' && !isNaN(empData.size)) {
+            
+            await tx.employmentRateMeterData.create({
+              data: {
+                targetRate: empData.targetRate,
+                size: empData.size,
+                careerOutcomeId: careerOutcome.id
+              }
+            })
+            console.log("Created employment rate meter data")
+          }
+        }
+
+        // Create course timeline data if provided
+        if (careerOutcomeData.courseTimelineData && Array.isArray(careerOutcomeData.courseTimelineData)) {
+          const validTimelineData = careerOutcomeData.courseTimelineData.filter((item: any) => {
+            return item && typeof item.course === 'string' && item.course.trim() !== ''
+          })
+
+          if (validTimelineData.length > 0) {
+            await tx.courseTimelineData.createMany({
+              data: validTimelineData.map((item: any) => ({
+                course: item.course.trim(),
+                careerOutcomeId: careerOutcome.id
+              }))
+            })
+            console.log(`Created ${validTimelineData.length} course timeline data records`)
+          }
+        }
+      }
+
+      // Return university with all relations
+      return await tx.university.findUnique({
+        where: { id: createdUniversity.id },
+        include: {
+          courses: true,
+          careerOutcomes: {
+            include: {
+              salaryChartData: true,
+              employmentRateMeter: true,
+              courseTimelineData: true,
+            },
+          },
+        },
+      })
     })
 
     console.log("Created university:", JSON.stringify(university, null, 2))

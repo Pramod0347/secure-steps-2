@@ -323,6 +323,14 @@ export function UniversityForm() {
         return cleanedCourse
       })
 
+      // Extract career outcome data if available
+      const careerOutcomeData = currentUniversity.careerOutcomes?.[0]?.data || null
+      const hasCareerOutcomeData = careerOutcomeData && (
+        (careerOutcomeData.salaryChartData && careerOutcomeData.salaryChartData.length > 0) ||
+        careerOutcomeData.employmentRateMeterData ||
+        (careerOutcomeData.courseTimelineData && careerOutcomeData.courseTimelineData.length > 0)
+      )
+
       const universityData = {
         name: currentUniversity.name,
         description: currentUniversity.description,
@@ -339,6 +347,7 @@ export function UniversityForm() {
         ...(currentUniversity.youtubeLink && currentUniversity.youtubeLink.trim() 
           ? { youtubeLink: currentUniversity.youtubeLink } 
           : {}),
+        ...(hasCareerOutcomeData ? { careerOutcomeData } : {}),
       }
 
       console.log("Submitting university data:", universityData)
