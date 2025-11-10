@@ -287,10 +287,36 @@ export default function UniversityPageClient({ slug }: UniversityPageClientProps
   console.log("🔍 university.careerOutcomes isArray:", Array.isArray(university.careerOutcomes))
   console.log("🔍 university.careerOutcomes length:", university.careerOutcomes?.length)
   
+  type ActualCareerOutcomeFromAPI = {
+    id: string;
+    type: "SALARY_CHART" | "EMPLOYMENT_RATE_METER" | "COURSE_TIMELINE";
+    universityId: string;
+    salaryChartData?: Array<{
+      id: string;
+      sector: string;
+      min: number;
+      max: number;
+      color?: string;
+      percentage?: number;
+      careerOutcomeId: string;
+    }>;
+    employmentRateMeter?: {
+      id: string;
+      targetRate: number;
+      size: number;
+      careerOutcomeId: string;
+    };
+    courseTimelineData?: Array<{
+      id: string;
+      course: string;
+      careerOutcomeId: string;
+    }>;
+  };
+
   const careerOutcomeData = university.careerOutcomes && 
     Array.isArray(university.careerOutcomes) &&
     university.careerOutcomes.length > 0 
-      ? university.careerOutcomes[0] 
+      ? (university.careerOutcomes[0] as unknown as ActualCareerOutcomeFromAPI)
       : null
       
   console.log("✅ Extracted careerOutcomeData:", JSON.stringify(careerOutcomeData, null, 2))
