@@ -410,6 +410,9 @@ export async function POST(req: Request): Promise<NextResponse> {
           },
         },
       })
+    }, {
+      maxWait: 30000,
+      timeout: 30000,
     })
 
     console.log("Created university:", JSON.stringify(university, null, 2))
