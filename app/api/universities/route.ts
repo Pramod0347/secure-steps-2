@@ -86,64 +86,101 @@ export async function GET(req: Request): Promise<NextResponse> {
       limit: z.coerce.number().int().min(1).max(100).optional().default(10),
     });
 
-    const { query, page, limit } = querySchema.parse({
-      query: url.searchParams.get("query") || "",
-      page: url.searchParams.get("page") || "1",
-      limit: url.searchParams.get("limit") || "10",
-    });
+    try {
+      const { query, page, limit } = querySchema.parse({
+        query: url.searchParams.get("query") || "",
+        page: url.searchParams.get("page") || "1",
+        limit: url.searchParams.get("limit") || "10",
+      });
 
-    const skip = (page - 1) * limit;
-    const whereClause: Prisma.UniversityWhereInput = query
-      ? {
-          OR: [
-            { name: { contains: query, mode: "insensitive" } },
-            { location: { contains: query, mode: "insensitive" } },
-            { country: { contains: query, mode: "insensitive" } },
-            { slug: { contains: query, mode: "insensitive" } },
-          ],
-        }
-      : {};
+      console.log(`Pagination params: page=${page}, limit=${limit}, query="${query}"`)
 
-    console.log("Pagination where clause:", JSON.stringify(whereClause, null, 2));
+      const skip = (page - 1) * limit;
+      const whereClause: Prisma.UniversityWhereInput = query
+        ? {
+            OR: [
+              { name: { contains: query, mode: "insensitive" } },
+              { location: { contains: query, mode: "insensitive" } },
+              { country: { contains: query, mode: "insensitive" } },
+              { slug: { contains: query, mode: "insensitive" } },
+            ],
+          }
+        : {};
 
-    const [universities, total] = await Promise.all([
-      prisma.university.findMany({
-        where: whereClause,
-        include: includeClause, // Use consistent include
-        skip,
-        take: limit,
-        orderBy: { createdAt: "desc" },
-      }),
-      prisma.university.count({ where: whereClause }),
-    ]);
+      console.log("Pagination where clause:", JSON.stringify(whereClause, null, 2));
 
-    const pages = Math.ceil(total / limit);
+      const [universities, total] = await Promise.all([
+        prisma.university.findMany({
+          where: whereClause,
+          include: includeClause, // Use consistent include
+          skip,
+          take: limit,
+          orderBy: { createdAt: "desc" },
+        }),
+        prisma.university.count({ where: whereClause }),
+      ]);
 
-    if (page > pages && pages > 0) {
-      return NextResponse.json(
-        {
-          error: "Page number exceeds total pages",
-          pagination: { total, pages, page, limit },
-        },
-        { status: 400 }
-      );
-    }
+      const pages = Math.ceil(total / limit) || 1; // At least 1 page even if empty
 
-    console.log(`Found ${universities.length} universities with pagination`);
-    
-    // Log career outcomes for debugging
-    universities.forEach((uni, index) => {
-      console.log(`Paginated University ${index} (${uni.name}) career outcomes count:`, 
-        uni.careerOutcomes?.length || 0);
-      if (uni.careerOutcomes && uni.careerOutcomes.length > 0) {
-        console.log(`First career outcome data:`, JSON.stringify(uni.careerOutcomes[0], null, 2));
+      // Validate page number
+      if (page > pages && total > 0) {
+        return NextResponse.json(
+          {
+            error: "Page number exceeds total pages",
+            message: `Requested page ${page} but only ${pages} page(s) available`,
+            pagination: { total, pages, page, limit },
+          },
+          { status: 400 }
+        );
       }
-    });
 
-    return NextResponse.json({
-      universities,
-      pagination: { total, pages, page, limit },
-    });
+      console.log(`Found ${universities.length} universities (page ${page}/${pages}, total: ${total})`);
+      
+      // Log career outcomes for debugging
+      universities.forEach((uni, index) => {
+        console.log(`Paginated University ${index} (${uni.name}) career outcomes count:`, 
+          uni.careerOutcomes?.length || 0);
+        if (uni.careerOutcomes && uni.careerOutcomes.length > 0) {
+          console.log(`First career outcome data:`, JSON.stringify(uni.careerOutcomes[0], null, 2));
+        }
+      });
+
+      return NextResponse.json({
+        universities,
+        pagination: { 
+          total, 
+          pages, 
+          page, 
+          limit,
+          hasNextPage: page < pages,
+          hasPreviousPage: page > 1,
+        },
+      });
+    } catch (validationError) {
+      if (validationError instanceof z.ZodError) {
+        // Provide more helpful error messages
+        const limitError = validationError.errors.find(e => e.path.includes('limit'))
+        if (limitError) {
+          return NextResponse.json(
+            { 
+              error: "Invalid limit parameter",
+              message: `Limit must be between 1 and 100. Default is 10. You provided: ${url.searchParams.get("limit")}`,
+              details: validationError.errors 
+            }, 
+            { status: 400 }
+          );
+        }
+        return NextResponse.json(
+          { 
+            error: "Invalid query parameters", 
+            message: "Please check your query parameters. Page must be a positive integer, limit must be between 1 and 100.",
+            details: validationError.errors 
+          }, 
+          { status: 400 }
+        );
+      }
+      throw validationError;
+    }
   } catch (error) {
     console.error("[GET_UNIVERSITIES_ERROR]", error);
 
@@ -163,12 +200,14 @@ export async function POST(req: Request): Promise<NextResponse> {
     const body = await req.json()
 
     console.log("Received data:", JSON.stringify(body, null, 2))
+    console.log("Career outcome data in body:", (body as any).careerOutcomeData)
 
     if (!body || Object.keys(body).length === 0) {
       throw new Error("Request body is empty")
     }
 
     const careerOutcomeData = (body as any).careerOutcomeData
+    console.log("Extracted careerOutcomeData:", JSON.stringify(careerOutcomeData, null, 2))
 
     // Make sure UniversitySchema includes youtubeLink validation
     const validatedData = UniversitySchema.parse(body)
@@ -248,16 +287,37 @@ export async function POST(req: Request): Promise<NextResponse> {
            careerOutcomeData.courseTimelineData?.length > 0)) {
         
         console.log("Creating career outcome for new university...")
+        console.log("Career outcome data received:", JSON.stringify(careerOutcomeData, null, 2))
         
         // Determine the type based on what data is provided
+        // Priority: SALARY_CHART > EMPLOYMENT_RATE_METER > COURSE_TIMELINE
+        // This is because a single CareerOutcome can have all three types of data
         let outcomeType: 'SALARY_CHART' | 'EMPLOYMENT_RATE_METER' | 'COURSE_TIMELINE' = 'SALARY_CHART'
-        if (careerOutcomeData.employmentRateMeterData) {
-          outcomeType = 'EMPLOYMENT_RATE_METER'
-        } else if (careerOutcomeData.courseTimelineData?.length > 0) {
-          outcomeType = 'COURSE_TIMELINE'
-        } else if (careerOutcomeData.salaryChartData?.length > 0) {
+        
+        const hasValidSalaryData = careerOutcomeData.salaryChartData?.length > 0 && 
+          careerOutcomeData.salaryChartData.some((item: any) => 
+            item && item.sector && item.sector.trim() !== ''
+          )
+        const hasEmploymentData = careerOutcomeData.employmentRateMeterData && 
+          typeof careerOutcomeData.employmentRateMeterData.targetRate === 'number'
+        const hasTimelineData = careerOutcomeData.courseTimelineData?.length > 0 &&
+          careerOutcomeData.courseTimelineData.some((item: any) => 
+            item && item.course && item.course.trim() !== ''
+          )
+        
+        if (hasValidSalaryData) {
           outcomeType = 'SALARY_CHART'
+        } else if (hasEmploymentData) {
+          outcomeType = 'EMPLOYMENT_RATE_METER'
+        } else if (hasTimelineData) {
+          outcomeType = 'COURSE_TIMELINE'
         }
+        
+        console.log(`Determined outcome type: ${outcomeType}`, {
+          hasValidSalaryData,
+          hasEmploymentData,
+          hasTimelineData
+        })
 
         // Create the main CareerOutcome record
         const careerOutcome = await tx.careerOutcome.create({
@@ -330,6 +390,10 @@ export async function POST(req: Request): Promise<NextResponse> {
             console.log(`Created ${validTimelineData.length} course timeline data records`)
           }
         }
+        
+        console.log("✅ Career outcome created successfully with all data types")
+      } else {
+        console.log("⚠️ No career outcome data provided or all data arrays are empty")
       }
 
       // Return university with all relations

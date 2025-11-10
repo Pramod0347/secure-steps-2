@@ -170,7 +170,9 @@ export function UniversityForm() {
         return cleanedCourse
       })
 
-      const universityData = {
+     
+
+      const universityData: any = {
         name: currentUniversity.name,
         description: currentUniversity.description,
         location: currentUniversity.location,
@@ -187,8 +189,8 @@ export function UniversityForm() {
           ? { youtubeLink: currentUniversity.youtubeLink } 
           : {}),
       }
-
-      console.log("Submitting university data:", universityData)
+      
+  
 
       const response = await fetch("/api/universities", {
         method: "POST",
@@ -324,14 +326,18 @@ export function UniversityForm() {
       })
 
       // Extract career outcome data if available
+      console.log("=== CAREER OUTCOMES DEBUG (handleAddUniversity) ===")
+      console.log("Current university career outcomes:", JSON.stringify(currentUniversity.careerOutcomes, null, 2))
+      
       const careerOutcomeData = currentUniversity.careerOutcomes?.[0]?.data || null
-      const hasCareerOutcomeData = careerOutcomeData && (
-        (careerOutcomeData.salaryChartData && careerOutcomeData.salaryChartData.length > 0) ||
-        careerOutcomeData.employmentRateMeterData ||
-        (careerOutcomeData.courseTimelineData && careerOutcomeData.courseTimelineData.length > 0)
-      )
+      console.log("Extracted career outcome data:", JSON.stringify(careerOutcomeData, null, 2))
+      
+      // Always include careerOutcomeData if it exists, even if arrays are empty
+      const hasCareerOutcomeData = careerOutcomeData !== null && careerOutcomeData !== undefined
+      console.log("Has career outcome data (exists):", hasCareerOutcomeData)
+      console.log("=== END DEBUG ===")
 
-      const universityData = {
+      const universityData: any = {
         name: currentUniversity.name,
         description: currentUniversity.description,
         location: currentUniversity.location,
@@ -347,7 +353,14 @@ export function UniversityForm() {
         ...(currentUniversity.youtubeLink && currentUniversity.youtubeLink.trim() 
           ? { youtubeLink: currentUniversity.youtubeLink } 
           : {}),
-        ...(hasCareerOutcomeData ? { careerOutcomeData } : {}),
+      }
+      
+      // Always include careerOutcomeData if it exists
+      if (hasCareerOutcomeData && careerOutcomeData) {
+        universityData.careerOutcomeData = careerOutcomeData
+        console.log("✅ Adding careerOutcomeData to payload (handleAddUniversity)")
+      } else {
+        console.log("❌ NOT adding careerOutcomeData to payload - data is null/undefined (handleAddUniversity)")
       }
 
       console.log("Submitting university data:", universityData)
@@ -576,10 +589,16 @@ export function UniversityForm() {
         <div className="space-y-6">
           <CareerOutcomesForm
             careerOutcomeData={currentUniversity.careerOutcomes?.[0]?.data ?? null}
-            onChange={(updatedData) => handleCareerOutcomesChange([{
-              ...currentUniversity.careerOutcomes?.[0],
-              data: updatedData
-            }])}
+            onChange={(updatedData) => {
+              console.log("Career outcomes form onChange called with:", updatedData)
+              const existingCareerOutcome = currentUniversity.careerOutcomes?.[0]
+              handleCareerOutcomesChange([{
+                id: existingCareerOutcome?.id || "",
+                universityId: existingCareerOutcome?.universityId || "",
+                type: existingCareerOutcome?.type || "SALARY_CHART",
+                data: updatedData
+              }])
+            }}
             disabled={isSubmitting}
           />
         </div>
