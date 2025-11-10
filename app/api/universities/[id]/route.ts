@@ -607,6 +607,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     }
 
     // Delete all related data in the correct order
+    // Increase timeout to 30 seconds to handle large datasets
     await prisma.$transaction(async (tx) => {
       // Delete CourseTimelineData first
       await tx.courseTimelineData.deleteMany({
@@ -654,6 +655,9 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
       await tx.university.delete({
         where: { id },
       });
+    }, {
+      maxWait: 30000,
+      timeout: 30000,
     });
 
     return NextResponse.json({ message: "University deleted successfully" })

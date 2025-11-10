@@ -698,14 +698,58 @@ export async function DELETE(req: Request): Promise<NextResponse> {
       return NextResponse.json({ error: "University ID is required" }, { status: 400 })
     }
 
-    // Delete all related courses first
-    await prisma.course.deleteMany({
-      where: { universityId: id },
-    })
+    // Delete all related data in the correct order using a transaction
+    // Increase timeout to 30 seconds to handle large datasets
+    await prisma.$transaction(async (tx) => {
+      // Delete CourseTimelineData first
+      await tx.courseTimelineData.deleteMany({
+        where: {
+          careerOutcome: {
+            universityId: id
+          }
+        }
+      })
 
-    // Then delete the university
-    await prisma.university.delete({
-      where: { id },
+      // Delete SalaryChartData
+      await tx.salaryChartData.deleteMany({
+        where: {
+          careerOutcome: {
+            universityId: id
+          }
+        }
+      })
+
+      // Delete EmploymentRateMeterData
+      await tx.employmentRateMeterData.deleteMany({
+        where: {
+          careerOutcome: {
+            universityId: id
+          }
+        }
+      })
+
+      // Delete CareerOutcome records
+      await tx.careerOutcome.deleteMany({
+        where: { universityId: id },
+      })
+
+      // Delete FAQs
+      await tx.faq.deleteMany({
+        where: { universityId: id },
+      })
+
+      // Delete courses
+      await tx.course.deleteMany({
+        where: { universityId: id },
+      })
+
+      // Finally delete the university
+      await tx.university.delete({
+        where: { id },
+      })
+    }, {
+      maxWait: 30000,
+      timeout: 30000,
     })
 
     return NextResponse.json({ message: "University deleted successfully" })
