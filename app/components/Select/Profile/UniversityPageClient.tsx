@@ -115,7 +115,9 @@ export default function UniversityPageClient({ slug }: UniversityPageClientProps
 
           if (response.ok) {
             const data = await response.json()
-            console.log("✅ API Response received:", data)
+            console.log("✅ API Response received:", JSON.stringify(data, null, 2))
+            console.log("✅ API Response careerOutcomes:", data.careerOutcomes)
+            console.log("✅ API Response careerOutcomes length:", data.careerOutcomes?.length)
 
             // Handle different response formats
             let university: UniversityInterface | null = null
@@ -130,6 +132,10 @@ export default function UniversityPageClient({ slug }: UniversityPageClientProps
 
             if (university && university.id) {
               console.log("✅ Successfully parsed university:", university.name)
+              console.log("✅ Parsed university careerOutcomes:", university.careerOutcomes)
+              console.log("✅ Parsed university careerOutcomes length:", university.careerOutcomes?.length)
+              console.log("✅ Parsed university careerOutcomes type:", typeof university.careerOutcomes)
+              console.log("✅ Parsed university careerOutcomes isArray:", Array.isArray(university.careerOutcomes))
               return university
             }
           } else if (response.status === 404) {
@@ -271,6 +277,38 @@ export default function UniversityPageClient({ slug }: UniversityPageClientProps
   console.log("✅ Rendering university page for:", university.name)
   console.log("✅ Rendering university Data", university)
   console.log("✅ careerOutcomes", university.careerOutcomes)
+  console.log("✅ careerOutcomes type:", typeof university.careerOutcomes)
+  console.log("✅ careerOutcomes isArray:", Array.isArray(university.careerOutcomes))
+  console.log("✅ careerOutcomes length:", university.careerOutcomes?.length)
+  
+  // Extract career outcome data for debugging
+  console.log("🔍 Raw university.careerOutcomes:", university.careerOutcomes)
+  console.log("🔍 university.careerOutcomes type:", typeof university.careerOutcomes)
+  console.log("🔍 university.careerOutcomes isArray:", Array.isArray(university.careerOutcomes))
+  console.log("🔍 university.careerOutcomes length:", university.careerOutcomes?.length)
+  
+  const careerOutcomeData = university.careerOutcomes && 
+    Array.isArray(university.careerOutcomes) &&
+    university.careerOutcomes.length > 0 
+      ? university.careerOutcomes[0] 
+      : null
+      
+  console.log("✅ Extracted careerOutcomeData:", JSON.stringify(careerOutcomeData, null, 2))
+  console.log("✅ careerOutcomeData type:", typeof careerOutcomeData)
+  console.log("✅ careerOutcomeData is null:", careerOutcomeData === null)
+  console.log("✅ careerOutcomeData keys:", careerOutcomeData ? Object.keys(careerOutcomeData) : [])
+  
+  if (careerOutcomeData) {
+    console.log("✅ Career outcome has salaryChartData:", !!careerOutcomeData.salaryChartData, careerOutcomeData.salaryChartData?.length)
+    console.log("✅ Career outcome has employmentRateMeter:", !!careerOutcomeData.employmentRateMeter)
+    console.log("✅ Career outcome has courseTimelineData:", !!careerOutcomeData.courseTimelineData, careerOutcomeData.courseTimelineData?.length)
+  } else {
+    console.log("❌ No career outcome data found for university")
+    console.log("❌ This means either:")
+    console.log("   - university.careerOutcomes is null/undefined")
+    console.log("   - university.careerOutcomes is not an array")
+    console.log("   - university.careerOutcomes is an empty array")
+  }
 
   // Show university details
   return (
@@ -285,11 +323,15 @@ export default function UniversityPageClient({ slug }: UniversityPageClientProps
         </Suspense>
 
         <Suspense fallback={<div className="w-full h-64 animate-pulse bg-gray-200 rounded-lg"></div>}>
-          <UniversityCareerOutcomes 
-            universityData={university.careerOutcomes && university.careerOutcomes.length > 0 
-              ? university.careerOutcomes[0] 
-              : null} 
-          />
+          {careerOutcomeData ? (
+            <UniversityCareerOutcomes 
+              universityData={careerOutcomeData} 
+            />
+          ) : (
+            <UniversityCareerOutcomes 
+              universityData={null} 
+            />
+          )}
         </Suspense>
 
         <Suspense fallback={<div className="w-full h-96 animate-pulse bg-gray-200 rounded-lg"></div>}>

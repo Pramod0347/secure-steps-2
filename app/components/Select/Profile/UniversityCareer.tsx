@@ -82,6 +82,8 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
   // Transform server data to component format - FIXED VERSION
   const transformActualDataToDisplayData = (data: ActualCareerOutcomeData | ActualCareerOutcomeData[]): CareerOutcomeItem[] => {
     console.log("🔄 Starting data transformation");
+    console.log("🔄 Input data type:", typeof data);
+    console.log("🔄 Input data isArray:", Array.isArray(data));
     console.log("🔄 Input data:", JSON.stringify(data, null, 2));
 
     const transformedItems: CareerOutcomeItem[] = [];
@@ -97,46 +99,75 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
 
     dataArray.forEach((outcome, index) => {
       console.log(`🔍 Processing outcome ${index}:`, outcome);
-      console.log(`🔍 Outcome ID: ${outcome.id}`);
-      console.log(`🔍 Outcome Type: ${outcome.type}`);
-      console.log(`🔍 University ID: ${outcome.universityId}`);
+      console.log(`🔍 Outcome ID: ${outcome?.id}`);
+      console.log(`🔍 Outcome Type: ${outcome?.type}`);
+      console.log(`🔍 University ID: ${outcome?.universityId}`);
+      console.log(`🔍 Outcome keys:`, outcome ? Object.keys(outcome) : []);
+      console.log(`🔍 Has salaryChartData:`, !!outcome?.salaryChartData, outcome?.salaryChartData?.length);
+      console.log(`🔍 Has employmentRateMeter:`, !!outcome?.employmentRateMeter);
+      console.log(`🔍 Has courseTimelineData:`, !!outcome?.courseTimelineData, outcome?.courseTimelineData?.length);
+      
+      // Safety check
+      if (!outcome) {
+        console.log(`⚠️ Skipping null/undefined outcome at index ${index}`);
+        return;
+      }
+      
+      // More lenient check - allow outcomes without id if they have data
+      if (!outcome.id && !outcome.salaryChartData && !outcome.employmentRateMeter && !outcome.courseTimelineData) {
+        console.log(`⚠️ Skipping outcome at index ${index} - no id and no data`);
+        return;
+      }
 
       // Add Salary Chart if data exists
-      if (outcome.salaryChartData && outcome.salaryChartData.length > 0) {
+      if (outcome.salaryChartData && Array.isArray(outcome.salaryChartData) && outcome.salaryChartData.length > 0) {
         console.log("💰 Processing salary chart data:", outcome.salaryChartData);
-        const salaryData = outcome.salaryChartData;
+        // Filter out invalid entries
+        const salaryData = outcome.salaryChartData.filter(item => 
+          item && 
+          typeof item.sector === 'string' && 
+          item.sector.trim() !== '' &&
+          typeof item.min === 'number' &&
+          typeof item.max === 'number'
+        );
+        
+        if (salaryData.length > 0) {
+          const avgSalary = salaryData.reduce((acc, item) => {
+            console.log(`💰 Processing salary item: sector=${item.sector}, min=${item.min}, max=${item.max}`);
+            const avg = (item.min + item.max) / 2;
+            const scaledAvg = avg * 1000; // Scale up the values
+            console.log(`💰 Calculated average for ${item.sector}: ${avg} -> scaled: ${scaledAvg}`);
+            return acc + scaledAvg;
+          }, 0) / salaryData.length;
 
-        const avgSalary = salaryData.reduce((acc, item) => {
-          console.log(`💰 Processing salary item: sector=${item.sector}, min=${item.min}, max=${item.max}`);
-          const avg = (item.min + item.max) / 2;
-          const scaledAvg = avg * 1000; // Scale up the values
-          console.log(`💰 Calculated average for ${item.sector}: ${avg} -> scaled: ${scaledAvg}`);
-          return acc + scaledAvg;
-        }, 0) / salaryData.length;
+          console.log("💰 Final calculated average salary:", avgSalary);
 
-        console.log("💰 Final calculated average salary:", avgSalary);
+          const salaryItem: CareerOutcomeItem = {
+            id: 1,
+            iconName: 'Briefcase',
+            title: "Roles and Paycheck",
+            value: `$${Math.round(avgSalary).toLocaleString()}`,
+            description: "Median starting salary for graduates",
+            details: "Competitive starting salaries across different sectors and roles.",
+            color: "from-orange-400 to-red-500",
+            bgColor: "bg-gradient-to-br from-orange-50 to-red-50",
+            component: 'AnimatedSalaryChart',
+            rawData: salaryData
+          };
 
-        const salaryItem: CareerOutcomeItem = {
-          id: 1,
-          iconName: 'Briefcase',
-          title: "Roles and Paycheck",
-          value: `$${Math.round(avgSalary).toLocaleString()}`,
-          description: "Median starting salary for graduates",
-          details: "Competitive starting salaries across different sectors and roles.",
-          color: "from-orange-400 to-red-500",
-          bgColor: "bg-gradient-to-br from-orange-50 to-red-50",
-          component: 'AnimatedSalaryChart',
-          rawData: salaryData
-        };
-
-        console.log("💰 Created salary item:", salaryItem);
-        transformedItems.push(salaryItem);
+          console.log("💰 Created salary item:", salaryItem);
+          transformedItems.push(salaryItem);
+        } else {
+          console.log("💰 No valid salary chart data after filtering");
+        }
       } else {
         console.log("💰 No salary chart data found");
       }
 
       // Add Employment Rate if data exists
-      if (outcome.employmentRateMeter) {
+      if (outcome.employmentRateMeter && 
+          typeof outcome.employmentRateMeter.targetRate === 'number' &&
+          typeof outcome.employmentRateMeter.size === 'number') {
         console.log("👥 Processing employment rate data:", outcome.employmentRateMeter);
         const employmentData = outcome.employmentRateMeter;
 
@@ -160,24 +191,37 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
       }
 
       // Add Course Timeline if data exists
-      if (outcome.courseTimelineData && outcome.courseTimelineData.length > 0) {
+      if (outcome.courseTimelineData && 
+          Array.isArray(outcome.courseTimelineData) && 
+          outcome.courseTimelineData.length > 0) {
         console.log("📚 Processing course timeline data:", outcome.courseTimelineData);
+        
+        // Filter out invalid entries
+        const validTimelineData = outcome.courseTimelineData.filter(item => 
+          item && 
+          typeof item.course === 'string' && 
+          item.course.trim() !== ''
+        );
+        
+        if (validTimelineData.length === 0) {
+          console.log("📚 No valid course timeline data after filtering");
+        } else {
+          const courseItem: CareerOutcomeItem = {
+            id: 3,
+            iconName: 'TrendingUp',
+            title: "Courses in Demand",
+            value: `${validTimelineData.length} Courses`,
+            description: "Popular courses with strong market demand",
+            details: "Our courses are designed to meet current industry needs and future market trends.",
+            color: "from-yellow-400 to-orange-500",
+            bgColor: "bg-gradient-to-br from-yellow-50 to-orange-50",
+            component: 'CourseTimeline',
+            rawData: validTimelineData
+          };
 
-        const courseItem: CareerOutcomeItem = {
-          id: 3,
-          iconName: 'TrendingUp',
-          title: "Courses in Demand",
-          value: `${outcome.courseTimelineData.length} Courses`,
-          description: "Popular courses with strong market demand",
-          details: "Our courses are designed to meet current industry needs and future market trends.",
-          color: "from-yellow-400 to-orange-500",
-          bgColor: "bg-gradient-to-br from-yellow-50 to-orange-50",
-          component: 'CourseTimeline',
-          rawData: outcome.courseTimelineData
-        };
-
-        console.log("📚 Created course item:", courseItem);
-        transformedItems.push(courseItem);
+          console.log("📚 Created course item:", courseItem);
+          transformedItems.push(courseItem);
+        }
       } else {
         console.log("📚 No course timeline data found");
       }
@@ -231,9 +275,31 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
   const displayData: CareerOutcomeItem[] = React.useMemo(() => {
     console.log("🔄 useMemo: Processing display data");
     console.log("🔄 universityData in useMemo:", universityData);
+    console.log("🔄 universityData type:", typeof universityData);
+    console.log("🔄 universityData is null:", universityData === null);
+    console.log("🔄 universityData is undefined:", universityData === undefined);
+    console.log("🔄 universityData keys:", universityData ? Object.keys(universityData) : []);
 
-    // Check if we have valid server data (both object and array)
-    if (universityData) {
+    // Check if we have valid server data - must be truthy AND have actual content
+    // First check if it's null or undefined
+    if (universityData === null || universityData === undefined) {
+      console.log("❌ universityData is null or undefined");
+      return [];
+    }
+    
+    // Check if it's an empty object
+    if (typeof universityData === 'object' && !Array.isArray(universityData) && Object.keys(universityData).length === 0) {
+      console.log("❌ universityData is an empty object");
+      return [];
+    }
+    
+    // Check if we have valid server data with actual content
+    if (typeof universityData === 'object' && 
+        (universityData.id || 
+         universityData.salaryChartData || 
+         universityData.employmentRateMeter || 
+         universityData.courseTimelineData ||
+         Array.isArray(universityData))) {
       console.log("✅ Server data is valid, transforming...");
       const transformed = transformActualDataToDisplayData(universityData);
       console.log("✅ Transformed data:", transformed);
@@ -247,7 +313,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
       }
     }
 
-    console.log("❌ No valid server data available");
+    console.log("❌ No valid server data available - universityData is:", universityData);
     return [];
   }, [universityData]);
 
@@ -256,18 +322,36 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
 
   // If no data at all, don't render
   if (!displayData || displayData.length === 0) {
+    console.log("❌ No display data - showing fallback message");
+    console.log("❌ universityData received:", JSON.stringify(universityData, null, 2));
+    console.log("❌ displayData:", displayData);
    
     return (
       <div className="relative w-screen max-w-6xl mx-auto p-8 rounded-3xl">
         <div className="text-center">
           <h2 className="text-xl md:text-3xl font-bold mb-4 md:mb-8 text-center">{title}</h2>
           <p className="text-gray-500">No career outcome data available</p>
-          {/* <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-            <p className="text-sm text-gray-600">Debug Info:</p>
-            <pre className="text-xs mt-2 overflow-auto">
-              {JSON.stringify({ universityData, displayDataLength: displayData?.length }, null, 2)}
+          <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-2xl mx-auto">
+            <p className="text-sm text-gray-600 font-semibold mb-2">Debug Info:</p>
+            <pre className="text-xs mt-2 overflow-auto text-left bg-white p-2 rounded border">
+              {JSON.stringify({ 
+                hasUniversityData: !!universityData,
+                universityDataType: typeof universityData,
+                universityDataIsArray: Array.isArray(universityData),
+                universityDataKeys: universityData ? Object.keys(universityData) : [],
+                displayDataLength: displayData?.length,
+                universityDataSample: universityData ? {
+                  id: universityData.id,
+                  type: universityData.type,
+                  hasSalaryChartData: !!universityData.salaryChartData,
+                  salaryChartDataLength: universityData.salaryChartData?.length,
+                  hasEmploymentRateMeter: !!universityData.employmentRateMeter,
+                  hasCourseTimelineData: !!universityData.courseTimelineData,
+                  courseTimelineDataLength: universityData.courseTimelineData?.length,
+                } : null
+              }, null, 2)}
             </pre>
-          </div> */}
+          </div>
         </div>
       </div>
     );

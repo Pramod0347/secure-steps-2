@@ -20,7 +20,7 @@ const Page = () => {
         setIsLoading(true)
         const NextUrl = process.env.NEXTAUTH_URL || window.location.origin
         const url = new URL(`${NextUrl}/api/universities`)
-        url.searchParams.append("limit", "1000") // Fetch a larger batch initially
+        url.searchParams.append("limit", "10") // Fetch a larger batch initially
 
         const response = await fetch(url.toString())
         if (!response.ok) {

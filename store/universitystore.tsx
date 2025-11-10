@@ -460,7 +460,10 @@ export const useUniversityStore = create<UniversityState>()(
         setUniversityDetails: (university) =>
           set((state) => {
             console.log("💾 CACHING UNIVERSITY DETAILS:", university.name)
+            console.log("💾 University careerOutcomes being cached:", university.careerOutcomes)
+            console.log("💾 University careerOutcomes length:", university.careerOutcomes?.length)
             state.universityDetails[university.id] = university
+            console.log("💾 Cached university careerOutcomes:", state.universityDetails[university.id].careerOutcomes)
           }),
 
         // IMPROVED: Main fetch function with better loading state management
@@ -684,6 +687,10 @@ export const useUniversityStore = create<UniversityState>()(
 
                   if (university && university.id) {
                     console.log("✅ Successfully fetched university:", university.name)
+                    console.log("✅ University careerOutcomes in store:", university.careerOutcomes)
+                    console.log("✅ University careerOutcomes length:", university.careerOutcomes?.length)
+                    console.log("✅ University careerOutcomes type:", typeof university.careerOutcomes)
+                    console.log("✅ University careerOutcomes isArray:", Array.isArray(university.careerOutcomes))
                     state.setUniversityDetails(university)
                     return university
                   }
