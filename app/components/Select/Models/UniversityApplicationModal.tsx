@@ -263,7 +263,7 @@ const UniversityApplicationModal = ({
                                         htmlFor="file-upload"
                                         className={`cursor-pointer px-4 py-2 rounded-[6px] border border-gray-300 hover:bg-gray-50 transition-colors ${!documentName.trim() ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     >
-                                        Upload Document here
+                                        Upload Document here ...
                                     </label>
                                 </div>
                             </div>
