@@ -85,7 +85,7 @@ export function UniversityForm() {
 
       const formData = new FormData()
       formData.append("file", file)
-      formData.append("type", type)
+      formData.append("type", "image")
 
       const response = await fetch("/api/upload", {
         method: "POST",
@@ -152,9 +152,40 @@ export function UniversityForm() {
         throw new Error("Please add at least one course")
       }
 
+      const cleanedCourses = (currentUniversity.courses || []).map((course) => {
+        const cleanedCourse: any = {
+          name: course.name,
+          description: course.description || undefined,
+          fees: course.fees,
+          duration: course.duration,
+          degreeType: course.degreeType,
+          ieltsScore: course.ieltsScore,
+          ranking: course.ranking,
+          intake: course.intake || [],
+          // Only include websiteLink if it's a non-empty string
+          ...(course.websiteLink && course.websiteLink.trim() ? { websiteLink: course.websiteLink } : {}),
+          // Only include image if it exists
+          ...(course.image ? { image: course.image } : {}),
+        }
+        return cleanedCourse
+      })
+
       const universityData = {
-        ...currentUniversity,
+        name: currentUniversity.name,
+        description: currentUniversity.description,
+        location: currentUniversity.location,
+        country: currentUniversity.country,
+        website: currentUniversity.website,
         established: new Date(currentUniversity.established, 0).toISOString(),
+        banner: currentUniversity.banner,
+        logoUrl: currentUniversity.logoUrl || undefined, // Convert null to undefined
+        imageUrls: currentUniversity.imageUrls || [],
+        facilities: currentUniversity.facilities || [],
+        courses: cleanedCourses,
+        // Only include youtubeLink if it has a value
+        ...(currentUniversity.youtubeLink && currentUniversity.youtubeLink.trim() 
+          ? { youtubeLink: currentUniversity.youtubeLink } 
+          : {}),
       }
 
       console.log("Submitting university data:", universityData)
@@ -167,7 +198,10 @@ export function UniversityForm() {
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.message || "Failed to create university")
+        // Show detailed error message including validation details
+        const errorMessage = error.message || error.error || "Failed to create university"
+        const errorDetails = error.details ? `\nDetails: ${JSON.stringify(error.details, null, 2)}` : ""
+        throw new Error(`${errorMessage}${errorDetails}`)
       }
 
       const newUniversity = await response.json()
@@ -249,12 +283,94 @@ export function UniversityForm() {
     }
   }
 
-  const handleAddUniversity = () => {
-    const newUniversity = { ...currentUniversity, id: Date.now().toString() }
-    setUniversities((prev) => [...prev, newUniversity])
-    setCurrentUniversity(initialUniversityState)
-    setHasAnyCourses(false)
-    toast.success("University added to the list")
+  const handleAddUniversity = async () => {
+    // Validate before submitting
+    if (!currentUniversity.banner) {
+      toast.error("Please upload a banner image")
+      return
+    }
+
+    if (!currentUniversity.logoUrl) {
+      toast.error("Please upload a logo image")
+      return
+    }
+
+    if (currentUniversity.courses.length === 0) {
+      toast.error("Please add at least one course")
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      // Clean and prepare data for submission
+      // Clean courses: remove id and handle empty websiteLink
+      const cleanedCourses = (currentUniversity.courses || []).map((course) => {
+        const cleanedCourse: any = {
+          name: course.name,
+          description: course.description || undefined,
+          fees: course.fees,
+          duration: course.duration,
+          degreeType: course.degreeType,
+          ieltsScore: course.ieltsScore,
+          ranking: course.ranking,
+          intake: course.intake || [],
+          // Only include websiteLink if it's a non-empty string
+          ...(course.websiteLink && course.websiteLink.trim() ? { websiteLink: course.websiteLink } : {}),
+          // Only include image if it exists
+          ...(course.image ? { image: course.image } : {}),
+        }
+        return cleanedCourse
+      })
+
+      const universityData = {
+        name: currentUniversity.name,
+        description: currentUniversity.description,
+        location: currentUniversity.location,
+        country: currentUniversity.country,
+        website: currentUniversity.website,
+        established: new Date(currentUniversity.established, 0).toISOString(),
+        banner: currentUniversity.banner,
+        logoUrl: currentUniversity.logoUrl || undefined, // Convert null to undefined
+        imageUrls: currentUniversity.imageUrls || [],
+        facilities: currentUniversity.facilities || [],
+        courses: cleanedCourses,
+        // Only include youtubeLink if it has a value
+        ...(currentUniversity.youtubeLink && currentUniversity.youtubeLink.trim() 
+          ? { youtubeLink: currentUniversity.youtubeLink } 
+          : {}),
+      }
+
+      console.log("Submitting university data:", universityData)
+
+      const response = await fetch("/api/universities", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(universityData),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        // Show detailed error message including validation details
+        const errorMessage = error.message || error.error || "Failed to create university"
+        const errorDetails = error.details ? `\nDetails: ${JSON.stringify(error.details, null, 2)}` : ""
+        throw new Error(`${errorMessage}${errorDetails}`)
+      }
+
+      const newUniversity = await response.json()
+      console.log("University created:", newUniversity)
+
+      setUniversities((prev) => [...prev, newUniversity])
+      toast.success("University created successfully!")
+
+      setCurrentUniversity(initialUniversityState)
+      setHasAnyCourses(false)
+    } catch (error) {
+      console.error("Error:", error)
+      toast.error(error instanceof Error ? error.message : "Failed to create university")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleSaveDraft = () => {
@@ -498,9 +614,23 @@ export function UniversityForm() {
 
         {/* Submit Buttons */}
         <div className="flex gap-4 pt-6 border-t">
-          <Button type="button" onClick={handleAddUniversity} className="flex-1 bg-[#da212f] hover:bg-[#da212f]/90">
-            <Plus className="w-4 h-4 mr-2" />
-            Add University
+          <Button 
+            type="button" 
+            onClick={handleAddUniversity} 
+            disabled={isSubmitting}
+            className="flex-1 bg-[#da212f] hover:bg-[#da212f]/90"
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Creating University...
+              </>
+            ) : (
+              <>
+                <Plus className="w-4 h-4 mr-2" />
+                Add University
+              </>
+            )}
           </Button>
           <Button type="submit" disabled={isSubmitting} className="flex-1 bg-[#da212f] hover:bg-[#da212f]/90">
             {isSubmitting ? (
@@ -526,9 +656,9 @@ export function UniversityForm() {
                 {university.location}, {university.country}
               </p>
               <div className="flex gap-4 text-sm text-gray-500 mt-2">
-                <span>Courses: {university.courses.length}</span>
-                <span>FAQs: {university.faqs.length}</span>
-                <span>Career Outcomes: {university.careerOutcomes.length}</span>
+                <span>Courses: {university.courses?.length || 0}</span>
+                <span>FAQs: {university.faqs?.length || 0}</span>
+                <span>Career Outcomes: {university?.careerOutcomes?.length} || 0</span>
               </div>
             </div>
           ))}

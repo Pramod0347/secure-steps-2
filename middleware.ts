@@ -202,10 +202,20 @@ async function validateSession(req: NextRequest) {
 
 // IMPROVED: Check if this is a protected API route with better pattern matching
 function isProtectedApiRoute(pathname: string): boolean {
+  // Exclude public endpoints that should be accessible to all authenticated users
+  const publicEndpoints = [
+    '/api/universities/apply', // Students can apply to universities
+    '/api/universities/upload', // File upload endpoint
+  ];
+  
+  if (publicEndpoints.some(endpoint => pathname.startsWith(endpoint))) {
+    return false;
+  }
+  
   // University API route patterns - more comprehensive matching
   const universityApiPatterns = [
     /^\/api\/universities$/, // Base universities endpoint
-    /^\/api\/universities\/[^/]+$/, // Single university endpoint
+    /^\/api\/universities\/[^/]+$/, // Single university endpoint (but not /apply)
     /^\/api\/universities\/[^/]+\/courses$/, // University courses endpoint
     /^\/api\/universities\/[^/]+\/courses\/[^/]+$/, // Individual course endpoint
   ];
