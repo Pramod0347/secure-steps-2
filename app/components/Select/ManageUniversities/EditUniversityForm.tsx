@@ -40,6 +40,7 @@ export function EditUniversityForm({ university, onUniversityUpdated, setIsEditF
   const [coursesPerPage] = useState(20)
   const [loadingCourses, setLoadingCourses] = useState<Record<string, boolean>>({})
   const [establishedYear, setEstablishedYear] = useState<string>("")
+  const [isLoadingUniversity, setIsLoadingUniversity] = useState(false)
 
   const openCourseEditModal = useCallback((course: Course | null) => {
     setEditingCourse(course)
@@ -163,24 +164,24 @@ export function EditUniversityForm({ university, onUniversityUpdated, setIsEditF
   );
 
 
-  const initializeFromUniversity = useCallback(() => {
+  const initializeFromUniversity = useCallback((universityData: UniversityInterface) => {
     // Convert Date object to year for the form
     let year = ""
        
-    if (university.established instanceof Date) {
-      year = university.established.getFullYear().toString()
-    } else if (typeof university.established === "string") {
-      const date = new Date(university.established)
+    if (universityData.established instanceof Date) {
+      year = universityData.established.getFullYear().toString()
+    } else if (typeof universityData.established === "string") {
+      const date = new Date(universityData.established)
       if (!isNaN(date.getTime())) {
         year = date.getFullYear().toString()
       } else {
-        const parsedYear = Number.parseInt(university.established, 10)
+        const parsedYear = Number.parseInt(universityData.established, 10)
         if (!isNaN(parsedYear)) {
           year = parsedYear.toString()
         }
       }
-    } else if (typeof university.established === "number") {
-      year = university.established
+    } else if (typeof universityData.established === "number") {
+      year = universityData.established.toString()
     }
        
     if (!year) {
@@ -192,23 +193,32 @@ export function EditUniversityForm({ university, onUniversityUpdated, setIsEditF
     // Convert the existing careerOutcomes array to the new single CareerOutcomeData structure
     let careerOutcomeData: CareerOutcomeData | null = null
     
-    if (university.careerOutcomes && university.careerOutcomes.length > 0) {
+    if (universityData.careerOutcomes && universityData.careerOutcomes.length > 0) {
       // Take the first career outcome (there should only be one per university)
-      const firstOutcome:any = university.careerOutcomes[0]
+      const firstOutcome: any = universityData.careerOutcomes[0]
+      
+      console.log("Converting career outcome:", firstOutcome)
+      console.log("Salary chart data:", firstOutcome.salaryChartData)
+      console.log("Employment rate meter:", firstOutcome.employmentRateMeter)
+      console.log("Course timeline data:", firstOutcome.courseTimelineData)
       
       careerOutcomeData = {
-        salaryChartData: firstOutcome.salaryChartData || [],
+        salaryChartData: Array.isArray(firstOutcome.salaryChartData) ? firstOutcome.salaryChartData : [],
         employmentRateMeterData: firstOutcome.employmentRateMeter || null,
-        courseTimelineData: firstOutcome.courseTimelineData || []
+        courseTimelineData: Array.isArray(firstOutcome.courseTimelineData) ? firstOutcome.courseTimelineData : []
       }
+      
+      console.log("Converted career outcome data:", careerOutcomeData)
+    } else {
+      console.log("No career outcomes found in university data")
     }
        
     const initializedUniversity = {
-      ...university,
-      established: university.established,
+      ...universityData,
+      established: universityData.established,
       careerOutcomeData, // New single career outcome data structure
-      faqs: Array.isArray(university.faqs) && university.faqs.length > 0
-        ? university.faqs.map((faq: any) => ({
+      faqs: Array.isArray(universityData.faqs) && universityData.faqs.length > 0
+        ? universityData.faqs.map((faq: any) => ({
             ...faq,
             id: faq.id ? String(faq.id) : undefined,
           }))
@@ -218,7 +228,7 @@ export function EditUniversityForm({ university, onUniversityUpdated, setIsEditF
     console.log("Initialized university with career outcome data:", initializedUniversity.careerOutcomeData)
        
     setCurrentUniversity(initializedUniversity)
-  }, [university])
+  }, [])
 
 
 // 3. Replace handleCareerOutcomesChange with handleCareerOutcomeDataChange
@@ -232,92 +242,108 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
 }, [])
 
 
-useEffect(() => {
-  const storedData = localStorage.getItem(`${FORM_STORAGE_KEY}_${university.id}`)
-  if (storedData) {
-    try {
-      const parsedData = JSON.parse(storedData)
-
-      // Convert stored careerOutcomes array back to single careerOutcomeData if needed
-      let careerOutcomeData = parsedData.careerOutcomeData
-
-      // If stored data still has the old careerOutcomes array format, convert it
-      if (!careerOutcomeData && parsedData.careerOutcomes && Array.isArray(parsedData.careerOutcomes) && parsedData.careerOutcomes.length > 0) {
-        const firstOutcome = parsedData.careerOutcomes[0]
-        careerOutcomeData = {
-          salaryChartData: firstOutcome.salaryChartData || [],
-          employmentRateMeterData: firstOutcome.employmentRateMeter || null,
-          courseTimelineData: firstOutcome.courseTimelineData || []
+  // Fetch university with all relations when component mounts
+  useEffect(() => {
+    const fetchUniversityData = async () => {
+      setIsLoadingUniversity(true)
+      try {
+        const response = await fetch(`/api/universities?id=${university.id}`)
+        if (!response.ok) {
+          throw new Error("Failed to fetch university data")
         }
-      }
-
-      // If still no careerOutcomeData, try to extract from university prop
-      if (!careerOutcomeData && university.careerOutcomes && university.careerOutcomes.length > 0) {
-        const firstOutcome:any = university.careerOutcomes[0]
-        careerOutcomeData = {
-          salaryChartData: firstOutcome.salaryChartData || [],
-          employmentRateMeterData: firstOutcome.employmentRateMeter || null,
-          courseTimelineData: firstOutcome.courseTimelineData || []
+        const fetchedUniversity = await response.json()
+        console.log("Fetched university with career outcomes:", fetchedUniversity)
+        console.log("Career outcomes:", fetchedUniversity.careerOutcomes)
+        
+        // Use fetched university data for initialization
+        const universityWithRelations = {
+          ...university,
+          ...fetchedUniversity,
+          careerOutcomes: fetchedUniversity.careerOutcomes || university.careerOutcomes,
+          faqs: fetchedUniversity.faqs || university.faqs,
+          courses: fetchedUniversity.courses || university.courses,
         }
+        
+        initializeFromUniversity(universityWithRelations)
+        setHasAnyCourses((fetchedUniversity.courses || university.courses).length > 0)
+      } catch (error) {
+        console.error("Error fetching university data:", error)
+        // Fallback to using the passed university prop
+        initializeFromUniversity(university)
+        setHasAnyCourses(university.courses.length > 0)
+      } finally {
+        setIsLoadingUniversity(false)
       }
+    }
 
-      const processedData = {
-        ...parsedData,
-        careerOutcomeData: careerOutcomeData || null,
-        faqs: Array.isArray(parsedData.faqs) && parsedData.faqs.length > 0
-          ? parsedData.faqs.map((faq: any) => ({
-              ...faq,
-              id: faq.id ? String(faq.id) : undefined,
-            }))
-          : Array.isArray(university.faqs) && university.faqs.length > 0
-            ? university.faqs.map((faq: any) => ({
+    const storedData = localStorage.getItem(`${FORM_STORAGE_KEY}_${university.id}`)
+    if (storedData) {
+      try {
+        const parsedData = JSON.parse(storedData)
+
+        // Convert stored careerOutcomes array back to single careerOutcomeData if needed
+        let careerOutcomeData = parsedData.careerOutcomeData
+
+        // If stored data still has the old careerOutcomes array format, convert it
+        if (!careerOutcomeData && parsedData.careerOutcomes && Array.isArray(parsedData.careerOutcomes) && parsedData.careerOutcomes.length > 0) {
+          const firstOutcome = parsedData.careerOutcomes[0]
+          careerOutcomeData = {
+            salaryChartData: Array.isArray(firstOutcome.salaryChartData) ? firstOutcome.salaryChartData : [],
+            employmentRateMeterData: firstOutcome.employmentRateMeter || null,
+            courseTimelineData: Array.isArray(firstOutcome.courseTimelineData) ? firstOutcome.courseTimelineData : []
+          }
+        }
+
+        const processedData = {
+          ...parsedData,
+          careerOutcomeData: careerOutcomeData || null,
+          faqs: Array.isArray(parsedData.faqs) && parsedData.faqs.length > 0
+            ? parsedData.faqs.map((faq: any) => ({
                 ...faq,
                 id: faq.id ? String(faq.id) : undefined,
               }))
             : [],
-      }
-
-      console.log("Processed stored data with career outcome data:", processedData.careerOutcomeData)
-
-      setCurrentUniversity(processedData)
-
-      // Set established year from stored data
-      if (processedData.established) {
-        let year = ""
-
-        if (
-          processedData.established instanceof Date ||
-          (typeof processedData.established === "string" && processedData.established.includes("-"))
-        ) {
-          const date = new Date(processedData.established)
-          if (!isNaN(date.getTime())) {
-            year = date.getFullYear().toString()
-          }
-        } else if (typeof processedData.established === "string" || typeof processedData.established === "number") {
-          const parsedYear = Number.parseInt(String(processedData.established), 10)
-          if (!isNaN(parsedYear)) {
-            year = parsedYear.toString()
-          }
         }
 
-        if (year) {
-          setEstablishedYear(year)
+        console.log("Processed stored data with career outcome data:", processedData.careerOutcomeData)
+
+        setCurrentUniversity(processedData)
+
+        // Set established year from stored data
+        if (processedData.established) {
+          let year = ""
+
+          if (
+            processedData.established instanceof Date ||
+            (typeof processedData.established === "string" && processedData.established.includes("-"))
+          ) {
+            const date = new Date(processedData.established)
+            if (!isNaN(date.getTime())) {
+              year = date.getFullYear().toString()
+            }
+          } else if (typeof processedData.established === "string" || typeof processedData.established === "number") {
+            const parsedYear = Number.parseInt(String(processedData.established), 10)
+            if (!isNaN(parsedYear)) {
+              year = parsedYear.toString()
+            }
+          }
+
+          if (year) {
+            setEstablishedYear(year)
+          } else {
+            fetchUniversityData()
+          }
         } else {
-          initializeFromUniversity()
+          fetchUniversityData()
         }
-      } else {
-        initializeFromUniversity()
+      } catch (error) {
+        console.error("Error parsing stored data:", error)
+        fetchUniversityData()
       }
-    } catch (error) {
-      console.error("Error parsing stored data:", error)
-      initializeFromUniversity()
+    } else {
+      fetchUniversityData()
     }
-  } else {
-    initializeFromUniversity()
-  }
-
-  setHasAnyCourses(university.courses.length > 0)
-}, [university, initializeFromUniversity])
+  }, [university.id, initializeFromUniversity])
 
 
   // Auto-save draft every 30 seconds
@@ -713,6 +739,19 @@ useEffect(() => {
       ...prev,
       faqs: fagsWithStringIds,
     }))
+  }
+
+  if (isLoadingUniversity) {
+    return (
+      <div className="max-w-5xl mx-auto p-4 md:p-6">
+        <div className="bg-white rounded-lg border shadow-md p-4 md:p-6 flex items-center justify-center min-h-[400px]">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-8 h-8 animate-spin text-[#3B367D]" />
+            <p className="text-gray-600">Loading university data...</p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

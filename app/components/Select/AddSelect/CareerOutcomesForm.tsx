@@ -59,17 +59,29 @@ export function CareerOutcomesForm({
   const [courseTimelineData, setCourseTimelineData] = useState<CourseTimelineData[]>([])
   const [isInitialized, setIsInitialized] = useState(false)
 
-  // Initialize state from props only once
+  // Initialize state from props - allow re-initialization when data changes
   useEffect(() => {
-    if (!isInitialized) {
-      console.log("Initializing CareerOutcomesForm with data:", careerOutcomeData)
-      
-      setSalaryChartData(careerOutcomeData?.salaryChartData || [])
-      setEmploymentRateMeterData(careerOutcomeData?.employmentRateMeterData || null)
-      setCourseTimelineData(careerOutcomeData?.courseTimelineData || [])
-      setIsInitialized(true)
+    console.log("CareerOutcomesForm: Received career outcome data:", careerOutcomeData)
+    
+    console.log("CareerOutcomesForm: Initializing with data:", {
+      salaryChartData: careerOutcomeData?.salaryChartData,
+      employmentRateMeterData: careerOutcomeData?.employmentRateMeterData,
+      courseTimelineData: careerOutcomeData?.courseTimelineData
+    })
+    
+    if (careerOutcomeData) {
+      setSalaryChartData(careerOutcomeData.salaryChartData || [])
+      setEmploymentRateMeterData(careerOutcomeData.employmentRateMeterData || null)
+      setCourseTimelineData(careerOutcomeData.courseTimelineData || [])
+    } else {
+      // Set defaults if no data provided
+      setSalaryChartData([])
+      setEmploymentRateMeterData(null)
+      setCourseTimelineData([])
     }
-  }, [careerOutcomeData, isInitialized])
+    
+    setIsInitialized(true)
+  }, [careerOutcomeData])
 
   // Memoized callback to prevent infinite loops
   const notifyParentOfChanges = useCallback((
