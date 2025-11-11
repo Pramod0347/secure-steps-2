@@ -412,9 +412,6 @@ export async function POST(req: Request): Promise<NextResponse> {
           },
         },
       })
-    }, {
-      maxWait: 30000,
-      timeout: 30000,
     })
 
     console.log("Created university:", JSON.stringify(university, null, 2))
@@ -700,64 +697,90 @@ export async function DELETE(req: Request): Promise<NextResponse> {
       return NextResponse.json({ error: "University ID is required" }, { status: 400 })
     }
 
-    // Delete all related data in the correct order
-    // Using sequential deletions outside transaction for better performance and to avoid timeout
-    // First, get all career outcome IDs to optimize deletions
-    const careerOutcomes = await prisma.careerOutcome.findMany({
-      where: { universityId: id },
-      select: { id: true },
-    })
-    const careerOutcomeIds = careerOutcomes.map(co => co.id)
-
-    // Delete related data in order (using individual operations for better error handling)
-    if (careerOutcomeIds.length > 0) {
-      // Delete CourseTimelineData first
-      await prisma.courseTimelineData.deleteMany({
-        where: {
-          careerOutcomeId: {
-            in: careerOutcomeIds
-          }
-        }
-      })
-
-      // Delete SalaryChartData
-      await prisma.salaryChartData.deleteMany({
-        where: {
-          careerOutcomeId: {
-            in: careerOutcomeIds
-          }
-        }
-      })
-
-      // Delete EmploymentRateMeterData
-      await prisma.employmentRateMeterData.deleteMany({
-        where: {
-          careerOutcomeId: {
-            in: careerOutcomeIds
-          }
-        }
-      })
-    }
-
-    // Delete CareerOutcome records
-    await prisma.careerOutcome.deleteMany({
-      where: { universityId: id },
-    })
-
-    // Delete FAQs
-    await prisma.faq.deleteMany({
-      where: { universityId: id },
-    })
-
-    // Delete courses
+    // Delete all related courses first
     await prisma.course.deleteMany({
       where: { universityId: id },
     })
 
-    // Finally delete the university
+    // Then delete the university
     await prisma.university.delete({
       where: { id },
     })
+
+    if (!university) {
+      return NextResponse.json({ error: "University not found" }, { status: 404 })
+    }
+
+    // Use transaction to delete all related records in correct order
+    await prisma.$transaction(
+      async (tx) => {
+        // 1. Get career outcomes and delete nested data first
+        const careerOutcomes = await tx.careerOutcome.findMany({
+          where: { universityId: id },
+          select: { id: true },
+        })
+        
+        const careerOutcomeIds = careerOutcomes.map((co) => co.id)
+        
+        if (careerOutcomeIds.length > 0) {
+          // Delete salary chart data
+          await tx.salaryChartData.deleteMany({
+            where: { careerOutcomeId: { in: careerOutcomeIds } },
+          })
+
+          // Delete employment rate meter data
+          await tx.employmentRateMeterData.deleteMany({
+            where: { careerOutcomeId: { in: careerOutcomeIds } },
+          })
+
+          // Delete course timeline data
+          await tx.courseTimelineData.deleteMany({
+            where: { careerOutcomeId: { in: careerOutcomeIds } },
+          })
+
+          // Delete career outcomes
+          await tx.careerOutcome.deleteMany({
+            where: { universityId: id },
+          })
+        }
+
+        // 2. Delete university applications
+        await tx.universityApplications.deleteMany({
+          where: { universityId: id },
+        })
+
+        // 3. Delete or update loans (set universityId to null)
+        await tx.loan.updateMany({
+          where: { universityId: id },
+          data: { universityId: null },
+        })
+
+        // 4. Update users (set universityId to null)
+        await tx.user.updateMany({
+          where: { universityId: id },
+          data: { universityId: null },
+        })
+
+        // 5. Delete courses (will cascade, but explicit for clarity)
+        await tx.course.deleteMany({
+          where: { universityId: id },
+        })
+
+        // 6. FAQs will cascade automatically, but delete explicitly for clarity
+        await tx.faq.deleteMany({
+          where: { universityId: id },
+        })
+
+        // 7. Finally delete the university
+        await tx.university.delete({
+          where: { id },
+        })
+      },
+      {
+        maxWait: 30000,
+        timeout: 30000,
+      }
+    )
 
     return NextResponse.json({ message: "University deleted successfully" })
   } catch (error) {
