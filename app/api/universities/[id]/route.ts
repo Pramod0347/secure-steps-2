@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/app/lib/prisma"
-import { withTransaction } from "@/app/lib/prisma-transaction"
 import { UniversitySchema } from "@/app/lib/types/universities"
 import { z } from "zod"
 import { generateUniversitySlug } from "@/app/utils/generateSlug"
@@ -210,8 +209,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }):
     console.log("Final update data:", JSON.stringify(updateData, null, 2));
 
     // Handle database operations in a transaction
-    // Use withTransaction wrapper to ensure extended timeout in production/Vercel
-    const result = await withTransaction(async (tx: any) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       // Handle course deletion first if specified
       if (body._deleteCourses && Array.isArray(body._deleteCourses) && body._deleteCourses.length > 0) {
         console.log(`Deleting courses:`, body._deleteCourses);
@@ -608,46 +606,54 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
       return NextResponse.json({ error: `University with ID ${id} not found` }, { status: 404 })
     }
 
-    // Delete all related data in a transaction with extended timeout
-    // This ensures all deletions complete even with slower database connections
-    await withTransaction(async (tx) => {
-      // Get career outcome IDs first
-      const careerOutcomes = await tx.careerOutcome.findMany({
-        where: { universityId: id },
-        select: { id: true },
-      })
-      const careerOutcomeIds = careerOutcomes.map((co: { id: string }) => co.id)
+    // Delete all related data in the correct order
+    await prisma.$transaction(async (tx) => {
+      // Delete CourseTimelineData first
+      await tx.courseTimelineData.deleteMany({
+        where: {
+          careerOutcome: {
+            universityId: id
+          }
+        }
+      });
 
-      // Delete career outcome related data
-      if (careerOutcomeIds.length > 0) {
-        await tx.courseTimelineData.deleteMany({
-          where: { careerOutcomeId: { in: careerOutcomeIds } }
-        })
-        await tx.salaryChartData.deleteMany({
-          where: { careerOutcomeId: { in: careerOutcomeIds } }
-        })
-        await tx.employmentRateMeterData.deleteMany({
-          where: { careerOutcomeId: { in: careerOutcomeIds } }
-        })
-        await tx.careerOutcome.deleteMany({
-          where: { universityId: id },
-        })
-      }
+      // Delete SalaryChartData
+      await tx.salaryChartData.deleteMany({
+        where: {
+          careerOutcome: {
+            universityId: id
+          }
+        }
+      });
+
+      // Delete EmploymentRateMeterData
+      await tx.employmentRateMeterData.deleteMany({
+        where: {
+          careerOutcome: {
+            universityId: id
+          }
+        }
+      });
+
+      // Delete CareerOutcome records
+      await tx.careerOutcome.deleteMany({
+        where: { universityId: id },
+      });
 
       // Delete FAQs
       await tx.faq.deleteMany({
         where: { universityId: id },
-      })
+      });
 
       // Delete courses
       await tx.course.deleteMany({
         where: { universityId: id },
-      })
+      });
 
       // Finally delete the university
       await tx.university.delete({
         where: { id },
-      })
+      });
     });
 
     return NextResponse.json({ message: "University deleted successfully" })
