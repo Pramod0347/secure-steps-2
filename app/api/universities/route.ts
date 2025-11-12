@@ -697,13 +697,8 @@ export async function DELETE(req: Request): Promise<NextResponse> {
       return NextResponse.json({ error: "University ID is required" }, { status: 400 })
     }
 
-    // Delete all related courses first
-    await prisma.course.deleteMany({
-      where: { universityId: id },
-    })
-
-    // Then delete the university
-    await prisma.university.delete({
+    // Check if university exists first
+    const university = await prisma.university.findUnique({
       where: { id },
     })
 
