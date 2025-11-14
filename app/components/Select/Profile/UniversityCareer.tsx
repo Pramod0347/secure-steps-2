@@ -331,7 +331,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
         <div className="text-center">
           <h2 className="text-xl md:text-3xl font-bold mb-4 md:mb-8 text-center">{title}</h2>
           <p className="text-gray-500">No career outcome data available</p>
-          <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-2xl mx-auto">
+          {/* <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-2xl mx-auto">
             <p className="text-sm text-gray-600 font-semibold mb-2">Debug Info:</p>
             <pre className="text-xs mt-2 overflow-auto text-left bg-white p-2 rounded border">
               {JSON.stringify({ 
@@ -351,7 +351,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
                 } : null
               }, null, 2)}
             </pre>
-          </div>
+          </div> */}
         </div>
       </div>
     );
