@@ -167,21 +167,23 @@ export function EditUniversityForm({ university, onUniversityUpdated, setIsEditF
   const initializeFromUniversity = useCallback((universityData: UniversityInterface) => {
     // Convert Date object to year for the form
     let year = ""
+    
+    const established = universityData.established as Date | string | number
        
-    if (universityData.established instanceof Date) {
-      year = universityData.established.getFullYear().toString()
-    } else if (typeof universityData.established === "string") {
-      const date = new Date(universityData.established)
+    if (established instanceof Date) {
+      year = established.getFullYear().toString()
+    } else if (typeof established === "string") {
+      const date = new Date(established)
       if (!isNaN(date.getTime())) {
         year = date.getFullYear().toString()
       } else {
-        const parsedYear = Number.parseInt(universityData.established, 10)
+        const parsedYear = Number.parseInt(established, 10)
         if (!isNaN(parsedYear)) {
           year = parsedYear.toString()
         }
       }
-    } else if (typeof universityData.established === "number") {
-      year = universityData.established.toString()
+    } else if (typeof established === "number") {
+      year = established.toString()
     }
        
     if (!year) {

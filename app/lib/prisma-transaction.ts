@@ -10,6 +10,18 @@ const DEFAULT_TRANSACTION_OPTIONS = {
   timeout: 30000, // 30 seconds - maximum time the transaction can run
 }
 
+// Extract the transaction client type from the actual extended prisma instance
+// This ensures we get the correct type including any extensions
+// We use a helper type to extract the transaction client from the callback overload
+type ExtractTransactionClient<T> = T extends <R>(
+  fn: (tx: infer TX) => Promise<R>,
+  options?: any
+) => Promise<R>
+  ? TX
+  : never
+
+type PrismaTransactionClient = ExtractTransactionClient<typeof prisma.$transaction>
+
 /**
  * Wrapper for Prisma transactions with extended timeout
  * Use this instead of prisma.$transaction() directly to ensure consistent timeout handling
@@ -28,7 +40,7 @@ const DEFAULT_TRANSACTION_OPTIONS = {
  * ```
  */
 export async function withTransaction<T>(
-  callback: (tx: Omit<Prisma.TransactionClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>) => Promise<T>,
+  callback: (tx: PrismaTransactionClient) => Promise<T>,
   options?: {
     maxWait?: number
     timeout?: number
@@ -72,6 +84,6 @@ export async function withBatchTransaction<T extends readonly unknown[]>(
     ...options,
   }
 
-  return prisma.$transaction(promises, transactionOptions)
+  return prisma.$transaction(promises, transactionOptions) as unknown as Promise<T>
 }
 
