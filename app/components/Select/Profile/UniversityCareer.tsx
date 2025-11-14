@@ -150,7 +150,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
             description: "Median starting salary for graduates",
             details: "Competitive starting salaries across different sectors and roles.",
             color: "from-orange-400 to-red-500",
-            bgColor: "bg-gradient-to-br from-orange-50 to-red-50",
+            bgColor: "bg-gradient-to-br from-orange-50 to-red-50 ",
             component: 'AnimatedSalaryChart',
             rawData: salaryData
           };
@@ -214,7 +214,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
             description: "Popular courses with strong market demand",
             details: "Our courses are designed to meet current industry needs and future market trends.",
             color: "from-yellow-400 to-orange-500",
-            bgColor: "bg-gradient-to-br from-yellow-50 to-orange-50",
+            bgColor: "bg-gradient-to-br from-yellow-50 to-orange-50 ",
             component: 'CourseTimeline',
             rawData: validTimelineData
           };
@@ -331,7 +331,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
         <div className="text-center">
           <h2 className="text-xl md:text-3xl font-bold mb-4 md:mb-8 text-center">{title}</h2>
           <p className="text-gray-500">No career outcome data available</p>
-          <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-2xl mx-auto">
+          {/* <div className="mt-4 p-4 bg-gray-100 rounded-lg max-w-2xl mx-auto">
             <p className="text-sm text-gray-600 font-semibold mb-2">Debug Info:</p>
             <pre className="text-xs mt-2 overflow-auto text-left bg-white p-2 rounded border">
               {JSON.stringify({ 
@@ -351,7 +351,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
                 } : null
               }, null, 2)}
             </pre>
-          </div>
+          </div> */}
         </div>
       </div>
     );
@@ -514,9 +514,9 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
                 bg-gradient-to-br ${!item.iconImage && itemColor}
                 transform transition-all duration-300 ease-in-out
                 group-hover:scale-110 group-hover:shadow-2xl group-hover:rotate-3
-                relative overflow-hidden
+                relative overflow-hidden 
               `}>
-                <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-2xl"></div>
+                <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-2xl "></div>
 
                 {item.iconImage ? (
                   <img
