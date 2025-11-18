@@ -12,7 +12,6 @@ import type { UniversityInterface } from "@/store/universitystore"
 
 interface SearchProps {
   onSearch: (query: string, filters?: FilterValues) => void
-  universities?: UniversityInterface[]
 }
 
 export interface FilterValues {
@@ -22,7 +21,7 @@ export interface FilterValues {
   course: string
 }
 
-const Hero: React.FC<SearchProps> = ({ onSearch, universities: providedUniversities = [] }) => {
+const Hero: React.FC<SearchProps> = ({ onSearch }) => {
   const videoRef = useRef<HTMLVideoElement>(null)
   const searchBarRef = useRef<HTMLDivElement>(null)
   const modalRef = useRef<HTMLDivElement>(null)
@@ -39,18 +38,17 @@ const Hero: React.FC<SearchProps> = ({ onSearch, universities: providedUniversit
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0, width: 0 })
   const [isMobile, setIsMobile] = useState(false)
 
-  // Use the universities hook to get the same data as TopUniversities
+  // Use the universities hook to get data for filter options
+  // Note: This fetches the first page, which should be enough for filter dropdowns
+  // For a complete list, we might need a separate endpoint or fetch all pages
   const { universities: hookUniversities } = useUniversities({
     searchQuery: "",
     filters: undefined,
-    providedUniversities,
-    providedIsLoading: false,
-    providedError: null,
     autoFetch: true,
   })
 
-  // Use hook data if available, otherwise fallback to provided universities
-  const universitiesData = hookUniversities.length > 0 ? hookUniversities : providedUniversities
+  // Use hook data for filter options
+  const universitiesData = hookUniversities
 
   // Extract unique countries from universities data
   const countries = [...new Set(universitiesData.map((uni) => uni.country).filter(Boolean))].sort()

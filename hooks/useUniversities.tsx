@@ -181,6 +181,11 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
       console.log("📄 PAGE CHANGE:", validPage)
       setCurrentPage(validPage)
       performFetch(currentSearchQuery, currentFilters, validPage, { immediate: true })
+      
+      // Scroll to top of page after page change
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" })
+      }
     },
     [isUsingProvidedData, currentPage, currentSearchQuery, currentFilters, setCurrentPage, performFetch],
   )
@@ -201,6 +206,11 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
       setCurrentPage(1)
 
       performFetch(trimmedQuery, filtersToUse, 1)
+      
+      // Scroll to top of page after search/filter change
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" })
+      }
     },
     [isUsingProvidedData, currentFilters, setSearchQuery, setFilters, setCurrentPage, performFetch],
   )
@@ -213,6 +223,11 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
       setFilters(newFilters)
       setCurrentPage(1)
       performFetch(currentSearchQuery, newFilters, 1)
+      
+      // Scroll to top of page after filter change
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" })
+      }
     },
     [isUsingProvidedData, currentSearchQuery, setFilters, setCurrentPage, performFetch],
   )
@@ -290,6 +305,51 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
     currentFilters,
     currentPage,
     hasDataForQuery,
+    setSearchQuery,
+    setFilters,
+    setCurrentPage,
+    performFetch,
+  ])
+
+  // Watch for prop changes after initialization and trigger fetch
+  useEffect(() => {
+    if (isUsingProvidedData || !hasInitializedRef.current || !hasHydrated) {
+      return
+    }
+
+    // Check if search query or filters have changed
+    const searchChanged = searchQuery !== currentSearchQuery
+    const filtersChanged = JSON.stringify(filters || {}) !== JSON.stringify(currentFilters || {})
+
+    if (searchChanged || filtersChanged) {
+      console.log("🔄 PROPS CHANGED - triggering fetch:", { searchChanged, filtersChanged, searchQuery, filters })
+      
+      // Update store state
+      if (searchChanged) {
+        setSearchQuery(searchQuery)
+      }
+      if (filtersChanged) {
+        setFilters(filters || {})
+      }
+      
+      // Reset to page 1 when search or filters change
+      setCurrentPage(1)
+      
+      // Trigger fetch with new params
+      performFetch(searchQuery, filters || {}, 1, { immediate: true })
+      
+      // Scroll to top of page after search/filter change
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" })
+      }
+    }
+  }, [
+    isUsingProvidedData,
+    hasHydrated,
+    searchQuery,
+    filters,
+    currentSearchQuery,
+    currentFilters,
     setSearchQuery,
     setFilters,
     setCurrentPage,
