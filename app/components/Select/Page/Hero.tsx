@@ -94,7 +94,7 @@ const Hero: React.FC<SearchProps> = ({ onSearch }) => {
     }
   }, [activeModal])
 
-  // Apply filters and close modal
+  // Apply filters and close modal (don't trigger search - wait for search button)
   const applyFilter = useCallback(
     (filterType: keyof FilterValues, value: any) => {
       setActiveFilters((prev) => ({
@@ -102,16 +102,9 @@ const Hero: React.FC<SearchProps> = ({ onSearch }) => {
         [filterType]: value,
       }))
       setActiveModal(null)
-
-      // Trigger search with updated filters
-      const updatedFilters = {
-        ...activeFilters,
-        [filterType]: value,
-      }
-
-      onSearch("", updatedFilters)
+      // Don't call onSearch here - filters will apply when search button is clicked
     },
-    [activeFilters, onSearch],
+    [],
   )
 
   // Clear all filters
@@ -130,23 +123,16 @@ const Hero: React.FC<SearchProps> = ({ onSearch }) => {
     })
   }, [onSearch])
 
-  // Clear specific filter
+  // Clear specific filter (don't trigger search - wait for search button)
   const clearFilter = useCallback(
     (filterType: keyof FilterValues) => {
       setActiveFilters((prev) => ({
         ...prev,
         [filterType]: "",
       }))
-
-      // Trigger search with updated filters
-      const updatedFilters = {
-        ...activeFilters,
-        [filterType]: "",
-      }
-
-      onSearch("", updatedFilters)
+      // Don't call onSearch here - filters will apply when search button is clicked
     },
-    [activeFilters, onSearch],
+    [],
   )
 
   // Toggle modal visibility with improved handling

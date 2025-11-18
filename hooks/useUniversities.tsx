@@ -99,6 +99,8 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
   const authStateRef = useRef(isAuthenticated)
   const hasInitializedRef = useRef(false)
   const lastFetchParamsRef = useRef<string>("")
+  const lastProcessedSearchRef = useRef<string>("")
+  const lastProcessedFiltersRef = useRef<string>("")
 
   // Determine if using provided data
   const isUsingProvidedData = useMemo(() => {
@@ -317,11 +319,27 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
       return
     }
 
-    // Check if search query or filters have changed
+    // Serialize current props to compare with last processed
+    const currentSearchStr = searchQuery || ""
+    const currentFiltersStr = JSON.stringify(filters || {})
+    
+    // Check if we've already processed these exact values
+    if (
+      currentSearchStr === lastProcessedSearchRef.current &&
+      currentFiltersStr === lastProcessedFiltersRef.current
+    ) {
+      return
+    }
+
+    // Check if search query or filters have changed from store state
     const searchChanged = searchQuery !== currentSearchQuery
     const filtersChanged = JSON.stringify(filters || {}) !== JSON.stringify(currentFilters || {})
 
     if (searchChanged || filtersChanged) {
+      // Mark these values as processed to prevent infinite loops
+      lastProcessedSearchRef.current = currentSearchStr
+      lastProcessedFiltersRef.current = currentFiltersStr
+      
       console.log("🔄 PROPS CHANGED - triggering fetch:", { searchChanged, filtersChanged, searchQuery, filters })
       
       // Update store state

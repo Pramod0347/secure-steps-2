@@ -814,7 +814,61 @@ export const useUniversityStore = create<UniversityState>()(
         name: "university-store",
         storage: createJSONStorage(() => {
           try {
-            return localStorage
+            return {
+              getItem: (key: string) => {
+                try {
+                  return localStorage.getItem(key)
+                } catch (error) {
+                  console.error("❌ Error reading from localStorage:", error)
+                  return null
+                }
+              },
+              setItem: (key: string, value: string) => {
+                try {
+                  localStorage.setItem(key, value)
+                } catch (error: any) {
+                  // Handle quota exceeded error
+                  if (error.name === 'QuotaExceededError' || error.code === 22 || error.code === 1014) {
+                    console.warn("⚠️ localStorage quota exceeded, clearing old cache and retrying...")
+                    try {
+                      // Clear old cache entries
+                      const existing = localStorage.getItem(key)
+                      if (existing) {
+                        const parsed = JSON.parse(existing)
+                        // Clear most of the cache, keep only essential data
+                        const minimal = {
+                          cache: {},
+                          universityDetails: {},
+                          currentFilters: parsed?.currentFilters || {},
+                          currentSearchQuery: parsed?.currentSearchQuery || "",
+                          currentPage: parsed?.currentPage || 1,
+                          lastSuccessfulFetch: {},
+                        }
+                        localStorage.setItem(key, JSON.stringify(minimal))
+                        console.log("✅ Cleared cache and stored minimal data")
+                      }
+                    } catch (clearError) {
+                      console.error("❌ Failed to clear cache:", clearError)
+                      // If still failing, remove the key entirely
+                      try {
+                        localStorage.removeItem(key)
+                      } catch (removeError) {
+                        console.error("❌ Failed to remove key:", removeError)
+                      }
+                    }
+                  } else {
+                    console.error("❌ Error writing to localStorage:", error)
+                  }
+                }
+              },
+              removeItem: (key: string) => {
+                try {
+                  localStorage.removeItem(key)
+                } catch (error) {
+                  console.error("❌ Error removing from localStorage:", error)
+                }
+              },
+            }
           } catch (error) {
             console.error("❌ localStorage not available:", error)
             // Fallback to memory storage
@@ -834,42 +888,22 @@ export const useUniversityStore = create<UniversityState>()(
         }),
         partialize: (state) => {
           try {
-            // Limit cache entries to prevent quota exceeded error
-            const cacheEntries = Object.entries(state.cache || {})
-            const recentCache = cacheEntries
-              .sort(([,a], [,b]) => b.timestamp - a.timestamp)
-              .slice(0, 10) // Reduced from 30 to 10 most recent searches
-            
-            const limitedCache = Object.fromEntries(recentCache)
-            
-            // Keep only 20 most recent university details (reduced from 50)
-            const universityEntries = Object.entries(state.universityDetails || {})
-            const limitedUniversityDetails = Object.fromEntries(universityEntries.slice(-20))
-            
-            // Keep only recent lastSuccessfulFetch entries
-            const fetchEntries = Object.entries(state.lastSuccessfulFetch || {})
-            const limitedFetchEntries = Object.fromEntries(fetchEntries.slice(-10))
-            
+            // Don't persist cache or university details - they're too large
+            // Only persist essential UI state that users expect to persist
             const dataToStore = {
-              cache: limitedCache,
-              universityDetails: limitedUniversityDetails,
-              currentFilters: state.currentFilters,
-              currentSearchQuery: state.currentSearchQuery,
-              currentPage: state.currentPage,
-              lastSuccessfulFetch: limitedFetchEntries,
+              currentFilters: state.currentFilters || {},
+              currentSearchQuery: state.currentSearchQuery || "",
+              currentPage: state.currentPage || 1,
             }
             
-            // Additional safety check - if data is still too large, store minimal data
+            // Safety check - if data is still too large, store only essential data
             const serialized = JSON.stringify(dataToStore)
-            if (serialized.length > 4000000) { // ~4MB limit (localStorage is usually 5-10MB)
-              console.warn("⚠️ Data too large, storing minimal cache")
+            if (serialized.length > 100000) { // ~100KB limit (very conservative)
+              console.warn("⚠️ Data still too large, storing only essential data")
               return {
-                cache: Object.fromEntries(recentCache.slice(0, 3)), // Only 3 most recent
-                universityDetails: Object.fromEntries(universityEntries.slice(-5)), // Only 5 most recent
-                currentFilters: state.currentFilters,
-                currentSearchQuery: state.currentSearchQuery,
-                currentPage: state.currentPage,
-                lastSuccessfulFetch: Object.fromEntries(fetchEntries.slice(-3)),
+                currentFilters: state.currentFilters || {},
+                currentSearchQuery: state.currentSearchQuery || "",
+                currentPage: state.currentPage || 1,
               }
             }
             
@@ -878,12 +912,9 @@ export const useUniversityStore = create<UniversityState>()(
             console.error("❌ Error in partialize:", error)
             // Return minimal data on error
             return {
-              cache: {},
-              universityDetails: {},
               currentFilters: state.currentFilters || {},
               currentSearchQuery: state.currentSearchQuery || "",
               currentPage: state.currentPage || 1,
-              lastSuccessfulFetch: {},
             }
           }
         },
@@ -928,22 +959,26 @@ export const useUniversityStore = create<UniversityState>()(
             }
           }
         },
-        version: 15,
+        version: 16,
         migrate: (persistedState: any, version: number) => {
-          console.log("🔄 MIGRATING STORE from version", version, "to 15")
+          console.log("🔄 MIGRATING STORE from version", version, "to 16")
+          // Clear cache and universityDetails from persisted state to prevent quota errors
           return {
-            ...persistedState,
             isLoading: false,
             isInitialLoading: false,
             isFetchingPage: false,
             isRefreshing: false,
             error: null,
             _hasHydrated: false,
-            activeRequests: [], // MIGRATE TO ARRAY
+            activeRequests: [],
             cacheTimeout: 30 * 60 * 1000,
-            cache: persistedState?.cache || {},
-            universityDetails: persistedState?.universityDetails || {},
-            lastSuccessfulFetch: persistedState?.lastSuccessfulFetch || {},
+            cache: {}, // Don't restore cache - it's too large
+            universityDetails: {}, // Don't restore university details - it's too large
+            lastSuccessfulFetch: {},
+            // Only restore essential UI state
+            currentFilters: persistedState?.currentFilters || {},
+            currentSearchQuery: persistedState?.currentSearchQuery || "",
+            currentPage: persistedState?.currentPage || 1,
           }
         },
       },
