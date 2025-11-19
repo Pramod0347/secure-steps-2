@@ -99,6 +99,8 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
   const authStateRef = useRef(isAuthenticated)
   const hasInitializedRef = useRef(false)
   const lastFetchParamsRef = useRef<string>("")
+  const lastProcessedSearchRef = useRef<string>("")
+  const lastProcessedFiltersRef = useRef<string>("")
 
   // Determine if using provided data
   const isUsingProvidedData = useMemo(() => {
@@ -181,6 +183,11 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
       console.log("📄 PAGE CHANGE:", validPage)
       setCurrentPage(validPage)
       performFetch(currentSearchQuery, currentFilters, validPage, { immediate: true })
+      
+      // Scroll to top of page after page change
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" })
+      }
     },
     [isUsingProvidedData, currentPage, currentSearchQuery, currentFilters, setCurrentPage, performFetch],
   )
@@ -201,6 +208,11 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
       setCurrentPage(1)
 
       performFetch(trimmedQuery, filtersToUse, 1)
+      
+      // Scroll to top of page after search/filter change
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" })
+      }
     },
     [isUsingProvidedData, currentFilters, setSearchQuery, setFilters, setCurrentPage, performFetch],
   )
@@ -213,6 +225,11 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
       setFilters(newFilters)
       setCurrentPage(1)
       performFetch(currentSearchQuery, newFilters, 1)
+      
+      // Scroll to top of page after filter change
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" })
+      }
     },
     [isUsingProvidedData, currentSearchQuery, setFilters, setCurrentPage, performFetch],
   )
@@ -290,6 +307,67 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
     currentFilters,
     currentPage,
     hasDataForQuery,
+    setSearchQuery,
+    setFilters,
+    setCurrentPage,
+    performFetch,
+  ])
+
+  // Watch for prop changes after initialization and trigger fetch
+  useEffect(() => {
+    if (isUsingProvidedData || !hasInitializedRef.current || !hasHydrated) {
+      return
+    }
+
+    // Serialize current props to compare with last processed
+    const currentSearchStr = searchQuery || ""
+    const currentFiltersStr = JSON.stringify(filters || {})
+    
+    // Check if we've already processed these exact values
+    if (
+      currentSearchStr === lastProcessedSearchRef.current &&
+      currentFiltersStr === lastProcessedFiltersRef.current
+    ) {
+      return
+    }
+
+    // Check if search query or filters have changed from store state
+    const searchChanged = searchQuery !== currentSearchQuery
+    const filtersChanged = JSON.stringify(filters || {}) !== JSON.stringify(currentFilters || {})
+
+    if (searchChanged || filtersChanged) {
+      // Mark these values as processed to prevent infinite loops
+      lastProcessedSearchRef.current = currentSearchStr
+      lastProcessedFiltersRef.current = currentFiltersStr
+      
+      console.log("🔄 PROPS CHANGED - triggering fetch:", { searchChanged, filtersChanged, searchQuery, filters })
+      
+      // Update store state
+      if (searchChanged) {
+        setSearchQuery(searchQuery)
+      }
+      if (filtersChanged) {
+        setFilters(filters || {})
+      }
+      
+      // Reset to page 1 when search or filters change
+      setCurrentPage(1)
+      
+      // Trigger fetch with new params
+      performFetch(searchQuery, filters || {}, 1, { immediate: true })
+      
+      // Scroll to top of page after search/filter change
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" })
+      }
+    }
+  }, [
+    isUsingProvidedData,
+    hasHydrated,
+    searchQuery,
+    filters,
+    currentSearchQuery,
+    currentFilters,
     setSearchQuery,
     setFilters,
     setCurrentPage,

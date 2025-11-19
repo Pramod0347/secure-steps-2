@@ -20,17 +20,11 @@ import type { UniversityInterface, CourseInterface } from "@/store/universitysto
 interface TopUniversitiesProps {
   searchQuery?: string
   filters?: FilterValues
-  universities?: UniversityInterface[]
-  isLoading?: boolean
-  error?: string | null
 }
 
 const TopUniversities: React.FC<TopUniversitiesProps> = ({
   searchQuery = "",
   filters,
-  universities: providedUniversities,
-  isLoading: providedIsLoading,
-  error: providedError,
 }) => {
   const { user, isAuthenticated } = useAuth()
 
@@ -56,15 +50,12 @@ const TopUniversities: React.FC<TopUniversitiesProps> = ({
     hasData,
     isEmpty,
     isHydrated,
-    totalPages,        // Add this
-  currentPage,       // Add this
-  handlePageChange,  // Add this
+    totalPages,
+    currentPage,
+    handlePageChange,
   } = useUniversities({
     searchQuery,
     filters,
-    providedUniversities,
-    providedIsLoading,
-    providedError,
     autoFetch: true,
   })
 

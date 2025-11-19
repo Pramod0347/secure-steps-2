@@ -12,7 +12,6 @@ import type { UniversityInterface } from "@/store/universitystore"
 
 interface SearchProps {
   onSearch: (query: string, filters?: FilterValues) => void
-  universities?: UniversityInterface[]
 }
 
 export interface FilterValues {
@@ -22,7 +21,7 @@ export interface FilterValues {
   course: string
 }
 
-const Hero: React.FC<SearchProps> = ({ onSearch, universities: providedUniversities = [] }) => {
+const Hero: React.FC<SearchProps> = ({ onSearch }) => {
   const videoRef = useRef<HTMLVideoElement>(null)
   const searchBarRef = useRef<HTMLDivElement>(null)
   const modalRef = useRef<HTMLDivElement>(null)
@@ -39,18 +38,17 @@ const Hero: React.FC<SearchProps> = ({ onSearch, universities: providedUniversit
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0, width: 0 })
   const [isMobile, setIsMobile] = useState(false)
 
-  // Use the universities hook to get the same data as TopUniversities
+  // Use the universities hook to get data for filter options
+  // Note: This fetches the first page, which should be enough for filter dropdowns
+  // For a complete list, we might need a separate endpoint or fetch all pages
   const { universities: hookUniversities } = useUniversities({
     searchQuery: "",
     filters: undefined,
-    providedUniversities,
-    providedIsLoading: false,
-    providedError: null,
     autoFetch: true,
   })
 
-  // Use hook data if available, otherwise fallback to provided universities
-  const universitiesData = hookUniversities.length > 0 ? hookUniversities : providedUniversities
+  // Use hook data for filter options
+  const universitiesData = hookUniversities
 
   // Extract unique countries from universities data
   const countries = [...new Set(universitiesData.map((uni) => uni.country).filter(Boolean))].sort()
@@ -96,7 +94,7 @@ const Hero: React.FC<SearchProps> = ({ onSearch, universities: providedUniversit
     }
   }, [activeModal])
 
-  // Apply filters and close modal
+  // Apply filters and close modal (don't trigger search - wait for search button)
   const applyFilter = useCallback(
     (filterType: keyof FilterValues, value: any) => {
       setActiveFilters((prev) => ({
@@ -104,16 +102,9 @@ const Hero: React.FC<SearchProps> = ({ onSearch, universities: providedUniversit
         [filterType]: value,
       }))
       setActiveModal(null)
-
-      // Trigger search with updated filters
-      const updatedFilters = {
-        ...activeFilters,
-        [filterType]: value,
-      }
-
-      onSearch("", updatedFilters)
+      // Don't call onSearch here - filters will apply when search button is clicked
     },
-    [activeFilters, onSearch],
+    [],
   )
 
   // Clear all filters
@@ -132,23 +123,16 @@ const Hero: React.FC<SearchProps> = ({ onSearch, universities: providedUniversit
     })
   }, [onSearch])
 
-  // Clear specific filter
+  // Clear specific filter (don't trigger search - wait for search button)
   const clearFilter = useCallback(
     (filterType: keyof FilterValues) => {
       setActiveFilters((prev) => ({
         ...prev,
         [filterType]: "",
       }))
-
-      // Trigger search with updated filters
-      const updatedFilters = {
-        ...activeFilters,
-        [filterType]: "",
-      }
-
-      onSearch("", updatedFilters)
+      // Don't call onSearch here - filters will apply when search button is clicked
     },
-    [activeFilters, onSearch],
+    [],
   )
 
   // Toggle modal visibility with improved handling
