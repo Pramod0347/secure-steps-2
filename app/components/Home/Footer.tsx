@@ -118,7 +118,7 @@ const Footer = () => {
           {/* Small screen news letter */}
           <div className=" block md:hidden">
             <p className="text-[16px] leading-[21.34px] font-[400]  md:text-2xl mb-2 text-[#F5F5F1]">
-              Subscribe to our <br /> newsletter
+              Subscribe to our <br /> newsletters
             </p>
             <div className=" flex w-[80%]">
               <input
