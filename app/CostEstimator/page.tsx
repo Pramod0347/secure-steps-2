@@ -214,7 +214,7 @@ export default function Page() {
                   fontWeight: 600,
                   border: "none",
                   boxShadow: "0 4px 10px rgba(156,27,60,0.3)",
-                  cursor: "pointer",
+                  
                 }}
               >
                 Next →
