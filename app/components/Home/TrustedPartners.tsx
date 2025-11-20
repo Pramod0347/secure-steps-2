@@ -66,7 +66,7 @@ const TrustedPartnersCarousel = () => {
   }, [handleNext]);
 
   return (
-    <div className="w-full text-center mx-auto px-4  mb-16 md:mb-40">
+    <div className="w-full text-center mx-auto px-4  ">
       <h2 className="md:text-[32px] text-[20px] font-bold uppercase">
       Universities that await your application
       </h2>

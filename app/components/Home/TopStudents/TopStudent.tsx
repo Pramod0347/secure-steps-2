@@ -69,7 +69,7 @@ const ProfileCard = ({
 
 const ProfileCards = () => {
   return (
-    <div className="relative mx-auto w-screen overflow-x-hidden pb-20 2xl:pb-0 2xl:overflow-hidden  bg-transparent -mt-[90%] 2xl:-mt-[80%] mb-[20%]">
+    <div className="relative mx-auto w-screen overflow-x-hidden pb-20 2xl:pb-0 2xl:overflow-hidden  bg-transparent -mt-[90%] 2xl:-mt-[80%] mb-[20%] ">
       {/* Curved dotted line with multiple bends */}
       <svg
         className="absolute block left-0 top-1/2 -z-10 h-30 md:h-64 w-full"

@@ -105,7 +105,7 @@ export const CourseShowcase: React.FC<CourseShowcaseProps> = ({
   speed = 5, // Default speed for both carousels
 }) => {
   return (
-    <div className="w-full mx-auto px-4  md:space-y-24 ">
+    <div className="w-full mx-auto px-4 mb-30 md:space-y-24  ">
 
       {/* Top course sliding */}
       {/* <div className="md:mb-32">

@@ -107,7 +107,7 @@ export default function Page() {
             />
             <div className="flex justify-end">
               <button
-                className="bg-red-700 text-white px-6 py-3 rounded-lg"
+                className="bt-c inter w-28 rounded-xl px-1 py-1 md:text-[14px] 2xl:text-[16px]"
                 onClick={() =>
                   selectedCountry
                     ? setStep(2)

@@ -113,7 +113,7 @@ const Cards = () => {
         <h1 className="text-[#B81D24] text-[12px] md:text-[16px] lg:text-[18px] xl:text-[21px] font-bold">
           {title}
         </h1>
-        <p className="text-[#22344F] text-[10px] md:text-[14px] lg:text-[16px] xl:text-[17px] font-normal">
+        <p className="text-[#22344F] text-[10px] md:text-[14px] lg:text-[16px] xl:text-[17px] font-normal leading-relaxed text-justify max-w-[330px]">
           {description}
         </p>
       </div>
@@ -363,7 +363,7 @@ const Cards = () => {
       {/* MOBILE VERSION FROM FIRST FILE */}
       <div className="w-full overflow-x-hidden md:hidden ">
         <div
-          className="flex py-6 flex-col items-center  justify-around w-full h-full"
+          className="flex flex-col items-center  justify-around w-full h-full"
           onMouseMove={handleMouseMove}
         >
           {cursorText && (
@@ -388,7 +388,7 @@ const Cards = () => {
             }`}
           >
             {/* Mobile Title */}
-            <h1 className="font-extrabold text-center bg-white text-[18px] sm:text-[22px] md:text-[26px] block uppercase w-full mx-auto leading-tight">
+            <h1 className=" text-center bg-white text-[18px] sm:text-[18px] md:text-[26px] block  w-full mx-auto leading-tight">
               Tools that decide your admit in your desired university
               <p className="text-[14px] sm:text-[16px] font-extrabold flex flex-row items-center justify-center mt-2">
                 <span className="text-xs sm:text-sm font-normal lowercase text-black">
@@ -434,7 +434,7 @@ const Cards = () => {
                       <h2 className="font-semibold text-[9px] sm:text-[12px]">
                         The Ultimate Guide
                       </h2>
-                      <p className="text-[6px] sm:text-[8px] leading-tight font-light">
+                      <p className="text-[6px] sm:text-[8px] leading-[1.3] font-light tracking-normal text-left">
                         Solutions to 8000 plus questions (includes what every
                         newbie needs to know about moving abroad)
                       </p>
@@ -458,7 +458,7 @@ const Cards = () => {
                       <h2 className="font-semibold text-[9px] sm:text-[12px]">
                         Statement of Purpose
                       </h2>
-                      <p className="text-[6px] sm:text-[8px] leading-tight font-light">
+                      <p className="text-[6px] sm:text-[8px] leading-[1.3] font-light tracking-normal text-left">
                         We interviewed 456 universities and curated free
                         templates for you, because we want you to master this
                         life-changing document.
@@ -483,9 +483,9 @@ const Cards = () => {
                       <h2 className="font-semibold text-[9px] sm:text-[12px]">
                         Letter of Recommendation
                       </h2>
-                      <p className="text-[6px] sm:text-[8px] leading-tight font-light">
-                        Get a template for every aspect — university, workplace,
-                        or individual — all covered with professional LOR
+                      <p className="text-[6px] sm:text-[8px] leading-[1.3] font-light tracking-normal text-left">
+                        Get a template for every aspect university, workplace,
+                        or individual all covered with professional LOR
                         examples.
                       </p>
                     </div>
@@ -494,7 +494,7 @@ const Cards = () => {
               </div>
             </div>
 
-            <div className="w-[90%] flex flex-col md:flex-row gap-3 md:gap-5 justify-center md:justify-between items-center md:items-stretch  ">
+            <div className="w-[90%] flex flex-col md:flex-row gap-3 md:gap-5 justify-center md:justify-between items-center md:items-stretch ">
               {/* Card 1 */}
               <div className="w-[85%] md:w-[30%] scale-[0.9] md:scale-100">
                 <CardWithAnimation
@@ -536,7 +536,7 @@ const Cards = () => {
       </div>
 
       {/* DESKTOP VERSION FROM SECOND FILE - EXACT COPY */}
-      <section className="w-full min-w-full relative box-border overflow-x-hidden hidden md:block">
+      <section className="w-full min-w-full relative box-border overflow-x-hidden hidden md:block  ">
         <div
           className="w-screen flex py-10 md:py-20 flex-col items-center gap-4 md:gap-6 justify-around"
           style={{
@@ -586,7 +586,7 @@ const Cards = () => {
                   />
                   <div className="flex flex-col gap-1 text-white absolute bottom-0 left-0 right-0 pb-5 px-4 py-4 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
                     <p className="text-xs">Secure steps</p>
-                    <h2 className="font-semibold text-sm md:text-base">
+                    <h2 className="font-semibold  md:text-base">
                       Curated Ideal Universities
                     </h2>
                     <p className="text-xs leading-tight md:w-[60%]">
@@ -600,7 +600,7 @@ const Cards = () => {
               {/* Right side content - takes 8 columns on desktop */}
               <div className="col-span-1 md:col-span-8 flex flex-col gap-4 md:gap-6 h-full">
                 {/* Title section */}
-                <h1 className="font-extrabold text-center text-[18px] md:text-[20px] lg:text-[20px] xl:text-[20px] uppercase">
+                <h1 className="font-extrabold text-center text-[18px] md:text-[20px] lg:text-[20px] xl:text-[20px] ">
                   Tools that decide your admit in your desired university
                   <p className="md:text-[20px] lg:text-[27px] xl:text-[27px] font-extrabold flex flex-row items-center justify-center">
                     <span className="text-xs md:text-sm font-normal lowercase text-black">
@@ -614,7 +614,7 @@ const Cards = () => {
                 </h1>
 
                 {/* Cards grid - 3 columns on desktop */}
-                <div className="grid grid-cols-3 gap-4 md:gap-6 w-full">
+                <div className="grid grid-cols-3 gap-4 md:gap-6 w-full ">
                   {/* Desktop cards */}
                   {[1, 2, 3].map((index) => (
                     <div

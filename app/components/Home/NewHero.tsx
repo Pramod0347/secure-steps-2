@@ -116,9 +116,7 @@ const NewHeroSection: React.FC = () => {
             Carefully Designed Products for your successful study abroad journey
           </p>
 
-          <Link href="/auth/signin" className=" px-8 sm:px-10 py-3 sm:py-4 text-white rounded-full  text-[12px] sm:text-[14px] bg-black hover:bg-[#da202e] hover:text-white ">
-            Login
-          </Link>
+        
         </div>
       </section>
     </div>

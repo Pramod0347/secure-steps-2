@@ -15,7 +15,8 @@ const PROTECTED_ROUTES: Record<string, string[]> = {
 const PUBLIC_CHILD_ROUTES: string[] = [
   "/select/explore",
   "/select/search",
-  "/select/category",
+  "/select/category"
+  ,
 ];
 
 // Routes that should always be protected regardless of their parent paths
@@ -53,6 +54,7 @@ const PUBLIC_PATH_PATTERNS = [
   /^\/connect.*$/,
   /^\/community\/?$|^\/community\/[^/]+$/,
   /^\/lenders.*$/,
+  /^\/privacy.*$/,
   /^\/quizform$/,
   /^\/api\/auth\/.*$/,
   /^\/api\/upload$/,

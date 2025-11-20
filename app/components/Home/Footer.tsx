@@ -158,9 +158,6 @@ const Footer = () => {
 
       <div className="hidden md:flex flex-row justify-between items-center px-28 mt-10 gap-[32%] w-full ">
         <span className="hidden md:block text-[14px] font-medium leading-[22px]">
-          Designed & Developed by TIC Global
-        </span>
-        <span className="hidden md:block text-[14px] font-medium leading-[22px]">
           All rights reserved by Secure steps
         </span>
       </div>

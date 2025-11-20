@@ -51,7 +51,7 @@ const CircleAnimation: React.FC<CircleAnimationProps> = ({ avatars }) => {
 
   return (
     <div className="relative w-full md:h-screen  flex flex-col items-center justify-center overflow-hidden  ">
-      <div className="text-[20px] md:text-5xl leading-[25.2px] font-bold text-center uppercase  ">
+      <div className="text-[20px] md:text-5xl leading-[25.2px] text-center   ">
 
         <TypeAnimation
           sequence={[
@@ -130,23 +130,26 @@ const CircleAnimation: React.FC<CircleAnimationProps> = ({ avatars }) => {
           ))}
         </div>
       </div>
+      <br/>
+      {!isAuthenticated && (
+        <Link href="/auth/signin" className="bg-black px-14 py-5  text-white rounded-full  text-[14px] shining-button">
+          Login
+        </Link>
+      )}
+      <br/>
 
       {/* Title text outside the circle */}
-      <div className="mt-8 text-center">
+      <div className=" text-center">
         <h1 className="font-bold text-4xl transition-opacity duration-500 h-10">
           {avatars[currentIndex].count ? `${avatars[currentIndex].count}+` : ""}
         </h1>
-
+ 
         <h2 className="text-base font-semibold text-gray-800 transition-opacity duration-500 font-sf-pro-display">
           {avatars[currentIndex].title}
         </h2>
       </div>
 
-      {!isAuthenticated && (
-        <Link href="/auth/signin" className="bg-black px-14 py-5 my-5 text-white rounded-full  text-[14px] shining-button">
-          Login
-        </Link>
-      )}
+     
 
       <style jsx global>{`
         @keyframes spin-ease-out {

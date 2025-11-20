@@ -261,10 +261,10 @@ const Hero: React.FC = () => {
       </video>
       <div className="relative z-10 flex h-full w-full items-end gap-20 bg-gradient-to-b from-transparent via-transparent to-white/10">
         <div className="flex md:flex-row md:items-center flex-col w-full justify-between rounded-lg p-4 md:p-8 md:px-20 text-center">
-          <h1 className="mb-4 md:mb-0 text-center md:text-left text-[25px] md:text-[50px] 2xl:text-[80px] font-bold leading-[1.2] md:leading-[1.1] 2xl:leading-[1.1] text-white z-10 uppercase">
+          <h1 className="mb-4 md:mb-0 text-center md:text-left text-[25px] md:text-[50px] 2xl:text-[60px]  leading-[1.2] md:leading-[1.1] 2xl:leading-[1.1] text-white z-10 ">
             <span className="whitespace-nowrap">Begin your journey with</span>
             <br />
-            <span className="whitespace-nowrap">
+            <span className="whitespace-nowrap font-bold">
               right{" "}
               <span className="animated-text-wrapper inline-block align-bottom">
                 {textOptions.map((text, index) => (
