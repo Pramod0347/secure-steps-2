@@ -1,5 +1,5 @@
 "use client";
-import PrivacyPolicy from "@/app/components/Home/Policy/PrivacyPolicy";
+import PrivacyPolicy from "@/app/Privacy/page";
 import { UniversityManagement } from "@/app/components/Select/ManageUniversities/UniversityManagement";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -31,8 +31,7 @@ const page = () => {
     case pathname.endsWith("/lenders"):
       return <NotIntegrated />;
 
-    case pathname.endsWith("/privacy"):
-      return <PrivacyPolicy />;
+
   }
 
   return <div>Not Integrated Yet.......</div>;

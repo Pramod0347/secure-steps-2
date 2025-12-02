@@ -4,6 +4,7 @@ import footer from "@/app/assets/footerBanner.png";
 import logo from "@/app/assets/logo.png";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 const Footer = () => {
   const pathname = usePathname();
@@ -77,11 +78,30 @@ const Footer = () => {
           <div className="grid grid-cols-2  gap-4 md:flex md:flex-row xl:grid-cols-4   md:gap-2 w-[100%] justify-between">
             <div className="   flex flex-col md:gap-4 gap-4  text-[14px] text-[#909090]">
               <h1 className="  text-[#F5F5F1] text-[16px]  md:text-xl">Inside Prohouse</h1>
-              <p>Terms and Conditions</p>
-              <p>Privacy Policy</p>
-              <p>Cancellation Policy</p>
-              <p>Guest Rules</p>
-              <p>Reservation Guide</p>
+           <Link href="/Terms&Conditions">
+        <p className="cursor-pointer hover:text-blue-600 duration-200">
+          Terms and Conditions
+        </p>
+      </Link>
+
+      <Link href="/Privacy">
+        <p className="cursor-pointer hover:text-blue-600 duration-200">
+          Privacy Policy
+        </p>
+      </Link>
+ 
+      <Link href="/Refund">
+       <p className="cursor-pointer hover:text-blue-600 duration-200">
+          Refund Policy
+          </p>
+      </Link>
+    
+
+      <Link href="/CookiePolicy">
+        <p className="cursor-pointer hover:text-blue-600 duration-200">
+          Cookie Policy
+        </p>
+      </Link>
             </div>
             <div className="   flex flex-col md:gap-4 gap-4 text-[14px] text-[#909090]">
               <h1 className="  text-[#F5F5F1]  text-[16px]  md:text-xl">About</h1>
