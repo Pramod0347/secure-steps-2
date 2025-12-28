@@ -284,7 +284,7 @@ const Hero: React.FC = () => {
 
           <div className="flex relative w-full md:w-auto max-w-[350px] h-auto mx-auto flex-col items-center justify-center p-4 gap-3 rounded-xl bg-white/30 backdrop-blur-lg">
             <p className="text-center md:text-[24px] 2xl:text-[28px] text-[16px] font-bold leading-tight text-white py-1">
-              Help us help you
+              Help us help you!
             </p>
             <button
               onClick={handleOpenPopup}
