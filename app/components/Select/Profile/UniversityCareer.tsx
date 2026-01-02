@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   TrendingUp,
   Briefcase,
@@ -16,6 +16,44 @@ import {
 import { AnimatedSalaryChart } from '@/components/Models/Select/Profile/UniversityCareerModels';
 import { EmploymentRateMeter } from '@/components/Models/Select/Profile/UniversityCareerModels';
 import { CourseTimeline } from '@/components/Models/Select/Profile/UniversityCareerModels';
+
+// Custom SVG Icon for Salary/Briefcase
+const SalaryBriefcaseIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232 223" fill="none" className={className}>
+    <path d="M81.6553 51.095C81.6553 39.9046 90.7269 30.833 101.917 30.833H122.179C133.37 30.833 142.441 39.9046 142.441 51.095V71.3569H81.6553V51.095Z" stroke="currentColor" strokeWidth="20.262" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M172.834 71.3574H51.262C40.0716 71.3574 31 80.429 31 91.6194V162.536C31 173.727 40.0716 182.798 51.262 182.798H172.834C184.024 182.798 193.096 173.727 193.096 162.536V91.6194C193.096 80.429 184.024 71.3574 172.834 71.3574Z" stroke="currentColor" strokeWidth="20.262" strokeLinecap="round" strokeLinejoin="round"/>
+    <g filter="url(#filter0_d_1358_1026)">
+      <path d="M105.702 116.793C106.14 116.211 106.624 115.652 107.154 115.122C113.249 109.027 123.131 109.027 129.226 115.122L135.847 108.5C126.095 98.7486 110.285 98.7486 100.533 108.5C98.0861 110.947 96.2533 113.775 95.0343 116.793H90.0977V123.036H93.4137C93.1541 125.108 93.1541 127.207 93.4137 129.279H90.0977V135.522H95.0343C96.2533 138.54 98.0861 141.368 100.533 143.815C110.285 153.567 126.095 153.567 135.847 143.815L129.226 137.193C123.131 143.288 113.249 143.288 107.154 137.193C106.624 136.663 106.14 136.104 105.702 135.522H118.19V129.279H102.897C102.479 127.221 102.479 125.094 102.897 123.036H118.19V116.793H105.702Z" fill="currentColor"/>
+    </g>
+    <defs>
+      <filter id="filter0_d_1358_1026" x="61.3932" y="83.7387" width="103.159" height="107.351" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+        <feFlood floodOpacity="0" result="BackgroundImageFix"/>
+        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+        <feOffset dy="11.2566"/>
+        <feGaussianBlur stdDeviation="14.3522"/>
+        <feComposite in2="hardAlpha" operator="out"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1358_1026"/>
+        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1358_1026" result="shape"/>
+      </filter>
+    </defs>
+  </svg>
+);
+
+// Custom SVG Icon for Employment Rate/Users
+const EmploymentUsersIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 267 240" fill="none" className={className}>
+    <path d="M139.772 137.772C148.43 137.772 156.733 134.332 162.855 128.21C168.977 122.088 172.416 113.785 172.416 105.127C172.416 96.4697 168.977 88.1665 162.855 82.0445C156.733 75.9225 148.43 72.4832 139.772 72.4832C131.114 72.4832 122.811 75.9225 116.689 82.0445C110.567 88.1665 107.127 96.4697 107.127 105.127C107.127 113.785 110.567 122.088 116.689 128.21C122.811 134.332 131.114 137.772 139.772 137.772ZM139.772 137.772C126.785 137.772 114.33 142.931 105.147 152.114C95.9643 161.297 90.8053 173.751 90.8053 186.738V211.221M139.772 137.772C152.758 137.772 165.213 142.931 174.396 152.114C183.579 161.297 188.738 173.751 188.738 186.738V211.221M147.933 72.4832C151.23 58.9032 164.377 48 180.577 48C198.303 48 213.058 62.6083 213.221 80.6443C213.058 98.6802 198.303 113.289 180.577 113.289M180.577 113.289H172.416M180.577 113.289C207.411 113.289 229.543 135.209 229.543 162.255V178.577M131.611 72.4832C128.314 58.9032 115.166 48 98.9664 48C81.2406 48 66.4854 62.6083 66.3221 80.6443C66.4854 98.6802 81.2406 113.289 98.9664 113.289M98.9664 113.289H107.127M98.9664 113.289C72.1328 113.289 50 135.209 50 162.255V178.577" stroke="currentColor" strokeWidth="19.6991"/>
+  </svg>
+);
+
+// Custom SVG Icon for Courses in Demand/TrendingUp
+const CoursesTrendingIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 234 165" fill="none" className={className}>
+    <path d="M145.782 41H197.241V92.4589" stroke="currentColor" strokeWidth="22.5133" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M197.242 41L124.556 113.686C123.353 114.864 121.737 115.525 120.053 115.525C118.369 115.525 116.753 114.864 115.55 113.686L85.9616 84.0969C84.7592 82.9183 83.1426 82.2581 81.4589 82.2581C79.7753 82.2581 78.1587 82.9183 76.9563 84.0969L30 131.053" stroke="currentColor" strokeWidth="22.5133" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
 
 interface CareerOutcomeItem {
   id: number;
@@ -62,6 +100,7 @@ interface UniversityCareerOutcomesProps {
   universityData?: any | null;
   title?: string;
 }
+
 
 const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
   universityData = null,
@@ -317,6 +356,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
 
     setMousePosition({ x: event.clientX, y: event.clientY });
     setModalData(item);
+    setHoveredItemId(item.id);
     setShowModal(true);
     setCircleFillPercentage(0);
     
@@ -357,33 +397,68 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
     setModalData(null);
   };
 
-  // Initialize with first modal open by default
-  useEffect(() => {
-    if (displayData && displayData.length > 0) {
-      setModalData(displayData[1]);
-      setShowModal(true);
-      // Set circle fill for first item
-      setTimeout(() => {
-        setCircleFillPercentage(0.75);
-      }, 100);
-    }
-  }, [displayData]);
-
   useEffect(() => {
     return () => {
       clearHoverTimeout();
     };
   }, []);
 
+
+  const [hoveredItemId, setHoveredItemId] = useState<number | null>(null);
+  const itemRefsRef = useRef<{ [key: number]: HTMLDivElement }>({});
+
+  const setItemRef = useCallback((id: number, el: HTMLDivElement | null) => {
+    if (el) {
+      itemRefsRef.current[id] = el;
+    }
+  }, []);
+
   const getModalStyle = () => {
     const modalWidth = 500;
-    const modalHeight = 600;
     const padding = 24;
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
 
+    // Check if mobile (viewportWidth < 768px)
+    const isMobile = viewportWidth < 768;
+
+    // Mobile: Center modal on screen
+    if (isMobile) {
+      const left = (viewportWidth - Math.min(modalWidth, viewportWidth - 2 * padding)) / 2;
+      const top = (viewportHeight - 600) / 2;
+
+      const style = {
+        left: `${left}px`,
+        top: `${Math.max(padding, top)}px`,
+        position: 'fixed' as const,
+        zIndex: 9999,
+        maxHeight: `${viewportHeight - 2 * padding}px`,
+        overflowY: 'auto' as const
+      };
+      return style;
+    }
+
+    // Desktop: Position modal centered on the hovered card using transform
+    if (modalData && itemRefsRef.current[modalData.id]) {
+      const rect = itemRefsRef.current[modalData.id].getBoundingClientRect();
+      
+      // Get the center point of the hovered card
+      const cardCenterX = rect.left + rect.width / 2;
+      const cardCenterY = rect.top + rect.height / 2;
+
+      const style = {
+        left: `${cardCenterX}px`,
+        top: `${cardCenterY}px`,
+        transform: 'translate(-50%, -50%)',
+        position: 'fixed' as const,
+        zIndex: 9999
+      };
+      return style;
+    }
+
+    // Fallback to cursor position
     let left = mousePosition.x - modalWidth / 2;
-    let top = mousePosition.y - modalHeight / 2;
+    let top = mousePosition.y + 20;
 
     if (left + modalWidth > viewportWidth - padding) {
       left = viewportWidth - modalWidth - padding;
@@ -392,20 +467,13 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
       left = padding;
     }
 
-    if (top + modalHeight > viewportHeight - padding) {
-      top = viewportHeight - modalHeight - padding;
-    }
-    if (top < padding) {
-      top = padding;
-    }
-
     left = Math.max(padding, Math.min(left, viewportWidth - modalWidth - padding));
-    top = Math.max(padding, Math.min(top, viewportHeight - modalHeight - padding));
 
     const style = {
       left: `${left}px`,
       top: `${top}px`,
-      position: 'fixed' as const
+      position: 'fixed' as const,
+      zIndex: 9999
     };
     return style;
   };
@@ -431,6 +499,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
           return (
             <div
               key={item.id}
+              ref={(el) => setItemRef(item.id, el)}
               className="relative group cursor-pointer flex flex-col items-center"
               onMouseEnter={(e) => {
                 handleIconHover(item, e);
@@ -465,6 +534,12 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
                     alt={item.title}
                     className="w-full h-full object-cover relative z-10 transition-transform duration-300 group-hover:scale-110"
                   />
+                ) : item.iconName === 'Briefcase' ? (
+                  <SalaryBriefcaseIcon className="w-14 h-14 text-white relative z-10 transition-transform duration-300 group-hover:scale-110" />
+                ) : item.iconName === 'Users' ? (
+                  <EmploymentUsersIcon className="w-14 h-14 text-white relative z-10 transition-transform duration-300 group-hover:scale-110" />
+                ) : item.iconName === 'TrendingUp' ? (
+                  <CoursesTrendingIcon className="w-14 h-14 text-white relative z-10 transition-transform duration-300 group-hover:scale-110" />
                 ) : (
                   <IconComponent
                     size={56}
@@ -492,6 +567,20 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
       {/* Modal */}
       {showModal && modalData && (
         <div className="fixed inset-0 z-50 pointer-events-none">
+          {/* Animation keyframes */}
+          <style>{`
+            @keyframes fadeInScale {
+              0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.95);
+              }
+              100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+              }
+            }
+          `}</style>
+          
           <div
             className="absolute inset-0 bg-black bg-opacity-20 backdrop-blur-sm transition-opacity duration-300 pointer-events-auto"
             onClick={() => {
@@ -502,11 +591,16 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
           <div
             ref={modalRef}
             className={`
-              max-w-lg w-full rounded-3xl p-6 transform transition-all duration-200 pointer-events-auto
+              max-w-lg w-full rounded-3xl p-6 pointer-events-auto
               ${modalData.bgColor || "bg-gradient-to-br from-blue-50 to-purple-50"} border border-white/20 shadow-2xl
-              animate-in zoom-in-95 fade-in duration-200 min-h-0
+              min-h-0 animate-fade-in-scale
+              md:w-auto
+              max-md:!left-1/2 max-md:!top-1/2 max-md:!-translate-x-1/2 max-md:!-translate-y-1/2 max-md:w-[90vw] max-md:max-h-[80vh] max-md:overflow-y-auto
             `}
-            style={getModalStyle()}
+            style={{
+              ...getModalStyle(),
+              animation: 'fadeInScale 0.2s ease-out forwards'
+            }}
             onMouseEnter={() => {
               handleModalEnter();
             }}
@@ -602,61 +696,71 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
                         <p className="text-sm font-extrabold text-slate-800">
                           £{item.min?.toLocaleString()} – £{item.max?.toLocaleString()}
                         </p>
-                        <svg className="w-4 h-4 text-slate-400 mt-2 absolute bottom-[-5px] right-[-5px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        <svg className="w-4 h-4 text-slate-400 mt-2 absolute bottom-[-5px] right-[-5px]" xmlns="http://www.w3.org/2000/svg" width="207" height="208" viewBox="0 0 207 208" fill="none">
+                          <g>
+                          <path d="M21.8777 53.5284C21.8784 48.7668 23.7702 44.2005 27.1371 40.8336C30.5041 37.4666 35.0704 35.5748 39.8319 35.5741L154.11 35.5741C158.871 35.5748 163.437 37.4666 166.804 40.8336C170.171 44.2005 172.063 48.7668 172.064 53.5284L172.064 167.806C171.982 172.514 170.054 177.001 166.696 180.301C163.338 183.602 158.818 185.451 154.11 185.451C149.401 185.451 144.881 183.602 141.523 180.301C138.165 177.001 136.237 172.514 136.155 167.806L135.063 97.9697L65.2287 167.804C61.8611 171.172 57.2936 173.064 52.5312 173.064C47.7687 173.064 43.2012 171.172 39.8336 167.804C36.466 164.437 34.5742 159.869 34.5742 155.107C34.5742 150.344 36.466 145.777 39.8336 142.409L109.668 72.5746L39.8319 71.4827C35.0704 71.4819 30.5041 69.5901 27.1371 66.2232C23.7702 62.8563 21.8784 58.2899 21.8777 53.5284Z" fill="black"/>
+                          </g>
+                          <defs>
+                          <clipPath id="clip0_1358_1029">
+                          <rect width="207" height="208" fill="white"/>
+                          </clipPath>
+                          </defs>
                         </svg>
                       </div>
                     ))}
                   </div>
                 </div>
               ) : modalData.component === 'EmploymentRateMeter' && modalData.rawData ? (
-                <div className="flex flex-col items-center justify-center">
-                  {/* Circular Gauge - Speedometer Style */}
-                  <div className="relative w-48 h-48 flex items-center justify-center mb-6">
-                    <svg className="w-full h-full" viewBox="0 0 200 200">
-                      {/* Background Arc (White) - from bottom-left going up and around */}
+                <div className="flex flex-col items-center justify-center pt-4 pb-4">
+                  {/* Speedometer - Semicircle from left to right */}
+                  <div className="w-full max-w-sm mx-auto mb-4 relative">
+                    <svg width="100%" height="auto" viewBox="-10 0 300 150" preserveAspectRatio="xMidYMid meet" className="w-full">
+                      {/* Background Arc - gray semicircle */}
                       <path
-                        d="M 50 150 A 70 70 0 1 1 150 150"
+                        d="M 30 120 A 90 90 0 0 1 250 120"
                         fill="none"
-                        stroke="#f3f4f6"
-                        strokeWidth="20"
+                        stroke="#e5e7eb"
+                        strokeWidth="14"
                         strokeLinecap="round"
                       />
-                      {/* Progress Arc - fills from bottom-left upward */}
+                      {/* Filled Arc - purple filled portion */}
                       <path
-                        d="M 50 150 A 70 70 0 1 1 150 150"
+                        d="M 30 120 A 90 90 0 0 1 250 120"
                         fill="none"
                         stroke="#a855f7"
-                        strokeWidth="20"
+                        strokeWidth="12"
                         strokeLinecap="round"
-                        strokeDasharray={`${Math.PI * 70 * 1.5 * (modalData.rawData.targetRate / 100)} ${Math.PI * 70 * 1.5}`}
-                        style={{ transition: 'stroke-dasharray 2s ease-in-out' }}
+                        strokeDasharray={`${Math.PI * 90 * (modalData.rawData.targetRate / 100)} ${Math.PI * 90}`}
                       />
-                      {/* Indicator Dot - positioned at the end of progress arc */}
-                      <circle
-                        cx={100 + 70 * Math.cos(-Math.PI / 4 + (modalData.rawData.targetRate / 100) * Math.PI * 1.5)}
-                        cy={100 + 70 * Math.sin(-Math.PI / 4 + (modalData.rawData.targetRate / 100) * Math.PI * 1.5)}
-                        r="8"
+                      {/* Dot at end - positioned at percentage point */}
+                      {/* <circle
+                        cx={30 + 211 * (modalData.rawData.targetRate / 100)}
+                        cy={100 - (120 - 90 * (1 + Math.cos(Math.PI * (modalData.rawData.targetRate / 100))))}
+                        r="13"
                         fill="#a855f7"
                       />
+                      <circle
+                        cx={30 + 211 * (modalData.rawData.targetRate / 100)}
+                        cy={100 - (120 - 90 * (1 + Math.cos(Math.PI * (modalData.rawData.targetRate / 100))))}
+                        r="13"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="3"
+                      /> */}
                     </svg>
-                    {/* Center Content */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <p className="text-3xl font-bold text-slate-800">
-                        {modalData.rawData.targetRate}%
-                      </p>
-                    </div>
-                  </div>
 
-                  {/* Additional Info */}
-                  <div className="w-full text-center">
-                    <p className="text-slate-600 text-sm">
-                      Average salary : <span className="font-semibold">{modalData.value}</span>
+                    <p className="absolute top-[60%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-5xl font-black text-slate-900 mb-1">
+                      {modalData.rawData.targetRate}%
                     </p>
                   </div>
+
+                  {/* Center Content */}
+                  <p className="text-sm text-slate-600 text-center">
+                    Average salary : <span className="font-semibold text-slate-800">{modalData.value}</span>
+                  </p>
                 </div>
               ) : modalData.component === 'CourseTimeline' && modalData.rawData ? (
-                <div className="flex flex-col py-4 max-h-96 overflow-y-auto">
+                <div className="flex flex-col py-4 max-h-96 overflow-y-auto scrollbar-hide">
                   {/* Course List */}
                   <div className="space-y-3">
                     {modalData.rawData?.map((item: any, index: number) => (
@@ -667,8 +771,15 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
                           </div>
                           <span className="text-sm font-medium text-slate-800">{item.course}</span>
                         </div>
-                        <svg className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        <svg className='w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors flex-shrink-0' xmlns="http://www.w3.org/2000/svg" width="207" height="208" viewBox="0 0 207 208" fill="none">
+                          <g clip-path="url(#clip0_1358_1029)">
+                          <path d="M21.8777 53.5284C21.8784 48.7668 23.7702 44.2005 27.1371 40.8336C30.5041 37.4666 35.0704 35.5748 39.8319 35.5741L154.11 35.5741C158.871 35.5748 163.437 37.4666 166.804 40.8336C170.171 44.2005 172.063 48.7668 172.064 53.5284L172.064 167.806C171.982 172.514 170.054 177.001 166.696 180.301C163.338 183.602 158.818 185.451 154.11 185.451C149.401 185.451 144.881 183.602 141.523 180.301C138.165 177.001 136.237 172.514 136.155 167.806L135.063 97.9697L65.2287 167.804C61.8611 171.172 57.2936 173.064 52.5312 173.064C47.7687 173.064 43.2012 171.172 39.8336 167.804C36.466 164.437 34.5742 159.869 34.5742 155.107C34.5742 150.344 36.466 145.777 39.8336 142.409L109.668 72.5746L39.8319 71.4827C35.0704 71.4819 30.5041 69.5901 27.1371 66.2232C23.7702 62.8563 21.8784 58.2899 21.8777 53.5284Z" fill="black"/>
+                          </g>
+                          <defs>
+                          <clipPath id="clip0_1358_1029">
+                          <rect width="207" height="208" fill="white"/>
+                          </clipPath>
+                          </defs>
                         </svg>
                       </div>
                     ))}
