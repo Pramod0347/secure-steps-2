@@ -138,10 +138,6 @@ export const EmploymentRateMeter:React.FC<EmploymentRateMeterProps> = ({
   const actualTargetRate = data?.targetRate || targetRate;
   const actualSize = data?.size || size;
   
-  console.log("👥 EmploymentRateMeter received data:", data);
-  console.log("👥 Using targetRate:", actualTargetRate);
-  console.log("👥 Using size:", actualSize);
-  
   useEffect(() => {
     if (hasAnimated) return;
     
@@ -180,6 +176,16 @@ export const EmploymentRateMeter:React.FC<EmploymentRateMeterProps> = ({
   const angle = (currentRate / 100) * 180;
   const meterColor = currentRate >= 80 ? '#10b981' : currentRate >= 60 ? '#f59e0b' : '#ef4444';
 
+  // Calculate the arc endpoints for a semicircle from left (180°) to right (0°)
+  const radius = actualSize * 0.417;
+  const centerX = actualSize / 2;
+  const centerY = actualSize * 0.417;
+  
+  // Current angle in radians (0° = right, 180° = left)
+  const currentAngleRad = ((180 - angle) * Math.PI) / 180;
+  const currentX = centerX + radius * Math.cos(currentAngleRad);
+  const currentY = centerY + radius * Math.sin(currentAngleRad);
+
   return (
     <div className={`rounded-xl p-6 ${className}`}>
 
@@ -187,43 +193,45 @@ export const EmploymentRateMeter:React.FC<EmploymentRateMeterProps> = ({
       <div className="relative flex flex-col items-center">
         <div className={`relative mb-4`} style={{ width: actualSize, height: actualSize / 2 }}>
           <svg width={actualSize} height={actualSize / 2} viewBox={`0 0 ${actualSize} ${actualSize / 2}`} className="overflow-visible">
+            {/* Background arc - full semicircle */}
             <path
-              d={`M ${actualSize * 0.083} ${actualSize * 0.417} A ${actualSize * 0.417} ${actualSize * 0.417} 0 0 1 ${actualSize * 0.917} ${actualSize * 0.417}`}
+              d={`M ${actualSize * 0.083} ${actualSize * 0.417} A ${radius} ${radius} 0 0 1 ${actualSize * 0.917} ${actualSize * 0.417}`}
               fill="none"
               stroke="#e5e7eb"
               strokeWidth="8"
               strokeLinecap="round"
             />
             
+            {/* Filled arc - from left (180°) to current angle */}
             <path
-              d={`M ${actualSize * 0.083} ${actualSize * 0.417} A ${actualSize * 0.417} ${actualSize * 0.417} 0 0 1 ${actualSize * 0.917} ${actualSize * 0.417}`}
+              d={`M ${actualSize * 0.083} ${actualSize * 0.417} A ${radius} ${radius} 0 0 1 ${currentX} ${currentY}`}
               fill="none"
               stroke={meterColor}
               strokeWidth="8"
               strokeLinecap="round"
-              strokeDasharray={`${(angle / 180) * 261.8} 261.8`}
               className="transition-all duration-500 ease-out"
               style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }}
             />
             
-            <g transform={`translate(${actualSize / 2}, ${actualSize * 0.417}) rotate(${angle - 90})`}>
+            {/* Needle pointer */}
+            <g transform={`translate(${centerX}, ${centerY}) rotate(${angle - 90})`}>
               <line
-                x1="0" y1="0" x2="0" y2={-actualSize * 0.365}
-                stroke="#374151"
-                strokeWidth="3"
+                x1="0" y1="0" x2="0" y2={-radius + 5}
+                stroke={meterColor}
+                strokeWidth="4"
                 strokeLinecap="round"
-                className="transition-transform duration-500 ease-out"
+                className="transition-all duration-500 ease-out"
               />
-              <circle cx="0" cy="0" r="4" fill="#374151" />
+              <circle cx="0" cy="0" r="5" fill={meterColor} className="transition-colors duration-500" />
             </g>
           </svg>
         </div>
         
         <div className="text-center">
           <div className="text-4xl font-bold text-gray-800 mb-2">
-            {Math.round(currentRate)}
+            {Math.round(currentRate)}%
           </div>
-          <div className="text-sm text-gray-600">Employment Rate %</div>
+          <div className="text-sm text-gray-600">Employment Rate</div>
         </div>
       </div>
     </div>
@@ -259,9 +267,6 @@ export const CourseTimeline = ({
 
   // Use data prop first, then events prop, then default
   const actualEvents = data || events || defaultEvents;
-  
-  console.log("📚 CourseTimeline received data:", data);
-  console.log("📚 Using events:", actualEvents);
 
   const [timelineEvents] = useState(actualEvents);
   const [visibleItems, setVisibleItems] = useState(0);
