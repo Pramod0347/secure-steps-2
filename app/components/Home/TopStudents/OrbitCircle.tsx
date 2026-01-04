@@ -78,13 +78,13 @@ export function OrbitingCirclesDemo() {
   }, []);
 
   return (
-    <div className="relative flex h-[70vh] md:h-[1800px] w-full flex-col items-center justify-center overflow-hidden">
+    <div className="relative flex h-[450px] sm:h-[550px] md:h-[900px] lg:h-[1200px] xl:h-[1500px] 2xl:h-[1800px] w-full max-w-[100vw] flex-col items-center justify-center overflow-hidden">
       {/* <h2 className={`${dimensions.titleSize} absolute top-80  md:static md:top-0  font-bold text-center md:-mt-[30%]`}>
         Top Students<br/> Placed
       </h2> */}
       
       
-      <div className="absolute md:top-36 mx-auto">
+      <div className="absolute top-[10%] md:top-36 mx-auto">
         
         <OrbitingCircles
           iconSize={30}
@@ -100,7 +100,7 @@ export function OrbitingCirclesDemo() {
         </OrbitingCircles>
       </div>
 
-      <div className="absolute md:top-48 mx-auto">
+      <div className="absolute top-[15%] md:top-48 mx-auto">
         <OrbitingCircles
           iconSize={30}
           radiusX={dimensions.radius2}
@@ -114,7 +114,7 @@ export function OrbitingCirclesDemo() {
         </OrbitingCircles>
       </div>
 
-      <div className="absolute md:top-60 mx-auto">
+      <div className="absolute top-[20%] md:top-60 mx-auto">
         <OrbitingCircles
           iconSize={30}
           radiusX={dimensions.radius3}

@@ -133,7 +133,6 @@ export const createSession = async (
   session: any;
 }> => {
   try {
-    console.log("Creating session for userId:", sessionData.userId);
 
     // Retrieve the user data with retry logic
     const user = await withRetry(async () => {
@@ -172,7 +171,6 @@ export const createSession = async (
         });
       }, 3, 1000);
 
-      console.log("Active session count for userId:", sessionData.userId, activeSessionCount);
 
       // Remove oldest session if max concurrent sessions exceeded
       if (activeSessionCount >= SESSION_CONFIG.MAX_CONCURRENT_SESSIONS) {
@@ -184,7 +182,6 @@ export const createSession = async (
         }, 3, 1000);
 
         if (oldestSession) {
-          console.log("Removing oldest session with id:", oldestSession.id);
           await withRetry(async () => {
             return await prisma.session.delete({
               where: { id: oldestSession.id },
@@ -198,7 +195,6 @@ export const createSession = async (
     const accessToken = await createAccessToken(sessionData);
     const refreshToken = await createRefreshToken(sessionData);
 
-    console.log("Generated accessToken and refreshToken");
 
     // Create new session in the database with retry logic
     const session = await withRetry(async () => {
@@ -215,7 +211,6 @@ export const createSession = async (
       });
     }, 3, 1000);
 
-    console.log("New session created:", session);
 
     // Reset login attempts and unlock account (only for login) with retry logic
     if (!isSignup) {
@@ -230,10 +225,8 @@ export const createSession = async (
         });
       }, 3, 1000);
 
-      console.log("Login attempts reset and account unlocked for userId:", sessionData.userId);
     }
 
-    console.log(`before return the tokens : ac = ${accessToken} & rt = ${refreshToken}`);
 
     // Return the generated tokens and session
     return { accessToken, refreshToken, session };
@@ -278,7 +271,6 @@ async function isTokenValid(token: string): Promise<boolean | undefined | 0> {
 // Comprehensive session validation
 export async function validateSession(accessToken: string): Promise<SessionData | { error: string; status: number } | null> {
   try {
-    console.log("Validating session...");
     // 1. Fast JWT verification first
     const { payload } = await jwtVerify(accessToken, SECRET_KEY);
     const tokenPayload = payload as unknown as TokenPayload;
@@ -353,7 +345,6 @@ export async function validateSession(accessToken: string): Promise<SessionData 
 
     if (error instanceof Error) {
       if (error.message === 'ERR_JWT_EXPIRED' || error.name === 'TokenExpiredError') {
-        console.log("Access token expired");
         // Specific handling for expired tokens
         return { error: "Access token expired", status: 401 };
       }
@@ -394,7 +385,6 @@ export const refreshSessionTokens = async (
   role: UserRole;
 } | null> => {
   try {
-    console.log("Validating refresh token...");
     
     // Verify the refresh token
     const { payload } = await jwtVerify(refreshToken, SECRET_KEY);

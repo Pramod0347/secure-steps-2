@@ -12,7 +12,6 @@ const s3 = new S3({
 const bucketName = process.env.S3_BUCKET_NAME!;
 
 export const uploadFile = async (file: File, key: string): Promise<string> => {
-    console.log("entered the s3 uploading service....")
   try {
     const uploadParams = {
       Bucket: bucketName,

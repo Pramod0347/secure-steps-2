@@ -208,7 +208,6 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
         );
         
         if (validTimelineData.length === 0) {
-          console.log("📚 No valid course timeline data after filtering");
         } else {
           const courseItem: CareerOutcomeItem = {
             id: 3,
@@ -727,7 +726,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
                         d="M 20 100 A 80 80 0 0 1 180 100"
                         fill="none"
                         stroke="#e5e7eb"
-                        strokeWidth="14"
+                        strokeWidth="10"
                         strokeLinecap="round"
                       />
                       {/* Filled Arc - purple filled portion with animation */}
@@ -735,7 +734,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
                         d="M 20 100 A 80 80 0 0 1 180 100"
                         fill="none"
                         stroke="#a855f7"
-                        strokeWidth="12"
+                        strokeWidth="10"
                         strokeLinecap="round"
                         strokeDasharray={`${Math.PI * 80 * (employmentRateFill / 100)} ${Math.PI * 80}`}
                         style={{ transition: 'stroke-dasharray 2s ease-in-out' }}
@@ -765,7 +764,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
                           <span className="text-sm font-medium text-slate-800">{item.course}</span>
                         </div>
                         <svg className='w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors flex-shrink-0' xmlns="http://www.w3.org/2000/svg" width="207" height="208" viewBox="0 0 207 208" fill="none">
-                          <g clip-path="url(#clip0_1358_1029)">
+                          <g>
                           <path d="M21.8777 53.5284C21.8784 48.7668 23.7702 44.2005 27.1371 40.8336C30.5041 37.4666 35.0704 35.5748 39.8319 35.5741L154.11 35.5741C158.871 35.5748 163.437 37.4666 166.804 40.8336C170.171 44.2005 172.063 48.7668 172.064 53.5284L172.064 167.806C171.982 172.514 170.054 177.001 166.696 180.301C163.338 183.602 158.818 185.451 154.11 185.451C149.401 185.451 144.881 183.602 141.523 180.301C138.165 177.001 136.237 172.514 136.155 167.806L135.063 97.9697L65.2287 167.804C61.8611 171.172 57.2936 173.064 52.5312 173.064C47.7687 173.064 43.2012 171.172 39.8336 167.804C36.466 164.437 34.5742 159.869 34.5742 155.107C34.5742 150.344 36.466 145.777 39.8336 142.409L109.668 72.5746L39.8319 71.4827C35.0704 71.4819 30.5041 69.5901 27.1371 66.2232C23.7702 62.8563 21.8784 58.2899 21.8777 53.5284Z" fill="black"/>
                           </g>
                           <defs>

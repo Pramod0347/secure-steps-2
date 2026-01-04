@@ -28,7 +28,7 @@ const inter = Inter({
 const Page: React.FC = () => {
   return (
     <>
-      <div className={`w-screen flex flex-col  items-center justify-center overflow-x-hidden ${inter.className}`}>
+      <div className={`w-screen flex flex-col items-center justify-center overflow-x-hidden gap-4 md:gap-10 lg:gap-14 ${inter.className}`}>
 
         <Hero />
         {/* <NewHero /> */}

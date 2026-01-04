@@ -138,14 +138,12 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
   const performFetch = useCallback(
     (query: string, filters: FilterValues, page: number, options: any = {}) => {
       if (isUsingProvidedData || isModalInteractionRef.current) {
-        console.log("⏸️ SKIPPING FETCH:", { isUsingProvidedData, isModalInteraction: isModalInteractionRef.current })
         return
       }
 
       // Create unique params string to prevent duplicate calls
       const paramsString = JSON.stringify({ query, filters, page, options })
       if (paramsString === lastFetchParamsRef.current && !options.forceRefresh) {
-        console.log("🚫 DUPLICATE FETCH PREVENTED")
         return
       }
 
@@ -155,17 +153,14 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
       }
 
       const doFetch = () => {
-        console.log("🎯 PERFORMING FETCH:", { query, filters, page, options })
         lastFetchParamsRef.current = paramsString
         fetchUniversities(query, filters, page, options)
       }
 
       // Use debounce for search, immediate for page changes and refreshes
       if (enableDebounce && !options.forceRefresh && !options.immediate) {
-        console.log("⏳ DEBOUNCING FETCH")
         debounceTimeoutRef.current = setTimeout(doFetch, debounceMs)
       } else {
-        console.log("🚀 IMMEDIATE FETCH")
         doFetch()
       }
     },
@@ -180,7 +175,6 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
       const validPage = Math.max(1, Math.floor(page))
       if (validPage === currentPage) return
 
-      console.log("📄 PAGE CHANGE:", validPage)
       setCurrentPage(validPage)
       performFetch(currentSearchQuery, currentFilters, validPage, { immediate: true })
       
@@ -199,7 +193,6 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
       const trimmedQuery = (query || "").trim()
       const filtersToUse = newFilters || currentFilters
 
-      console.log("🔍 SEARCH:", { query: trimmedQuery, filters: filtersToUse })
 
       setSearchQuery(trimmedQuery)
       if (newFilters) {
@@ -221,7 +214,6 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
     (newFilters: FilterValues) => {
       if (isUsingProvidedData || isModalInteractionRef.current) return
 
-      console.log("🔧 FILTERS CHANGE:", newFilters)
       setFilters(newFilters)
       setCurrentPage(1)
       performFetch(currentSearchQuery, newFilters, 1)
@@ -236,49 +228,40 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
 
   const refreshData = useCallback(() => {
     if (isUsingProvidedData || isModalInteractionRef.current) return
-    console.log("🔄 REFRESHING DATA")
     performFetch(currentSearchQuery, currentFilters, currentPage, { forceRefresh: true, immediate: true })
   }, [isUsingProvidedData, currentSearchQuery, currentFilters, currentPage, performFetch])
 
   const clearError = useCallback(() => {
-    console.log("🧹 CLEAR ERROR")
   }, [])
 
   const setModalInteraction = useCallback((isInteracting: boolean) => {
-    console.log("🎭 MODAL INTERACTION:", isInteracting)
     isModalInteractionRef.current = isInteracting
   }, [])
 
   // SINGLE initialization effect - IMPROVED
   useEffect(() => {
     if (isUsingProvidedData || hasInitializedRef.current) {
-      console.log("⏸️ SKIPPING INITIALIZATION:", { isUsingProvidedData, hasInitialized: hasInitializedRef.current })
       return
     }
 
-    console.log("🚀 INITIALIZING HOOK:", { searchQuery, filters, initialPage, autoFetch, hasHydrated })
 
     hasInitializedRef.current = true
 
     // Wait for hydration
     if (!hasHydrated) {
-      console.log("⏸️ WAITING FOR HYDRATION")
       return
     }
 
     // Sync store state with props
     if (searchQuery !== currentSearchQuery) {
-      console.log("🔍 SYNCING SEARCH QUERY:", searchQuery)
       setSearchQuery(searchQuery)
     }
 
     if (JSON.stringify(filters) !== JSON.stringify(currentFilters)) {
-      console.log("🔧 SYNCING FILTERS:", filters)
       setFilters(filters)
     }
 
     if (initialPage !== currentPage) {
-      console.log("📄 SYNCING PAGE:", initialPage)
       setCurrentPage(initialPage)
     }
 
@@ -288,11 +271,9 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
       const hasCachedData = hasDataForQuery(searchQuery, filters, initialPage)
 
       if (hasCachedData) {
-        console.log("✅ FOUND CACHED DATA - loading from cache (NO API CALL)")
         // Load from cache without making API call
         performFetch(searchQuery, filters, initialPage, { immediate: true, silent: true })
       } else {
-        console.log("🌐 NO CACHED DATA - fetching from server")
         performFetch(searchQuery, filters, initialPage, { immediate: true })
       }
     }
@@ -340,7 +321,6 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
       lastProcessedSearchRef.current = currentSearchStr
       lastProcessedFiltersRef.current = currentFiltersStr
       
-      console.log("🔄 PROPS CHANGED - triggering fetch:", { searchChanged, filtersChanged, searchQuery, filters })
       
       // Update store state
       if (searchChanged) {
@@ -386,7 +366,6 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
       authStateRef.current !== isAuthenticated &&
       (hasData || currentSearchQuery || Object.keys(currentFilters).length > 0)
     ) {
-      console.log("🔄 AUTH STATE CHANGED - refreshing data")
       authStateRef.current = isAuthenticated
       performFetch(currentSearchQuery, currentFilters, currentPage, { forceRefresh: true, immediate: true })
     } else {
@@ -409,7 +388,6 @@ export const useUniversities = (options: UseUniversitiesOptions = {}): UseUniver
 
     const interval = setInterval(
       () => {
-        console.log("🧹 PERIODIC CACHE CLEANUP")
         clearExpiredCache()
       },
       15 * 60 * 1000,

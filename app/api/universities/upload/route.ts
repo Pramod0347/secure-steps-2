@@ -11,7 +11,6 @@ export async function POST(req: Request): Promise<NextResponse> {
   try {
     const body = await req.json()
 
-    console.log("Received bulk data:", `${body.length} universities`)
 
     if (!Array.isArray(body) || body.length === 0) {
       throw new Error("Request body must be a non-empty array of universities")
@@ -20,7 +19,6 @@ export async function POST(req: Request): Promise<NextResponse> {
     // Validate all universities in the array
     const validatedData = BulkUniversityUploadSchema.parse(body)
 
-    console.log("Validated bulk data:", `${validatedData.length} universities`)
 
     // Process universities in batches to avoid overwhelming the database
     const results = {
@@ -106,7 +104,6 @@ export async function POST(req: Request): Promise<NextResponse> {
       }
     }
 
-    console.log(`Bulk upload completed: ${results.success} succeeded, ${results.failed} failed`)
 
     return NextResponse.json(
       {

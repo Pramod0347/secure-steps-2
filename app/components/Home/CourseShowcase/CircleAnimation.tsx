@@ -121,9 +121,8 @@ const CircleAnimation: React.FC<CircleAnimationProps> = ({ avatars }) => {
                 <Image
                   src={avatar.image}
                   alt={avatar.title}
-                  layout="fill"
-                  objectFit="contain"
-                  className="rounded-full"
+                  fill
+                  className="object-contain rounded-full"
                 />
               </div>
             </div>

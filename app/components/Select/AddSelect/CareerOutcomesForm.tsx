@@ -61,14 +61,6 @@ export function CareerOutcomesForm({
 
   // Initialize state from props - allow re-initialization when data changes
   useEffect(() => {
-    console.log("CareerOutcomesForm: Received career outcome data:", careerOutcomeData)
-    
-    console.log("CareerOutcomesForm: Initializing with data:", {
-      salaryChartData: careerOutcomeData?.salaryChartData,
-      employmentRateMeterData: careerOutcomeData?.employmentRateMeterData,
-      courseTimelineData: careerOutcomeData?.courseTimelineData
-    })
-    
     if (careerOutcomeData) {
       setSalaryChartData(careerOutcomeData.salaryChartData || [])
       setEmploymentRateMeterData(careerOutcomeData.employmentRateMeterData || null)
@@ -95,7 +87,6 @@ export function CareerOutcomesForm({
       courseTimelineData: newTimelineData
     }
     
-    console.log("Notifying parent of career outcome changes:", newData)
     onChange(newData)
   }, [onChange])
 

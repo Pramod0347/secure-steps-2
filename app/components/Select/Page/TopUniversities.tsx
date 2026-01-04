@@ -161,7 +161,6 @@ const TopUniversities: React.FC<TopUniversitiesProps> = ({
 
   // Show skeleton during initial loading
   if (showLoader) {
-    console.log("🔄 Showing skeleton loader")
     return (
       <div className="flex flex-col min-h-screen p-4 md:p-16 lg:p-20 2xl:p-28 text-left font-sans">
         <div className="mb-8 sm:mb-12 lg:mb-20 flex flex-row items-center justify-between">

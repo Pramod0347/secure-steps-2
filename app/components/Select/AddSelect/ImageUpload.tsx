@@ -65,7 +65,6 @@ export const ImageUpload = forwardRef<HTMLInputElement, ImageUploadProps>(
     const [progress, setProgress] = useState(0)
     const [uploadController, setUploadController] = useState<AbortController | null>(null)
 
-    console.log("preview :",preview);
 
     useEffect(() => {
       if (currentUrl) {
@@ -123,12 +122,10 @@ export const ImageUpload = forwardRef<HTMLInputElement, ImageUploadProps>(
 
           setPreview(imageUrl)
           onChange(file)
-          console.log(`${type} image uploaded:`, imageUrl)
           toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} image uploaded successfully`)
           onProgress?.(100)
         } catch (error) {
           if (error instanceof Error && error.name === "AbortError") {
-            console.log("Upload cancelled")
             toast.info("Upload cancelled")
           } else {
             console.error(`Error uploading ${type} image:`, error)

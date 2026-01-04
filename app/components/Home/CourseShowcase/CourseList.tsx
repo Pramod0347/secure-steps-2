@@ -42,7 +42,7 @@ const bottomImages = [
 
 const CourseList: React.FC = () => {
   return (
-    <div className=" w-[100vw] md:w-[130vw] overflow-hidden ">
+    <div className="w-full max-w-[100vw] overflow-hidden">
        <CourseShowcase topImages={topImages} bottomImages={bottomImages} />
     </div>
   )

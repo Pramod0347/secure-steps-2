@@ -99,9 +99,8 @@ const NewHeroSection: React.FC = () => {
                     <Image
                       src={avatar.image }
                       alt={`Avatar ${index + 1}`}
-                      layout="fill"
-                      objectFit="contain"
-                      className="rounded-lg"
+                      fill
+                      className="object-contain rounded-lg"
                     />
                   </div>
                   <div className="mt-2 text-[10px] sm:text-[14px] text-black text-center">{avatar.title}</div>

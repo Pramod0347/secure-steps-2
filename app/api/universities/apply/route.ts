@@ -22,7 +22,6 @@ export interface PaginationParams {
 
 // GET route handler to fetch applications
 export async function GET(req: Request): Promise<NextResponse> {
-  console.log("Fetching university applications...");
   try {
     const NextUrl = process.env.NEXTAUTH_URL || window.location.origin;
     const url = new URL(req.url.startsWith("http") ? req.url : `${NextUrl}${req.url}`);
@@ -164,7 +163,6 @@ export async function GET(req: Request): Promise<NextResponse> {
       );
     }
 
-    console.log(`Retrieved ${applications.length} applications`);
 
     return NextResponse.json({
       applications,
@@ -312,7 +310,6 @@ export async function POST(req: Request): Promise<NextResponse> {
       if (!body.universityId) body.universityId = universityId;
     }
 
-    console.log("Received application data:", JSON.stringify(body, null, 2));
 
     if (!body || Object.keys(body).length === 0) {
       throw new Error("Request body is empty");
@@ -412,7 +409,6 @@ export async function POST(req: Request): Promise<NextResponse> {
       },
     });
 
-    console.log("Created application:", JSON.stringify(application, null, 2));
 
     return NextResponse.json(application, { status: 201 });
   } catch (error) {
@@ -462,7 +458,6 @@ export async function PATCH(req: Request): Promise<NextResponse> {
       );
     }
 
-    console.log(`Updating application ${id} with data:`, JSON.stringify(body, null, 2));
 
     // Check if application exists
     const existingApplication = await prisma.universityApplications.findUnique({
@@ -515,7 +510,6 @@ export async function PATCH(req: Request): Promise<NextResponse> {
       },
     });
 
-    console.log("Updated application:", JSON.stringify(updatedApplication, null, 2));
 
     return NextResponse.json(updatedApplication);
   } catch (error) {
@@ -548,7 +542,6 @@ export async function DELETE(req: Request): Promise<NextResponse> {
       );
     }
 
-    console.log(`Deleting application ${id}`);
 
     // Check if application exists
     const existingApplication = await prisma.universityApplications.findUnique({
