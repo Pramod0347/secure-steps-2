@@ -160,7 +160,6 @@ const fetcher = async (url: string): Promise<any> => {
   const timeoutId = setTimeout(() => controller.abort(), 15000)
 
   try {
-    console.log("🌐 API REQUEST:", url)
 
     const response = await fetch(url, {
       signal: controller.signal,
@@ -172,11 +171,9 @@ const fetcher = async (url: string): Promise<any> => {
 
     clearTimeout(timeoutId)
 
-    console.log("📡 Response status:", response.status, "for URL:", url)
 
     if (!response.ok) {
       if (response.status === 404) {
-        console.log("❌ Resource not found (404)")
         return null
       } else if (response.status === 401) {
         console.warn("⚠️ Authentication required")
@@ -191,7 +188,6 @@ const fetcher = async (url: string): Promise<any> => {
     }
 
     const data = await response.json()
-    console.log("✅ API SUCCESS:", data)
     return data
   } catch (error) {
     clearTimeout(timeoutId)
@@ -278,7 +274,6 @@ export const useUniversityStore = create<UniversityState>()(
         // IMPROVED: Better loading state management
         setLoading: (loading, loadingType = "initial") =>
           set((state) => {
-            console.log("⏳ SETTING LOADING:", loading, loadingType)
 
             // Always set the main loading state
             state.isLoading = loading
@@ -307,7 +302,6 @@ export const useUniversityStore = create<UniversityState>()(
         // Rest of the setters (same as before)
         setUniversities: (universities, pagination) =>
           set((state) => {
-            console.log("📝 SETTING UNIVERSITIES:", universities.length, "items")
             state.universities = universities
             state.pagination = pagination
             state.isLoading = false
@@ -319,7 +313,6 @@ export const useUniversityStore = create<UniversityState>()(
 
         setError: (error) =>
           set((state) => {
-            console.log("❌ SETTING ERROR:", error)
             state.error = error
             state.isLoading = false
             state.isInitialLoading = false
@@ -331,7 +324,6 @@ export const useUniversityStore = create<UniversityState>()(
           set((state) => {
             const trimmedQuery = (query || "").trim()
             if (state.currentSearchQuery !== trimmedQuery) {
-              console.log("🔍 SETTING SEARCH QUERY:", trimmedQuery)
               state.currentSearchQuery = trimmedQuery
             }
           }),
@@ -340,7 +332,6 @@ export const useUniversityStore = create<UniversityState>()(
           set((state) => {
             const filtersChanged = JSON.stringify(state.currentFilters) !== JSON.stringify(filters || {})
             if (filtersChanged) {
-              console.log("🔧 SETTING FILTERS:", filters)
               state.currentFilters = { ...filters }
             }
           }),
@@ -349,14 +340,12 @@ export const useUniversityStore = create<UniversityState>()(
           set((state) => {
             const validPage = Math.max(1, Math.floor(page))
             if (state.currentPage !== validPage) {
-              console.log("📄 SETTING PAGE:", validPage)
               state.currentPage = validPage
             }
           }),
 
         setHydrated: () =>
           set((state) => {
-            console.log("🔄 STORE HYDRATED")
             state._hasHydrated = true
           }),
 
@@ -367,7 +356,6 @@ export const useUniversityStore = create<UniversityState>()(
           const cached = state.cache[cacheKey]
 
           if (!cached) {
-            console.log("❌ NO CACHE for:", cacheKey)
             return false
           }
 
@@ -375,11 +363,9 @@ export const useUniversityStore = create<UniversityState>()(
           const isExpired = now - cached.timestamp > state.cacheTimeout
 
           if (isExpired) {
-            console.log("⏰ CACHE EXPIRED for:", cacheKey)
             return false
           }
 
-          console.log("✅ VALID CACHE EXISTS for:", cacheKey, `(${cached.data.length} items)`)
           return true
         },
 
@@ -389,7 +375,6 @@ export const useUniversityStore = create<UniversityState>()(
           const cached = state.cache[cacheKey]
 
           if (!cached) {
-            console.log("❌ CACHE MISS for:", cacheKey)
             return null
           }
 
@@ -397,7 +382,6 @@ export const useUniversityStore = create<UniversityState>()(
           const isExpired = now - cached.timestamp > state.cacheTimeout
 
           if (isExpired) {
-            console.log("⏰ REMOVING EXPIRED CACHE for:", cacheKey)
             set((state) => {
               delete state.cache[cacheKey]
               delete state.lastSuccessfulFetch[cacheKey]
@@ -405,14 +389,12 @@ export const useUniversityStore = create<UniversityState>()(
             return null
           }
 
-          console.log("🎯 CACHE HIT - USING CACHED DATA for:", cacheKey, `(${cached.data.length} items)`)
           return cached
         },
 
         setCachedData: (searchQuery, filters, page, data, pagination) =>
           set((state) => {
             const cacheKey = generateCacheKey(searchQuery, filters, page)
-            console.log("💾 CACHING DATA for:", cacheKey, `(${data.length} items)`)
 
             state.cache[cacheKey] = {
               data: [...data],
@@ -427,7 +409,6 @@ export const useUniversityStore = create<UniversityState>()(
 
         clearCache: () =>
           set((state) => {
-            console.log("🗑️ CLEARING ALL CACHE")
             state.cache = {}
             state.lastSuccessfulFetch = {}
           }),
@@ -447,7 +428,6 @@ export const useUniversityStore = create<UniversityState>()(
             })
 
             if (removedCount > 0) {
-              console.log("🧹 REMOVED", removedCount, "expired cache entries")
             }
           }),
 
@@ -459,11 +439,7 @@ export const useUniversityStore = create<UniversityState>()(
 
         setUniversityDetails: (university) =>
           set((state) => {
-            console.log("💾 CACHING UNIVERSITY DETAILS:", university.name)
-            console.log("💾 University careerOutcomes being cached:", university.careerOutcomes)
-            console.log("💾 University careerOutcomes length:", university.careerOutcomes?.length)
             state.universityDetails[university.id] = university
-            console.log("💾 Cached university careerOutcomes:", state.universityDetails[university.id].careerOutcomes)
           }),
 
         // IMPROVED: Main fetch function with better loading state management
@@ -473,18 +449,15 @@ export const useUniversityStore = create<UniversityState>()(
 
           // Don't fetch during SSR
           if (typeof window === "undefined") {
-            console.log("⏸️ SKIPPING FETCH - SSR")
             return
           }
 
           const cacheKey = generateCacheKey(searchQuery, filters, page)
-          console.log("🎯 FETCH REQUEST for:", cacheKey, { forceRefresh, silent })
 
           // Check cache FIRST unless explicitly forcing refresh
           if (!forceRefresh) {
             const cached = state.getCachedData(searchQuery, filters, page)
             if (cached) {
-              console.log("🚀 USING CACHED DATA - NO SERVER CALL for:", cacheKey)
               set((state) => {
                 state.universities = [...cached.data]
                 state.pagination = { ...cached.pagination }
@@ -503,18 +476,15 @@ export const useUniversityStore = create<UniversityState>()(
 
           // Check for active request to prevent duplicates - USING ARRAY INSTEAD OF SET
           if (state.activeRequests.includes(cacheKey)) {
-            console.log("⏳ REQUEST ALREADY IN PROGRESS for:", cacheKey)
             return
           }
 
           // Rate limiting
           const lastFetch = state.lastSuccessfulFetch[cacheKey]
           if (lastFetch && Date.now() - lastFetch < 3000 && !forceRefresh) {
-            console.log("🚫 RATE LIMITED - too soon since last fetch for:", cacheKey)
             return
           }
 
-          console.log("🌐 MAKING SERVER CALL for:", cacheKey)
 
           // Add to active requests - USING ARRAY PUSH
           set((state) => {
@@ -557,7 +527,6 @@ export const useUniversityStore = create<UniversityState>()(
               throw new Error("Invalid response format")
             }
 
-            console.log("✅ SERVER FETCH SUCCESS for:", cacheKey, response.universities.length, "universities")
 
             // Update store with new data
             set((state) => {
@@ -593,7 +562,6 @@ export const useUniversityStore = create<UniversityState>()(
             if (errorMessage.includes("timed out") || errorMessage.includes("network")) {
               const cached = state.getCachedData(searchQuery, filters, page)
               if (cached) {
-                console.log("🔄 USING CACHED DATA due to network error")
                 set((state) => {
                   state.universities = [...cached.data]
                   state.pagination = { ...cached.pagination }
@@ -617,13 +585,11 @@ export const useUniversityStore = create<UniversityState>()(
             return null
           }
 
-          console.log("🎯 FETCH UNIVERSITY BY SLUG:", slug, { forceRefresh })
 
           // Check cache first unless forcing refresh
           if (!forceRefresh) {
             const cached = state.getUniversityById(slug)
             if (cached) {
-              console.log("✅ Using cached university details for:", slug, cached.name)
               return cached
             }
 
@@ -636,7 +602,6 @@ export const useUniversityStore = create<UniversityState>()(
                 uni.name.toLowerCase().replace(/[^a-z0-9]/g, "-") === slug.toLowerCase(),
             )
             if (foundInMain) {
-              console.log("✅ Found university in main array:", foundInMain.name)
               state.setUniversityDetails(foundInMain)
               return foundInMain
             }
@@ -645,7 +610,6 @@ export const useUniversityStore = create<UniversityState>()(
           // Check for active request to prevent duplicates - USING ARRAY INCLUDES
           const requestKey = `university-${slug}`
           if (state.activeRequests.includes(requestKey)) {
-            console.log("⏳ UNIVERSITY REQUEST ALREADY IN PROGRESS for:", slug)
             return null
           }
 
@@ -666,7 +630,6 @@ export const useUniversityStore = create<UniversityState>()(
 
             for (const url of endpoints) {
               try {
-                console.log("🌐 Trying university endpoint:", url)
                 const result = await fetcher(url)
 
                 if (result) {
@@ -686,22 +649,15 @@ export const useUniversityStore = create<UniversityState>()(
                   }
 
                   if (university && university.id) {
-                    console.log("✅ Successfully fetched university:", university.name)
-                    console.log("✅ University careerOutcomes in store:", university.careerOutcomes)
-                    console.log("✅ University careerOutcomes length:", university.careerOutcomes?.length)
-                    console.log("✅ University careerOutcomes type:", typeof university.careerOutcomes)
-                    console.log("✅ University careerOutcomes isArray:", Array.isArray(university.careerOutcomes))
                     state.setUniversityDetails(university)
                     return university
                   }
                 }
               } catch (endpointError) {
-                console.log("❌ Error with endpoint:", url, endpointError)
                 continue // Try next endpoint
               }
             }
 
-            console.log("❌ All university endpoints failed for:", slug)
             return null
           } catch (error) {
             console.error("❌ Failed to fetch university:", error)
@@ -728,9 +684,7 @@ export const useUniversityStore = create<UniversityState>()(
                 delete state.cache[key]
                 delete state.lastSuccessfulFetch[key]
               })
-              console.log("🗑️ INVALIDATED", keysToRemove.length, "specific cache entries")
             } else {
-              console.log("🗑️ CLEARING ALL CACHE")
               state.cache = {}
               state.lastSuccessfulFetch = {}
             }
@@ -748,7 +702,6 @@ export const useUniversityStore = create<UniversityState>()(
 
         reset: () =>
           set((state) => {
-            console.log("🔄 RESETTING STORE")
             state.cache = {}
             state.universities = []
             state.pagination = null
@@ -783,19 +736,19 @@ export const useUniversityStore = create<UniversityState>()(
           }),
 
         debugCacheState: () => {
-          const state = get()
-          console.log("🔍 Cache Debug:", {
+          const state = get();
+          return {
             cacheKeys: Object.keys(state.cache),
             cacheCount: Object.keys(state.cache).length,
             universityDetailsCount: Object.keys(state.universityDetails).length,
             activeRequests: state.activeRequests, // NOW ARRAY
             lastFetchTimes: state.lastSuccessfulFetch,
-          })
+          };
         },
 
         debugStoreState: () => {
-          const state = get()
-          console.log("🔍 Store Debug:", {
+          const state = get();
+          return {
             hasHydrated: state._hasHydrated,
             universitiesCount: state.universities.length,
             universityDetailsCount: Object.keys(state.universityDetails).length,
@@ -807,7 +760,7 @@ export const useUniversityStore = create<UniversityState>()(
             currentQuery: state.currentSearchQuery,
             currentFilters: state.currentFilters,
             currentPage: state.currentPage,
-          })
+          };
         },
       })),
       {
@@ -845,7 +798,6 @@ export const useUniversityStore = create<UniversityState>()(
                           lastSuccessfulFetch: {},
                         }
                         localStorage.setItem(key, JSON.stringify(minimal))
-                        console.log("✅ Cleared cache and stored minimal data")
                       }
                     } catch (clearError) {
                       console.error("❌ Failed to clear cache:", clearError)
@@ -919,7 +871,6 @@ export const useUniversityStore = create<UniversityState>()(
           }
         },
         onRehydrateStorage: () => {
-          console.log("🔄 STARTING REHYDRATION...")
           return (state, error) => {
             if (error) {
               console.error("❌ REHYDRATION ERROR:", error)
@@ -938,7 +889,6 @@ export const useUniversityStore = create<UniversityState>()(
               state.error = null
               state.activeRequests = [] // RESET TO EMPTY ARRAY
 
-              console.log("✅ STORE REHYDRATED with", Object.keys(state.cache || {}).length, "cached entries")
 
               // Clean expired cache immediately
               const now = Date.now()
@@ -952,16 +902,13 @@ export const useUniversityStore = create<UniversityState>()(
               })
 
               if (removedCount > 0) {
-                console.log("🧹 REMOVED", removedCount, "expired cache entries during rehydration")
               }
 
-              console.log("🚀 STORE READY with", Object.keys(state.cache || {}).length, "valid cache entries")
             }
           }
         },
         version: 16,
         migrate: (persistedState: any, version: number) => {
-          console.log("🔄 MIGRATING STORE from version", version, "to 16")
           // Clear cache and universityDetails from persisted state to prevent quota errors
           return {
             isLoading: false,

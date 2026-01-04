@@ -19,7 +19,6 @@ const SocketHandler = (req: NextApiRequest, res: ResponseWithSocket) => {
   }
 
   if (res.socket.server.io) {
-    console.log('Socket server already running');
     res.end();
     return;
   }
@@ -36,7 +35,6 @@ const SocketHandler = (req: NextApiRequest, res: ResponseWithSocket) => {
   res.socket.server.io = io;
 
   io.on('connection', (socket) => {
-    console.log('Client connected:', socket.id);
   });
 
   res.end();

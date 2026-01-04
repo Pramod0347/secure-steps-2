@@ -383,15 +383,15 @@ const InfiniteLogoCarousel: React.FC<LogoCarouselProps> = ({
   const carouselHeight = isMobile ? mobileHeight : height
 
   return (
-    <div className="w-full text-center ">
-      <h2 className="text-[20px] leading-[25.2px] md:text-5xl font-bold uppercase">
+    <div className="w-full text-center px-4">
+      <h2 className="text-[16px] sm:text-[20px] md:text-3xl lg:text-4xl xl:text-5xl leading-[1.3] font-bold uppercase">
         Universities that&#160;
         <span className="bg-gradient-to-r from-[#DA202E] to-[#3B367D] bg-clip-text text-transparent inline-block">await your application</span>
       </h2>
-      <p>You name it, We have it</p>
+      <p className="text-xs sm:text-sm md:text-base text-gray-600 mt-2">You name it, We have it</p>
       <div
         ref={outerContainerRef}
-        className="w-full overflow-hidden rounded-lg  md:my-20  "
+        className="w-full overflow-hidden rounded-lg my-6 md:my-12 lg:my-16"
         style={{ height: `${carouselHeight}px` }}
         aria-label="University logos carousel"
       >

@@ -45,7 +45,6 @@ export function CourseCard({
       return;
     }
     
-    console.log("Deleting course:", { id, name });
     onDelete?.(id);
   };
 

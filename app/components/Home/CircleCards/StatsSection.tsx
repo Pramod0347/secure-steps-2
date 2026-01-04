@@ -9,7 +9,7 @@ export function StatsSection() {
   ]
 
   return (
-    <div className="flex justify-around 2xl:px-60 md:px-36  w-screen -mt-10">
+    <div className="flex justify-around 2xl:px-60 md:px-36 w-screen mt-4 md:mt-8">
       {stats.map((stat, index) => (
         <StatCircle key={index} number={stat.number} label={stat.label} />
       ))}

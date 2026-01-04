@@ -18,13 +18,11 @@ export function FacilitiesList({ facilities, onChange }: FacilitiesListProps) {
     if (newFacility.trim()) {
       onChange([...facilities, newFacility.trim()])
       setNewFacility("")
-      console.log("Facility added:", newFacility.trim())
     }
   }
 
   const removeFacility = (index: number) => {
     onChange(facilities.filter((_, i) => i !== index))
-    console.log("Facility removed at index:", index)
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

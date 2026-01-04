@@ -122,6 +122,17 @@ const Test = () => {
   ];
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleNext = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % testimonials.length);
@@ -133,29 +144,35 @@ const Test = () => {
     return () => clearInterval(interval);
   }, [handleNext]);
 
-  // Function to determine positions for mobile view
-  const getMobilePosition = (index:any, activeIndex:any, totalItems:any) => {
+  // Get transform position for each card
+  const getCardPosition = (index: number) => {
     const isActive = index === activeIndex;
-    const isLeft = index === (activeIndex - 1 + totalItems) % totalItems;
-    const isRight = index === (activeIndex + 1) % totalItems;
-    
-    if (isActive) return 0;
-    if (isLeft) return -70;
-    if (isRight) return 70;
-    return 0;
+    const isLeft = index === (activeIndex - 1 + testimonials.length) % testimonials.length;
+    const isRight = index === (activeIndex + 1) % testimonials.length;
+
+    if (isMobile) {
+      if (isActive) return { x: 0, scale: 1, opacity: 1 };
+      if (isLeft) return { x: -80, scale: 0.75, opacity: 0.5 };
+      if (isRight) return { x: 80, scale: 0.75, opacity: 0.5 };
+    } else {
+      if (isActive) return { x: 0, scale: 1, opacity: 1 };
+      if (isLeft) return { x: -750, scale: 0.85, opacity: 0.6 };
+      if (isRight) return { x: 750, scale: 0.85, opacity: 0.6 };
+    }
+    return { x: 0, scale: 0, opacity: 0 };
   };
 
   return (
-    <div className="flex w-screen md:h-[90vh] h-[65vh] items-center flex-col overflow-hidden mb-30   ">
+    <div className="flex w-screen min-h-[500px] md:min-h-[600px] lg:min-h-[700px] items-center flex-col overflow-hidden py-8 md:py-12">
       {/* Content */}
       <div className="relative z-10 w-full">
-        <h1 className="text-[20px] text-center leading-[25.2px] md:text-5xl my-10 md:my-0 uppercase md:font-semibold font-[800] ">
-          <p className="text-center bg-gradient-to-r from-[#DA202E] to-[#3B367D] bg-clip-text text-transparent inline-block font-bold">Testimonials</p>
+        <h1 className="text-[18px] sm:text-[22px] text-center leading-[1.3] md:text-3xl lg:text-4xl xl:text-5xl mb-6 md:mb-10 uppercase md:font-semibold font-bold">
+          <span className="bg-gradient-to-r from-[#DA202E] to-[#3B367D] bg-clip-text text-transparent inline-block font-bold">Testimonials</span>
         </h1>
 
         {/* Carousel */}
-        <div className="relative w-full md:h-[350px] h-[400px] -mt-10 md:mt-20 flex items-center justify-center">
-          <div className="relative flex items-center justify-center w-full">
+        <div className="relative w-full h-[320px] md:h-[400px] flex items-center justify-center">
+          <div className="relative flex items-center justify-center w-full h-full">
             {testimonials.map((testimonial, index) => {
               const isActive = index === activeIndex;
               const isLeft = index === (activeIndex - 1 + testimonials.length) % testimonials.length;
@@ -164,28 +181,32 @@ const Test = () => {
               // Only render the three visible cards
               if (!isActive && !isLeft && !isRight) return null;
               
-              const mobileX = getMobilePosition(index, activeIndex, testimonials.length);
+              const position = getCardPosition(index);
 
               return (
                 <motion.div
                   key={index}
-                  className={`absolute transition-all duration-500 ease-in-out ${
-                    isActive ? "z-30 md:scale-105 scale-100" : 
-                    "z-20 md:scale-90 scale-75 opacity-60"
-                  }`}
+                  className={`absolute ${isActive ? "z-30" : "z-20"}`}
+                  initial={false}
+                  animate={{
+                    x: position.x,
+                    scale: position.scale,
+                    opacity: position.opacity,
+                  }}
+                  transition={{
+                    duration: 0.5,
+                    ease: "easeInOut",
+                  }}
                   style={{
-                    transform: `translateX(${window.innerWidth >= 768 ? (isActive ? 0 : isLeft ? -800 : 800) : mobileX}px) ${isActive ? "scale(1)" : "scale(0.75)"}`,
-                    width: window.innerWidth >= 768 ? "auto" : "260px",
+                    width: isMobile ? "280px" : "auto",
                   }}
                 >
-                  <div className={window.innerWidth < 768 ? "max-w-[260px]" : ""}>
-                    <TestiCard
-                      image={testimonial.image}
-                      content={testimonial.content}
-                      name={testimonial.name}
-                      role={testimonial.role}
-                    />
-                  </div>
+                  <TestiCard
+                    image={testimonial.image}
+                    content={testimonial.content}
+                    name={testimonial.name}
+                    role={testimonial.role}
+                  />
                 </motion.div>
               );
             })}

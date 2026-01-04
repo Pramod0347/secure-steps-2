@@ -43,7 +43,6 @@ export default function BlogList() {
             }
 
             const data = await response.json()
-            console.log("Fetched blogs:", data) // Debug log
 
             // Check if data exists and is not empty
             if (!data || (Array.isArray(data) && data.length === 0)) {
@@ -86,7 +85,6 @@ export default function BlogList() {
                 }
             }
 
-            console.log("Processed blogs:", processedBlogs) // Debug processed blogs
             setBlogs(processedBlogs)
             setError(null)
         } catch (error) {

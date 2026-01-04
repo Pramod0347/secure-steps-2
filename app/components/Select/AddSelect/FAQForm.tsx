@@ -25,8 +25,6 @@ export function FAQForm({ faqs = [], onChange, disabled = false }: FAQFormProps)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editingFAQ, setEditingFAQ] = useState<FAQ | null>(null)
 
-  console.log("this is faqs......")
-  console.log("this is faqs......:",faqs)
 
   const handleAddFAQ = () => {
     if (!newFAQ.question.trim() || !newFAQ.answer.trim()) {

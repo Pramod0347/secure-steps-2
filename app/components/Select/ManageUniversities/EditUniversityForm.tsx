@@ -199,10 +199,6 @@ export function EditUniversityForm({ university, onUniversityUpdated, setIsEditF
       // Take the first career outcome (there should only be one per university)
       const firstOutcome: any = universityData.careerOutcomes[0]
       
-      console.log("Converting career outcome:", firstOutcome)
-      console.log("Salary chart data:", firstOutcome.salaryChartData)
-      console.log("Employment rate meter:", firstOutcome.employmentRateMeter)
-      console.log("Course timeline data:", firstOutcome.courseTimelineData)
       
       careerOutcomeData = {
         salaryChartData: Array.isArray(firstOutcome.salaryChartData) ? firstOutcome.salaryChartData : [],
@@ -210,9 +206,7 @@ export function EditUniversityForm({ university, onUniversityUpdated, setIsEditF
         courseTimelineData: Array.isArray(firstOutcome.courseTimelineData) ? firstOutcome.courseTimelineData : []
       }
       
-      console.log("Converted career outcome data:", careerOutcomeData)
     } else {
-      console.log("No career outcomes found in university data")
     }
        
     const initializedUniversity = {
@@ -227,7 +221,6 @@ export function EditUniversityForm({ university, onUniversityUpdated, setIsEditF
         : [],
     }
        
-    console.log("Initialized university with career outcome data:", initializedUniversity.careerOutcomeData)
        
     setCurrentUniversity(initializedUniversity)
   }, [])
@@ -235,7 +228,6 @@ export function EditUniversityForm({ university, onUniversityUpdated, setIsEditF
 
 // 3. Replace handleCareerOutcomesChange with handleCareerOutcomeDataChange
 const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutcomeData) => {
-  console.log("Career outcome data changed:", careerOutcomeData)
   
   setCurrentUniversity((prev: any) => ({
     ...prev,
@@ -254,8 +246,6 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
           throw new Error("Failed to fetch university data")
         }
         const fetchedUniversity = await response.json()
-        console.log("Fetched university with career outcomes:", fetchedUniversity)
-        console.log("Career outcomes:", fetchedUniversity.careerOutcomes)
         
         // Use fetched university data for initialization
         const universityWithRelations = {
@@ -307,7 +297,6 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
             : [],
         }
 
-        console.log("Processed stored data with career outcome data:", processedData.careerOutcomeData)
 
         setCurrentUniversity(processedData)
 
@@ -353,7 +342,6 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
     const saveDraft = () => {
       try {
         localStorage.setItem(`${FORM_STORAGE_KEY}_${university.id}`, JSON.stringify(currentUniversity))
-        console.log("Draft auto-saved")
       } catch (error) {
         console.error("Error auto-saving draft:", error)
       }
@@ -411,7 +399,6 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
           throw new Error("No URL returned from server")
         }
 
-        console.log(`${type} image uploaded:`, result.url)
         setUploadProgress((prev) => ({ ...prev, [type]: 100 }))
         toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} image uploaded`, { id: toastId })
 
@@ -433,7 +420,6 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
         return
       }
 
-      console.log("Removing image from server:", imageUrl)
 
       const response = await fetch("/api/upload", {
         method: "DELETE",
@@ -516,7 +502,6 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
                 if (year !== originalYear) {
                   const dateStr = `${year}-01-01`
                   updatedData.established = dateStr
-                  console.log("Including established year in update:", dateStr)
                 }
               }
             }
@@ -539,7 +524,6 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
             
               if (!isEqual(currentCareerOutcomeData, originalCareerOutcomeData)) {
                 updatedData.careerOutcomeData = currentCareerOutcomeData
-                console.log("Career outcome data changed, including in update:", currentCareerOutcomeData)
               }
               break
   
@@ -556,7 +540,6 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
             if (currentFaqs.length !== originalFaqs.length ||
               !isEqual(currentFaqs, originalFaqs)) {
               updatedData.faqs = currentFaqs
-              console.log("FAQs changed, including in update:", currentFaqs)
             }
             break
   
@@ -595,7 +578,6 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
         return
       }
   
-      console.log("Updating university data:", JSON.stringify(updatedData, null, 2))
   
       // API call to update university
       const response = await fetch(`/api/universities/${university.id}`, {
@@ -604,7 +586,6 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
         body: JSON.stringify(updatedData),
       })
   
-      console.log("Response status:", response.status)
   
       if (!response.ok) {
         const error = await response.json()
@@ -612,7 +593,6 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
       }
   
       const updatedUniversity = await response.json()
-      console.log("University updated successfully:", updatedUniversity)
   
       toast.success("University updated successfully!")
   
@@ -730,7 +710,6 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
 
   // 3. Update the handleFAQsChange function to ensure string IDs
   const handleFAQsChange = (faqs: FAQ[]) => {
-    console.log("FAQs changed:", faqs)
     // Ensure all FAQ IDs are strings
     const fagsWithStringIds = faqs.map((faq) => ({
       ...faq,

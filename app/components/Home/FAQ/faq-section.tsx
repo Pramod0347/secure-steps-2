@@ -11,16 +11,16 @@ import FaqList from "./FaqList";
 
 function FAQ() {
     return (
-        <div className="w-full  px-5">
+        <div className="w-full px-4 md:px-5 pb-12 md:pb-16">
             <div className="container mx-auto">
 
                 {/* FAQ TAG CENTERED */}
-                <div className="w-full flex justify-center mb-10">
+                <div className="w-full flex justify-center mb-6 md:mb-10">
                     <h1
                         className="
-                            text-[16px] md:text-[18px]
+                            text-[14px] sm:text-[16px] md:text-[18px]
                             font-semibold text-gray-700
-                            px-8 py-3
+                            px-6 sm:px-8 py-2.5 sm:py-3
                             rounded-full
                             bg-white
                             border border-gray-200
@@ -32,12 +32,12 @@ function FAQ() {
                 </div>
 
                 {/* MAIN 2-COLUMN LAYOUT */}
-                <div className="flex flex-col md:flex-row gap-16 items-start justify-between">
+                <div className="flex flex-col md:flex-row gap-8 md:gap-12 lg:gap-16 items-start justify-between">
 
                     {/* LEFT SIDE — HEADING + SUBTEXT + BUTTON */}
-                    <div className="md:w-[45%] flex flex-col items-center md:items-start gap-6">
+                    <div className="md:w-[45%] flex flex-col items-center md:items-start gap-4 md:gap-6">
 
-                        <h4 className="text-3xl md:text-5xl tracking-tighter text-center md:text-left max-w-xl">
+                        <h4 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tighter text-center md:text-left max-w-xl">
                             <span className="bg-gradient-to-r from-[#DA202E] to-[#3B367D] bg-clip-text text-transparent">
                                 REAL{" "}
                             </span>
@@ -48,7 +48,7 @@ function FAQ() {
                             </span>
                         </h4>
 
-                        <p className="text-lg max-w-xl leading-relaxed tracking-tight text-muted-foreground text-center md:text-left">
+                        <p className="text-sm sm:text-base md:text-lg max-w-xl leading-relaxed tracking-tight text-muted-foreground text-center md:text-left">
                          Every question here comes straight from 1:1 conversations with Secure’s clients. We’ve gone beyond generic responses each answer is crafted with the depth and clarity our clients deserve
                         </p>
 

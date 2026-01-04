@@ -48,7 +48,6 @@ export function AccommodationForm() {
 
             const NextUrl = process.env.NEXTAUTH_URL || window.location.origin;
 
-            console.log("formData :", formData);
 
             const response = await fetch(`${NextUrl}/api/accommodations`, {
                 method: 'POST',
@@ -58,7 +57,6 @@ export function AccommodationForm() {
                 body: JSON.stringify(formData),
             });
 
-            console.log("response :", response);
 
             if (!response.ok) {
                 throw new Error('Failed to create accommodation')
@@ -93,7 +91,7 @@ export function AccommodationForm() {
                             <div className="grid grid-cols-2 gap-2">
                                 {formData.images?.map((image, index) => (
                                     <div key={index} className="relative h-20">
-                                        <Image src={image} alt={`Additional image ${index + 1}`} layout="fill" objectFit="cover" className="rounded-md" />
+                                        <Image src={image} alt={`Additional image ${index + 1}`} fill className="object-cover rounded-md" />
                                         <button
                                             type="button"
                                             onClick={() => setFormData(prev => ({ ...prev, images: prev.images?.filter((_, i) => i !== index) }))}

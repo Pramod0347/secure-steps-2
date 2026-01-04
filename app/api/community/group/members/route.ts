@@ -26,7 +26,6 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { groupId, userId } = await MemberOperationSchema.parseAsync(body);
 
-    console.log(`GroupId: ${groupId} & UserId: ${userId}`);
 
     // Check if the current user has permission to add members
     const group = await prisma.group.findUnique({
@@ -35,7 +34,6 @@ export async function POST(req: NextRequest) {
     });
 
     if (!group) {
-      console.log("No group is found");
       return NextResponse.json({ error: "Group not found" }, { status: 404 });
     }
 

@@ -37,7 +37,6 @@ export function GalleryUpload({ images, onChange, onFileUpload, onRemove, maxIma
             continue
           }
 
-          console.log("Uploading gallery image:", file.name)
           setUploadProgress((prev) => ({ ...prev, [file.name]: 0 }))
           const imageUrl = await onFileUpload(file)
           uploadedUrls.push(imageUrl)
