@@ -110,6 +110,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
   const [modalData, setModalData] = useState<CareerOutcomeItem | null>(null);
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [circleFillPercentage, setCircleFillPercentage] = useState<number>(0);
+  const [employmentRateFill, setEmploymentRateFill] = useState<number>(0);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const isHoveringRef = useRef<boolean>(false);
@@ -359,10 +360,15 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
     setHoveredItemId(item.id);
     setShowModal(true);
     setCircleFillPercentage(0);
+    setEmploymentRateFill(0);
     
     // Trigger animation after modal is shown
     setTimeout(() => {
       setCircleFillPercentage(0.75);
+      // For employment rate, animate to the actual target rate
+      if (item.rawData?.targetRate) {
+        setEmploymentRateFill(item.rawData.targetRate);
+      }
     }, 100);
   };
 
@@ -385,6 +391,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
   const handleModalLeave = (): void => {
     isHoveringRef.current = false;
     setCircleFillPercentage(0);
+    setEmploymentRateFill(0);
     clearHoverTimeout();
     setShowModal(false);
     setModalData(null);
@@ -714,42 +721,28 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
                 <div className="flex flex-col items-center justify-center pt-4 pb-4">
                   {/* Speedometer - Semicircle from left to right */}
                   <div className="w-full max-w-sm mx-auto mb-4 relative">
-                    <svg width="100%" height="auto" viewBox="-10 0 300 150" preserveAspectRatio="xMidYMid meet" className="w-full">
+                    <svg width="100%" height="auto" viewBox="0 0 200 120" className="w-full">
                       {/* Background Arc - gray semicircle */}
                       <path
-                        d="M 30 120 A 90 90 0 0 1 250 120"
+                        d="M 20 100 A 80 80 0 0 1 180 100"
                         fill="none"
                         stroke="#e5e7eb"
                         strokeWidth="14"
                         strokeLinecap="round"
                       />
-                      {/* Filled Arc - purple filled portion */}
+                      {/* Filled Arc - purple filled portion with animation */}
                       <path
-                        d="M 30 120 A 90 90 0 0 1 250 120"
+                        d="M 20 100 A 80 80 0 0 1 180 100"
                         fill="none"
                         stroke="#a855f7"
                         strokeWidth="12"
                         strokeLinecap="round"
-                        strokeDasharray={`${Math.PI * 90 * (modalData.rawData.targetRate / 100)} ${Math.PI * 90}`}
+                        strokeDasharray={`${Math.PI * 80 * (employmentRateFill / 100)} ${Math.PI * 80}`}
+                        style={{ transition: 'stroke-dasharray 2s ease-in-out' }}
                       />
-                      {/* Dot at end - positioned at percentage point */}
-                      {/* <circle
-                        cx={30 + 211 * (modalData.rawData.targetRate / 100)}
-                        cy={100 - (120 - 90 * (1 + Math.cos(Math.PI * (modalData.rawData.targetRate / 100))))}
-                        r="13"
-                        fill="#a855f7"
-                      />
-                      <circle
-                        cx={30 + 211 * (modalData.rawData.targetRate / 100)}
-                        cy={100 - (120 - 90 * (1 + Math.cos(Math.PI * (modalData.rawData.targetRate / 100))))}
-                        r="13"
-                        fill="none"
-                        stroke="white"
-                        strokeWidth="3"
-                      /> */}
                     </svg>
 
-                    <p className="absolute top-[60%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-5xl font-black text-slate-900 mb-1">
+                    <p className="absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-5xl font-black text-slate-900 mb-1">
                       {modalData.rawData.targetRate}%
                     </p>
                   </div>
