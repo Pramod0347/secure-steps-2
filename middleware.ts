@@ -69,60 +69,40 @@ const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  console.log(`[MIDDLEWARE] ${req.method} ${pathname}`);
-
   // Check for API routes that need admin protection
   if (isProtectedApiRoute(pathname)) {
-    console.log(`[MIDDLEWARE] Protected API route detected: ${pathname}`);
     
     // For university and course API routes, check if it's a write operation
     const isWriteOperation = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method);
     
     if (isWriteOperation) {
-      console.log(`[MIDDLEWARE] Write operation detected for ${pathname}`);
       // These operations require admin access
       try {
         const sessionData = await validateSession(req);
         
         if (!sessionData || !sessionData.role || sessionData.role !== 'ADMIN') {
-          console.log(`[MIDDLEWARE] Admin access denied for ${pathname}`, { 
-            hasSession: !!sessionData, 
-            role: sessionData?.role 
-          });
           return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
         }
         
-        console.log(`[MIDDLEWARE] Admin access granted for ${pathname}`);
-      } catch (error) {
-        console.error(`[MIDDLEWARE] Session validation failed for ${pathname}:`, error);
+      } catch {
         return NextResponse.redirect(new URL('/auth/signin', req.url));
       }
-    } else {
-      console.log(`[MIDDLEWARE] Read operation allowed for ${pathname}`);
     }
     // GET requests to university API can proceed (for public viewing)
   }
   // First check if this is a protected path that must always be protected
   else if (isAlwaysProtectedPath(pathname)) {
-    console.log(`[MIDDLEWARE] Always protected path: ${pathname}`);
     // Continue with authentication and authorization checks
   }
   // Then check for public routes
   else if (isPublicRoute(pathname) || isPublicChildRoute(pathname)) {
-    console.log(`[MIDDLEWARE] Public route: ${pathname}`);
     return NextResponse.next();
   }
-
-  // Extract client IP for rate limiting
-  const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0] ||
-    req.headers.get("x-real-ip") ||
-    "unknown";
 
   // Rate Limiting for API routes
   if (pathname.startsWith('/api/')) {
     const isAllowed = await checkRateLimit(req);
     if (!isAllowed) {
-      console.warn(`[RATE_LIMIT_EXCEEDED] ${clientIp} tried to access ${pathname}`);
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
     }
   }
@@ -139,16 +119,11 @@ export async function middleware(req: NextRequest) {
 
     // If any authentication is needed and we don't have valid session data
     if ((requiresAuth || requiresRoles) && !sessionData) {
-      console.log(`[MIDDLEWARE] Authentication required but no session for ${pathname}`);
       return NextResponse.redirect(new URL('/auth/signin', req.url));
     }
 
     // Authorization check (Role-based access control) for role-protected routes
     if (requiresRoles && !checkRoleAccess(pathname, sessionData?.role)) {
-      console.log(`[MIDDLEWARE] Role access denied for ${pathname}`, { 
-        requiredRoles: getRequiredRoles(pathname), 
-        userRole: sessionData?.role 
-      });
       return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
 
@@ -160,10 +135,8 @@ export async function middleware(req: NextRequest) {
       response.headers.set('x-user-role', sessionData.role);
     }
 
-    console.log(`[MIDDLEWARE] Request allowed for ${pathname}`);
     return response;
-  } catch (error) {
-    console.error('[MIDDLEWARE_ERROR]', error);
+  } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -189,7 +162,7 @@ async function validateSession(req: NextRequest) {
       if (validateSessionResponse.status === 401) {
         return null;
       }
-    } catch (error) {
+    } catch {
       // Network errors - continue to retry
     }
 
@@ -224,9 +197,6 @@ function isProtectedApiRoute(pathname: string): boolean {
   
   const isUniversityApi = universityApiPatterns.some(pattern => {
     const matches = pattern.test(pathname);
-    if (matches) {
-      console.log(`[MIDDLEWARE] API route pattern matched: ${pattern} for ${pathname}`);
-    }
     return matches;
   });
   

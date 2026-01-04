@@ -87,7 +87,6 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({ isOpen, onClose }) 
         return;
       }
 
-      console.log("groupID :",groupId);
 
       const formDataToSubmit = new FormData();
       Object.entries(formData).forEach(([key, value]) => {

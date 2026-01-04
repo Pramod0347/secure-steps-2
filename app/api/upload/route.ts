@@ -11,7 +11,6 @@ const r2Client = new S3Client({
   },
 });
 
-console.log("endpoint:", process.env.CLOUDFLARE_END_POINT!)
 
 const UPLOAD_CONFIG = {
   maxSizeInMB: 15,
@@ -84,7 +83,6 @@ export async function POST(req: NextRequest) {
     // Use the r2.dev public URL that's already active
     const fileUrl = `${process.env.CLOUDFLARE_PUBLIC_URL}/${fileName}`
     
-    console.log("Generated file URL:", fileUrl)
     
     return NextResponse.json({ 
       success: true, 

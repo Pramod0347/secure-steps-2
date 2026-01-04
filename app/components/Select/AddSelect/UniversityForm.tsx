@@ -103,7 +103,6 @@ export function UniversityForm() {
         throw new Error("No URL returned from server")
       }
 
-      console.log(`${type} image uploaded:`, result.url)
       setUploadProgress((prev) => ({ ...prev, [type]: 100 }))
       toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} image uploaded`, { id: toastId })
 
@@ -171,22 +170,14 @@ export function UniversityForm() {
       })
 
       // Extract career outcome data if available
-      console.log("Current university career outcomes:", JSON.stringify(currentUniversity.careerOutcomes, null, 2))
-      console.log("Career outcomes array length:", currentUniversity.careerOutcomes?.length || 0)
-      console.log("First career outcome:", currentUniversity.careerOutcomes?.[0])
       
       const careerOutcomeData = currentUniversity.careerOutcomes?.[0]?.data || null
-      console.log("Extracted career outcome data:", JSON.stringify(careerOutcomeData, null, 2))
       
       // Always include careerOutcomeData if it exists, even if arrays are empty
       // The API will validate if it has actual content
       const hasCareerOutcomeData = careerOutcomeData !== null && careerOutcomeData !== undefined
-      console.log("Has career outcome data (exists):", hasCareerOutcomeData)
       
       if (careerOutcomeData) {
-        console.log("Salary chart data:", careerOutcomeData.salaryChartData?.length || 0, "items")
-        console.log("Employment rate meter:", careerOutcomeData.employmentRateMeterData ? "exists" : "null")
-        console.log("Course timeline data:", careerOutcomeData.courseTimelineData?.length || 0, "items")
       }
 
       const universityData: any = {
@@ -210,12 +201,9 @@ export function UniversityForm() {
       // Always include careerOutcomeData if it exists
       if (hasCareerOutcomeData && careerOutcomeData) {
         universityData.careerOutcomeData = careerOutcomeData
-        console.log("✅ Adding careerOutcomeData to payload")
       } else {
-        console.log("❌ NOT adding careerOutcomeData to payload - data is null/undefined")
       }
 
-      console.log("Submitting university data:", JSON.stringify(universityData, null, 2))
 
       const response = await fetch("/api/universities", {
         method: "POST",
@@ -232,7 +220,6 @@ export function UniversityForm() {
       }
 
       const newUniversity = await response.json()
-      console.log("University created:", newUniversity)
 
       setUniversities((prev) => [...prev, newUniversity])
       toast.success("University created successfully!")
@@ -351,16 +338,11 @@ export function UniversityForm() {
       })
 
       // Extract career outcome data if available
-      console.log("=== CAREER OUTCOMES DEBUG (handleAddUniversity) ===")
-      console.log("Current university career outcomes:", JSON.stringify(currentUniversity.careerOutcomes, null, 2))
       
       const careerOutcomeData = currentUniversity.careerOutcomes?.[0]?.data || null
-      console.log("Extracted career outcome data:", JSON.stringify(careerOutcomeData, null, 2))
       
       // Always include careerOutcomeData if it exists, even if arrays are empty
       const hasCareerOutcomeData = careerOutcomeData !== null && careerOutcomeData !== undefined
-      console.log("Has career outcome data (exists):", hasCareerOutcomeData)
-      console.log("=== END DEBUG ===")
 
       const universityData: any = {
         name: currentUniversity.name,
@@ -383,12 +365,9 @@ export function UniversityForm() {
       // Always include careerOutcomeData if it exists
       if (hasCareerOutcomeData && careerOutcomeData) {
         universityData.careerOutcomeData = careerOutcomeData
-        console.log("✅ Adding careerOutcomeData to payload (handleAddUniversity)")
       } else {
-        console.log("❌ NOT adding careerOutcomeData to payload - data is null/undefined (handleAddUniversity)")
       }
 
-      console.log("Submitting university data:", universityData)
 
       const response = await fetch("/api/universities", {
         method: "POST",
@@ -405,7 +384,6 @@ export function UniversityForm() {
       }
 
       const newUniversity = await response.json()
-      console.log("University created:", newUniversity)
 
       setUniversities((prev) => [...prev, newUniversity])
       toast.success("University created successfully!")
@@ -615,7 +593,6 @@ export function UniversityForm() {
           <CareerOutcomesForm
             careerOutcomeData={currentUniversity.careerOutcomes?.[0]?.data ?? null}
             onChange={(updatedData) => {
-              console.log("Career outcomes form onChange called with:", updatedData)
               const existingCareerOutcome = currentUniversity.careerOutcomes?.[0]
               handleCareerOutcomesChange([{
                 id: existingCareerOutcome?.id || "",

@@ -3,15 +3,12 @@ import { prisma } from "@/app/lib/prisma";
 
 export async function GET(req: NextRequest) {
   try {
-    console.log("🔍 Testing database connection...");
 
     // Test 1: Basic connection
     await prisma.$connect();
-    console.log("✅ Database connection successful");
 
     // Test 2: Simple query
     const result = await prisma.$queryRaw`SELECT 1 as test, NOW() as current_time`;
-    console.log("✅ Query execution successful");
 
     // Test 3: Check database info
     const dbInfo = await prisma.$queryRaw`
@@ -34,7 +31,6 @@ export async function GET(req: NextRequest) {
     try {
       userCount = await prisma.user.count();
     } catch (error) {
-      console.log("⚠️ User table doesn't exist yet (migrations not run)");
     }
 
     return NextResponse.json({

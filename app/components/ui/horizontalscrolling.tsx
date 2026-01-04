@@ -220,17 +220,17 @@ export default function HorizontalScrollingText({
   const repeatedText = Array(5)
     .fill(null)
     .map((_, index) => (
-      <h4 key={index} className="whitespace-nowrap text-3xl md:text-5xl lg:text-6xl font-bold">
+      <h4 key={index} className="whitespace-nowrap text-xl sm:text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-bold">
         {getStyledText(text)}
         {separator}
       </h4>
     ))
 
   return (
-    <div className="w-screen overflow-x-hidden">
+    <div className="w-full max-w-[100vw] overflow-x-hidden">
       <div
         className="scrolling-text w-full overflow-hidden flex items-center"
-        style={{ height: "100px" }}
+        style={{ height: "auto", minHeight: "50px", paddingTop: "10px", paddingBottom: "10px" }}
         ref={containerRef}
       >
         <div className="rail flex">{repeatedText}</div>

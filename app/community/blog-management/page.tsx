@@ -47,7 +47,6 @@ export default function BlogManager() {
 
       const data = await response.json()
 
-      console.log("blog data :",data)
 
       // Transform the data to match our interface
       const transformedBlogs = data.map((blog: any) => ({

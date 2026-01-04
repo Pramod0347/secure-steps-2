@@ -13,7 +13,6 @@ export interface PaginationParams {
 }
 
 export async function GET(req: Request): Promise<NextResponse> {
-  console.log("Fetching universities...");
   try {
     const NextUrl = process.env.NEXTAUTH_URL || process.env.NEXTAUTH_URL || "http://localhost:3000";
     const url = new URL(req.url.startsWith("http") ? req.url : `${NextUrl}${req.url}`);
@@ -52,24 +51,16 @@ export async function GET(req: Request): Promise<NextResponse> {
         ...(searchParams.slug && { slug: searchParams.slug }),
       };
 
-      console.log("Search where clause:", JSON.stringify(whereClause, null, 2));
 
       const universities = await prisma.university.findMany({
         where: whereClause,
         include: includeClause, // Use consistent include
       });
 
-      console.log(`Found ${universities.length} universities with search params`);
 
       if (universities.length === 0) {
         return NextResponse.json({ error: "No universities found" }, { status: 404 });
       }
-
-      // Log career outcomes data for debugging
-      universities.forEach((uni, index) => {
-        console.log(`University ${index} (${uni.name}) career outcomes:`, 
-          JSON.stringify(uni.careerOutcomes, null, 2));
-      });
 
       // When querying by ID or slug, return the single university object directly
       if (searchParams.id || searchParams.slug) {
@@ -94,7 +85,6 @@ export async function GET(req: Request): Promise<NextResponse> {
         limit: url.searchParams.get("limit") || "10",
       });
 
-      console.log(`Pagination params: page=${page}, limit=${limit}, query="${query}"`)
 
       const skip = (page - 1) * limit;
       const whereClause: Prisma.UniversityWhereInput = query
@@ -108,7 +98,6 @@ export async function GET(req: Request): Promise<NextResponse> {
           }
         : {};
 
-      console.log("Pagination where clause:", JSON.stringify(whereClause, null, 2));
 
       const [universities, total] = await Promise.all([
         prisma.university.findMany({
@@ -134,17 +123,6 @@ export async function GET(req: Request): Promise<NextResponse> {
           { status: 400 }
         );
       }
-
-      console.log(`Found ${universities.length} universities (page ${page}/${pages}, total: ${total})`);
-      
-      // Log career outcomes for debugging
-      universities.forEach((uni, index) => {
-        console.log(`Paginated University ${index} (${uni.name}) career outcomes count:`, 
-          uni.careerOutcomes?.length || 0);
-        if (uni.careerOutcomes && uni.careerOutcomes.length > 0) {
-          console.log(`First career outcome data:`, JSON.stringify(uni.careerOutcomes[0], null, 2));
-        }
-      });
 
       return NextResponse.json({
         universities,
@@ -200,20 +178,16 @@ export async function POST(req: Request): Promise<NextResponse> {
   try {
     const body = await req.json()
 
-    console.log("Received data:", JSON.stringify(body, null, 2))
-    console.log("Career outcome data in body:", (body as any).careerOutcomeData)
 
     if (!body || Object.keys(body).length === 0) {
       throw new Error("Request body is empty")
     }
 
     const careerOutcomeData = (body as any).careerOutcomeData
-    console.log("Extracted careerOutcomeData:", JSON.stringify(careerOutcomeData, null, 2))
 
     // Make sure UniversitySchema includes youtubeLink validation
     const validatedData = UniversitySchema.parse(body)
 
-    console.log("Validated data:", JSON.stringify(validatedData, null, 2))
 
     const establishedDate = new Date(validatedData.established)
 
@@ -288,8 +262,6 @@ export async function POST(req: Request): Promise<NextResponse> {
            careerOutcomeData.employmentRateMeterData ||
            careerOutcomeData.courseTimelineData?.length > 0)) {
         
-        console.log("Creating career outcome for new university...")
-        console.log("Career outcome data received:", JSON.stringify(careerOutcomeData, null, 2))
         
         // Determine the type based on what data is provided
         // Priority: SALARY_CHART > EMPLOYMENT_RATE_METER > COURSE_TIMELINE
@@ -314,12 +286,6 @@ export async function POST(req: Request): Promise<NextResponse> {
         } else if (hasTimelineData) {
           outcomeType = 'COURSE_TIMELINE'
         }
-        
-        console.log(`Determined outcome type: ${outcomeType}`, {
-          hasValidSalaryData,
-          hasEmploymentData,
-          hasTimelineData
-        })
 
         // Create the main CareerOutcome record
         const careerOutcome = await tx.careerOutcome.create({
@@ -329,7 +295,6 @@ export async function POST(req: Request): Promise<NextResponse> {
           },
         })
 
-        console.log(`Created career outcome with ID: ${careerOutcome.id}`)
 
         // Create salary chart data if provided
         if (careerOutcomeData.salaryChartData && Array.isArray(careerOutcomeData.salaryChartData)) {
@@ -354,7 +319,6 @@ export async function POST(req: Request): Promise<NextResponse> {
                 careerOutcomeId: careerOutcome.id
               }))
             })
-            console.log(`Created ${validSalaryData.length} salary chart data records`)
           }
         }
 
@@ -372,7 +336,6 @@ export async function POST(req: Request): Promise<NextResponse> {
                 careerOutcomeId: careerOutcome.id
               }
             })
-            console.log("Created employment rate meter data")
           }
         }
 
@@ -389,13 +352,10 @@ export async function POST(req: Request): Promise<NextResponse> {
                 careerOutcomeId: careerOutcome.id
               }))
             })
-            console.log(`Created ${validTimelineData.length} course timeline data records`)
           }
         }
         
-        console.log("✅ Career outcome created successfully with all data types")
       } else {
-        console.log("⚠️ No career outcome data provided or all data arrays are empty")
       }
 
       // Return university with all relations
@@ -414,7 +374,6 @@ export async function POST(req: Request): Promise<NextResponse> {
       })
     })
 
-    console.log("Created university:", JSON.stringify(university, null, 2))
 
     return NextResponse.json(university, { status: 201 })
   } catch (error) {
@@ -455,7 +414,6 @@ export async function PUT(req: Request): Promise<NextResponse> {
     const body = await req.json();
 
     // Log the entire request body for debugging
-    console.log("PUT request body:", JSON.stringify(body, null, 2));
 
     // More robust URL parsing
     let id: string | null = null;
@@ -463,7 +421,6 @@ export async function PUT(req: Request): Promise<NextResponse> {
       const NextUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
       const url = new URL(req.url.startsWith("http") ? req.url : `${NextUrl}${req.url}`);
       id = url.searchParams.get("id");
-      console.log("Extracted ID from URL:", id);
     } catch (urlError) {
       console.error("URL parsing error:", urlError);
       return NextResponse.json({ error: "Failed to parse URL", details: String(urlError) }, { status: 400 });
@@ -475,7 +432,6 @@ export async function PUT(req: Request): Promise<NextResponse> {
     }
 
     // Log the university lookup attempt
-    console.log(`Looking for university with ID: ${id}`);
 
     // First check if the university exists with detailed logging
     try {
@@ -483,22 +439,17 @@ export async function PUT(req: Request): Promise<NextResponse> {
         where: { id },
       });
 
-      console.log("University lookup result:", existingUniversity ? "Found" : "Not found");
 
       if (!existingUniversity) {
         return NextResponse.json({ error: `University with ID ${id} not found` }, { status: 404 });
       }
 
-      console.log("Existing university data:", JSON.stringify(existingUniversity, null, 2));
 
       // IMPORTANT: Check for youtubeLink in the request body BEFORE validation
       const hasYoutubeLinkField = 'youtubeLink' in body;
-      console.log("YouTube link in request body:", hasYoutubeLinkField ? body.youtubeLink : "not present");
 
       // Validate the request body
       const validatedData = UniversitySchema.partial().parse(body);
-      console.log("Validated update data:", JSON.stringify(validatedData, null, 2));
-      console.log("Fields being updated:", Object.keys(validatedData));
 
       // Process established date if provided
       let establishedDate = undefined;
@@ -548,7 +499,6 @@ export async function PUT(req: Request): Promise<NextResponse> {
         }
       }
 
-      console.log("Here the youtube Link :",validatedData.youtubeLink)
 
       // Build update data object - with special handling for youtubeLink
       const updateData = {
@@ -571,8 +521,6 @@ export async function PUT(req: Request): Promise<NextResponse> {
       };
 
       // Added to verify youtubeLink is included in update data
-      console.log("YouTube link in update data:", updateData.youtubeLink);
-      console.log("Final update data:", JSON.stringify(updateData, null, 2));
 
       // Handle courses separately
       if (validatedData.courses && Array.isArray(validatedData.courses)) {
@@ -639,7 +587,6 @@ export async function PUT(req: Request): Promise<NextResponse> {
       }
 
       // Perform the university update
-      console.log("Performing university update with data:", JSON.stringify(updateData, null, 2));
       const updatedUniversity = await prisma.university.update({
         where: { id },
         data: updateData,
@@ -648,7 +595,6 @@ export async function PUT(req: Request): Promise<NextResponse> {
         },
       });
 
-      console.log("University updated successfully:", JSON.stringify(updatedUniversity, null, 2));
       return NextResponse.json(updatedUniversity);
     } catch (dbError) {
       console.error("Database operation error:", dbError);

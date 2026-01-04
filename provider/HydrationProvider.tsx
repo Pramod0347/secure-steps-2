@@ -15,13 +15,11 @@ export const HydrationProvider: React.FC<HydrationProviderProps> = ({ children }
   useEffect(() => {
     // Wait for Zustand to hydrate
     const unsubscribe = useUniversityStore.persist.onFinishHydration(() => {
-      console.log("🎯 Hydration completed - store is ready")
       setIsHydrated(true)
     })
 
     // Fallback timeout in case hydration doesn't fire
     const timeout = setTimeout(() => {
-      console.log("⏰ Hydration timeout - forcing ready state")
       setIsHydrated(true)
     }, 1000)
 

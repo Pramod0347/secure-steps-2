@@ -4,7 +4,6 @@ import { NextApiRequest } from 'next';
 
 export async function POST(request: NextApiRequest) {
   try {
-    console.log("refreshing the token is started...");
 
     // Extract refresh_token from cookies
     const { refresh_token } = request.body;
@@ -19,7 +18,6 @@ export async function POST(request: NextApiRequest) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
 
-    console.log("token refreshed successfully completed...");
 
     // Create response with new tokens
     const response = NextResponse.json({

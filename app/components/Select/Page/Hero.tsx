@@ -245,7 +245,7 @@ const Hero: React.FC<SearchProps> = ({ onSearch }) => {
   useEffect(() => {
     const video = videoRef.current
     if (video) {
-      const handleLoadedData = () => console.log("Video has loaded");
+      const handleLoadedData = () => {};
       const handleError = (e: Event) => {
         // console.error("Error loading video:", e)
         setVideoError("Error loading video")

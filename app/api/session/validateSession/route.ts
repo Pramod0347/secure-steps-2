@@ -26,7 +26,6 @@ async function verifyToken(token: string): Promise<TokenPayload> {
 
 async function refreshTokens(refreshToken: string) {
   try {
-    console.log("Validating refresh token...");
     
     // Verify the refresh token
     const { payload } = await jwtVerify(refreshToken, SECRET_KEY);
@@ -116,7 +115,6 @@ export async function POST(request: NextRequest) {
     const refreshToken = request.cookies.get('refresh_token')?.value;
 
     if (!accessToken) {
-      console.log("there is no access token");
       if (!refreshToken) {
         return NextResponse.json(
           { error: "No authentication tokens found" },
@@ -236,7 +234,6 @@ export async function POST(request: NextRequest) {
       });
 
     } catch (error) {
-        console.log("[ACCESS_TOKEN_VERIFY_ERROR]", error);
       // Access token is invalid or expired, try refresh flow
       if (!refreshToken) {
         const response = NextResponse.json(

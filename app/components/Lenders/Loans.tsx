@@ -28,7 +28,6 @@ const LendersLoan = () => {
       if (isLoading) return;
       
       try {
-        console.log("loading....")
         setIsLoading(true);
         const response = await fetch('/api/lenders/loan?page=1&limit=10');
         
@@ -40,7 +39,6 @@ const LendersLoan = () => {
         
         const data = await response.json();
 
-        console.log("data :",data);
         if (isMounted) {
           setLoans(Array.isArray(data) ? data : data.loans || []);
         

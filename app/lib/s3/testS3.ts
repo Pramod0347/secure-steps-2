@@ -25,7 +25,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     // Step 1: Check if the S3 bucket is available
     await s3.send(new HeadBucketCommand({ Bucket: bucketName }));
-    console.log("S3 bucket is available!");
 
     // Step 2: Upload a test file
     const uploadParams = {
@@ -34,16 +33,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       Body: fs.createReadStream(testFilePath),
     };
     await s3.putObject(uploadParams);
-    console.log(`File uploaded successfully: ${testKey}`);
 
     // Step 3: Generate a signed URL for the uploaded file
     const getObjectParams = { Bucket: bucketName, Key: testKey };
     const signedUrl = await getSignedUrl(s3, new GetObjectCommand(getObjectParams), { expiresIn: 3600 });
-    console.log(`Signed URL: ${signedUrl}`);
 
     // Step 4: Delete the test file
     await s3.deleteObject({ Bucket: bucketName, Key: testKey });
-    console.log("Test file deleted successfully!");
 
     res.status(200).json({ message: "S3 operations succeeded", signedUrl });
   } catch (error) {

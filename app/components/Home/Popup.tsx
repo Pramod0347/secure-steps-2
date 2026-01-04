@@ -91,9 +91,8 @@ const Popup: React.FC<PopupProps> = ({ avatars, onClose }) => {
                     <Image
                       src={avatar.image }
                       alt={`Avatar ${index + 1}`}
-                      layout="fill"
-                      objectFit="contain"
-                      className="rounded-lg"
+                      fill
+                      className="object-contain rounded-lg"
                     />
                   </div>
                   <div className="mt-4 text-sm sm:text-sm lg:text-base text-black text-center">

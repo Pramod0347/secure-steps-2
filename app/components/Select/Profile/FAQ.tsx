@@ -73,7 +73,6 @@ const FAQ: React.FC<FAQProps> = ({ faqData = [] }) => {
   const [openItem, setOpenItem] = useState<string | null>(null);
 
 
-  console.log("faqData :",faqData)
 
   const toggleItem = (value: string): void => {
     setOpenItem(openItem === value ? null : value);

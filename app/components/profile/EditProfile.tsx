@@ -94,10 +94,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, us
                 let response;
                 if (type === 'username') {
                     response = await fetch(`${Next_API}/api/auth/username?username=${encodeURIComponent(value)}`);
-                    console.log("responseData :", response);
                 } else {
                     response = await fetch(`${Next_API}/api/auth/user?email=${value}`);
-                    console.log("responseData :", response);
                 }
                 const data = await response.json();
 
@@ -205,7 +203,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, us
             updatedData.avatar = `https://your-s3-bucket.com/${avatarFile.name}`;
         }
 
-        console.log("Sending only updated fields:", updatedData);
         onSave(updatedData as User);
         onClose();
     };
@@ -255,8 +252,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, us
                                 <Image
                                     src={formData.banner || PlaceHolder}
                                     alt="Banner"
-                                    layout="fill"
-                                    objectFit="cover"
+                                    fill
+                                    className="object-cover"
                                 />
                                 <label className="absolute bottom-4 right-4 bg-white/10 backdrop-blur-sm p-2 rounded-full cursor-pointer">
                                     <input
@@ -274,8 +271,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, us
                                 <Image
                                     src={formData.avatar || PlaceHolder}
                                     alt="Avatar"
-                                    layout="fill"
-                                    objectFit="cover"
+                                    fill
+                                    className="object-cover"
                                 />
                                 <label className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 transition-opacity cursor-pointer">
                                     <input

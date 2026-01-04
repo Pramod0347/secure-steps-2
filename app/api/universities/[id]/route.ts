@@ -36,7 +36,6 @@ export async function GET(req: Request, { params }: { params: { id: string } }):
       return NextResponse.json({ error: `University with ID ${id} not found` }, { status: 404 })
     }
 
-    console.log("✅ University found before return:", university.name)
 
     return NextResponse.json(university)
   } catch (error) {
@@ -60,8 +59,6 @@ export async function PUT(req: Request, { params }: { params: { id: string } }):
     }
 
     const body = await req.json();
-    console.log(`Updating university with ID: ${id}`);
-    console.log('Request body:', JSON.stringify(body, null, 2));
 
     // First check if the university exists
     const existingUniversity = await prisma.university.findUnique({
@@ -84,7 +81,6 @@ export async function PUT(req: Request, { params }: { params: { id: string } }):
       return NextResponse.json({ error: `University with ID ${id} not found` }, { status: 404 });
     }
 
-    console.log("Existing university found:", existingUniversity.name);
 
     // Validate the request body
     const processedBody = { ...body };
@@ -100,7 +96,6 @@ export async function PUT(req: Request, { params }: { params: { id: string } }):
     let validatedData;
     try {
       validatedData = UniversitySchema.partial().parse(processedBody);
-      console.log("Validation successful");
     } catch (validationError) {
       console.error("Validation error:", validationError);
       if (validationError instanceof z.ZodError) {
@@ -152,7 +147,6 @@ export async function PUT(req: Request, { params }: { params: { id: string } }):
           throw new Error("Invalid date type");
         }
 
-        console.log("Processed establishment date:", establishedDate);
       } catch (dateError) {
         console.error("Date processing error:", dateError);
         const errorMessage = dateError instanceof Error ? dateError.message : "Invalid date format";
@@ -172,7 +166,6 @@ export async function PUT(req: Request, { params }: { params: { id: string } }):
       const locationForSlug = validatedData.location || existingUniversity.location;
 
       slug = generateUniversitySlug(nameForSlug, locationForSlug);
-      console.log(`Generated new slug: ${slug}`);
 
       const existingSlug = await prisma.university.findFirst({
         where: {
@@ -183,7 +176,6 @@ export async function PUT(req: Request, { params }: { params: { id: string } }):
 
       if (existingSlug) {
         slug = `${slug}-${Date.now().toString().slice(-4)}`;
-        console.log(`Slug conflict resolved, new slug: ${slug}`);
       }
     }
 
@@ -206,25 +198,21 @@ export async function PUT(req: Request, { params }: { params: { id: string } }):
       updateData.slug = slug;
     }
 
-    console.log("Final update data:", JSON.stringify(updateData, null, 2));
 
     // Handle database operations in a transaction
     const result = await prisma.$transaction(async (tx: any) => {
       // Handle course deletion first if specified
       if (body._deleteCourses && Array.isArray(body._deleteCourses) && body._deleteCourses.length > 0) {
-        console.log(`Deleting courses:`, body._deleteCourses);
         const deleteResult = await tx.course.deleteMany({
           where: {
             id: { in: body._deleteCourses },
             universityId: id,
           },
         });
-        console.log(`Deleted ${deleteResult.count} courses`);
       }
 
       // Handle Career Outcomes - CORRECTED VERSION
 if (body.careerOutcomeData !== undefined) {
-  console.log("Processing career outcome data:", body.careerOutcomeData);
 
   // Delete existing career outcome and all related data
   const existingCareerOutcome = await tx.careerOutcome.findFirst({
@@ -237,21 +225,18 @@ if (body.careerOutcomeData !== undefined) {
   });
 
   if (existingCareerOutcome) {
-    console.log("Found existing career outcome, deleting related data...");
     
     // Delete related data in correct order
     if (existingCareerOutcome.courseTimelineData?.length > 0) {
       await tx.courseTimelineData.deleteMany({
         where: { careerOutcomeId: existingCareerOutcome.id }
       });
-      console.log("Deleted course timeline data");
     }
     
     if (existingCareerOutcome.salaryChartData?.length > 0) {
       await tx.salaryChartData.deleteMany({
         where: { careerOutcomeId: existingCareerOutcome.id }
       });
-      console.log("Deleted salary chart data");
     }
     
     // Delete employment rate meter data (1:1 relationship, use delete not deleteMany)
@@ -259,14 +244,12 @@ if (body.careerOutcomeData !== undefined) {
       await tx.employmentRateMeterData.delete({
         where: { careerOutcomeId: existingCareerOutcome.id }
       });
-      console.log("Deleted employment rate meter data");
     }
     
     // Delete the career outcome itself
     await tx.careerOutcome.delete({
       where: { id: existingCareerOutcome.id }
     });
-    console.log("Deleted career outcome");
   }
 
   // Create new career outcome if data is provided
@@ -275,7 +258,6 @@ if (body.careerOutcomeData !== undefined) {
        body.careerOutcomeData.employmentRateMeterData ||
        body.careerOutcomeData.courseTimelineData?.length > 0)) {
     
-    console.log("Creating new career outcome...");
     
     // Create the main CareerOutcome record
     const careerOutcome = await tx.careerOutcome.create({
@@ -285,7 +267,6 @@ if (body.careerOutcomeData !== undefined) {
       }
     });
 
-    console.log(`Created career outcome with ID: ${careerOutcome.id}`);
 
     // Create salary chart data if provided
     if (body.careerOutcomeData.salaryChartData && Array.isArray(body.careerOutcomeData.salaryChartData)) {
@@ -314,9 +295,7 @@ if (body.careerOutcomeData !== undefined) {
             careerOutcomeId: careerOutcome.id
           }))
         });
-        console.log(`Created ${salaryDataResult.count} salary chart data records`);
       } else {
-        console.log("No valid salary chart data to create");
       }
     }
 
@@ -334,7 +313,6 @@ if (body.careerOutcomeData !== undefined) {
             careerOutcomeId: careerOutcome.id
           }
         });
-        console.log("Created employment rate meter data with ID:", employmentResult.id);
       } else {
         console.warn("Invalid employment rate meter data:", empData);
       }
@@ -357,21 +335,16 @@ if (body.careerOutcomeData !== undefined) {
             careerOutcomeId: careerOutcome.id
           }))
         });
-        console.log(`Created ${timelineResult.count} course timeline data records`);
       } else {
-        console.log("No valid course timeline data to create");
       }
     }
     
-    console.log("Career outcome data processing completed");
   } else {
-    console.log("No valid career outcome data provided or all data arrays are empty");
   }
 }
 
       // Handle FAQs updates
       if (validatedData.faqs !== undefined) {
-        console.log("Updating FAQs");
 
         await tx.faq.deleteMany({
           where: { universityId: id },
@@ -393,12 +366,10 @@ if (body.careerOutcomeData !== undefined) {
           }
         }
 
-        console.log(`Updated ${validatedData.faqs?.length || 0} FAQs`);
       }
 
       // Handle course updates/creates (keeping existing logic)
       if (validatedData.courses && Array.isArray(validatedData.courses)) {
-        console.log(`Processing ${validatedData.courses.length} courses`);
 
         for (const courseData of validatedData.courses) {
           try {
@@ -423,7 +394,6 @@ if (body.careerOutcomeData !== undefined) {
               }
 
               if (Object.keys(courseUpdateData).length > 0) {
-                console.log(`Updating course ${courseData.id}`);
 
                 const existingCourse = await tx.course.findFirst({
                   where: {
@@ -437,7 +407,6 @@ if (body.careerOutcomeData !== undefined) {
                     where: { id: courseData.id },
                     data: courseUpdateData,
                   });
-                  console.log(`Course ${courseData.id} updated successfully`);
                 } else {
                   console.warn(`Course ${courseData.id} not found or doesn't belong to university ${id}`);
                 }
@@ -449,7 +418,6 @@ if (body.careerOutcomeData !== undefined) {
                 continue;
               }
 
-              console.log("Creating new course:", courseData.name);
 
               const intakeArray = courseData.intake
                 ? (Array.isArray(courseData.intake) ? courseData.intake : [courseData.intake])
@@ -470,7 +438,6 @@ if (body.careerOutcomeData !== undefined) {
                   universityId: id,
                 },
               });
-              console.log(`New course created with ID: ${newCourse.id}`);
             }
           } catch (courseError) {
             console.error(`Error processing course:`, courseError);
@@ -482,7 +449,6 @@ if (body.careerOutcomeData !== undefined) {
       let updatedUniversity;
       if (Object.keys(updateData).length > 0) {
         updateData.updatedAt = new Date();
-        console.log("Updating university with data:", updateData);
 
         updatedUniversity = await tx.university.update({
           where: { id },
@@ -502,7 +468,6 @@ if (body.careerOutcomeData !== undefined) {
             faqs: true,
           },
         });
-        console.log("University updated successfully");
       } else {
         updatedUniversity = await tx.university.findUnique({
           where: { id },
@@ -521,13 +486,11 @@ if (body.careerOutcomeData !== undefined) {
             faqs: true,
           },
         });
-        console.log("No university fields to update, returning current data");
       }
 
       return updatedUniversity;
     });
 
-    console.log("Transaction completed successfully");
     return NextResponse.json(result);
 
   } catch (error) {

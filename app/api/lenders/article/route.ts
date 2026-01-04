@@ -94,7 +94,6 @@ async function validateArticleCreation(data: z.infer<typeof ArticleSchema>, user
     //     }
     // }
 
-    console.log("checking article existing are not ?")
     // Prevent duplicate articles (matching title and content)
     const existingArticle = await prisma.article.findFirst({
         where: {

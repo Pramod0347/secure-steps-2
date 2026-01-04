@@ -110,6 +110,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
   const [modalData, setModalData] = useState<CareerOutcomeItem | null>(null);
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [circleFillPercentage, setCircleFillPercentage] = useState<number>(0);
+  const [employmentRateFill, setEmploymentRateFill] = useState<number>(0);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const isHoveringRef = useRef<boolean>(false);
@@ -207,7 +208,6 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
         );
         
         if (validTimelineData.length === 0) {
-          console.log("📚 No valid course timeline data after filtering");
         } else {
           const courseItem: CareerOutcomeItem = {
             id: 3,
@@ -359,10 +359,15 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
     setHoveredItemId(item.id);
     setShowModal(true);
     setCircleFillPercentage(0);
+    setEmploymentRateFill(0);
     
     // Trigger animation after modal is shown
     setTimeout(() => {
       setCircleFillPercentage(0.75);
+      // For employment rate, animate to the actual target rate
+      if (item.rawData?.targetRate) {
+        setEmploymentRateFill(item.rawData.targetRate);
+      }
     }, 100);
   };
 
@@ -385,6 +390,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
   const handleModalLeave = (): void => {
     isHoveringRef.current = false;
     setCircleFillPercentage(0);
+    setEmploymentRateFill(0);
     clearHoverTimeout();
     setShowModal(false);
     setModalData(null);
@@ -714,42 +720,28 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
                 <div className="flex flex-col items-center justify-center pt-4 pb-4">
                   {/* Speedometer - Semicircle from left to right */}
                   <div className="w-full max-w-sm mx-auto mb-4 relative">
-                    <svg width="100%" height="auto" viewBox="-10 0 300 150" preserveAspectRatio="xMidYMid meet" className="w-full">
+                    <svg width="100%" height="auto" viewBox="0 0 200 120" className="w-full">
                       {/* Background Arc - gray semicircle */}
                       <path
-                        d="M 30 120 A 90 90 0 0 1 250 120"
+                        d="M 20 100 A 80 80 0 0 1 180 100"
                         fill="none"
                         stroke="#e5e7eb"
-                        strokeWidth="14"
+                        strokeWidth="10"
                         strokeLinecap="round"
                       />
-                      {/* Filled Arc - purple filled portion */}
+                      {/* Filled Arc - purple filled portion with animation */}
                       <path
-                        d="M 30 120 A 90 90 0 0 1 250 120"
+                        d="M 20 100 A 80 80 0 0 1 180 100"
                         fill="none"
                         stroke="#a855f7"
-                        strokeWidth="12"
+                        strokeWidth="10"
                         strokeLinecap="round"
-                        strokeDasharray={`${Math.PI * 90 * (modalData.rawData.targetRate / 100)} ${Math.PI * 90}`}
+                        strokeDasharray={`${Math.PI * 80 * (employmentRateFill / 100)} ${Math.PI * 80}`}
+                        style={{ transition: 'stroke-dasharray 2s ease-in-out' }}
                       />
-                      {/* Dot at end - positioned at percentage point */}
-                      {/* <circle
-                        cx={30 + 211 * (modalData.rawData.targetRate / 100)}
-                        cy={100 - (120 - 90 * (1 + Math.cos(Math.PI * (modalData.rawData.targetRate / 100))))}
-                        r="13"
-                        fill="#a855f7"
-                      />
-                      <circle
-                        cx={30 + 211 * (modalData.rawData.targetRate / 100)}
-                        cy={100 - (120 - 90 * (1 + Math.cos(Math.PI * (modalData.rawData.targetRate / 100))))}
-                        r="13"
-                        fill="none"
-                        stroke="white"
-                        strokeWidth="3"
-                      /> */}
                     </svg>
 
-                    <p className="absolute top-[60%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-5xl font-black text-slate-900 mb-1">
+                    <p className="absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-5xl font-black text-slate-900 mb-1">
                       {modalData.rawData.targetRate}%
                     </p>
                   </div>
@@ -772,7 +764,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
                           <span className="text-sm font-medium text-slate-800">{item.course}</span>
                         </div>
                         <svg className='w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors flex-shrink-0' xmlns="http://www.w3.org/2000/svg" width="207" height="208" viewBox="0 0 207 208" fill="none">
-                          <g clip-path="url(#clip0_1358_1029)">
+                          <g>
                           <path d="M21.8777 53.5284C21.8784 48.7668 23.7702 44.2005 27.1371 40.8336C30.5041 37.4666 35.0704 35.5748 39.8319 35.5741L154.11 35.5741C158.871 35.5748 163.437 37.4666 166.804 40.8336C170.171 44.2005 172.063 48.7668 172.064 53.5284L172.064 167.806C171.982 172.514 170.054 177.001 166.696 180.301C163.338 183.602 158.818 185.451 154.11 185.451C149.401 185.451 144.881 183.602 141.523 180.301C138.165 177.001 136.237 172.514 136.155 167.806L135.063 97.9697L65.2287 167.804C61.8611 171.172 57.2936 173.064 52.5312 173.064C47.7687 173.064 43.2012 171.172 39.8336 167.804C36.466 164.437 34.5742 159.869 34.5742 155.107C34.5742 150.344 36.466 145.777 39.8336 142.409L109.668 72.5746L39.8319 71.4827C35.0704 71.4819 30.5041 69.5901 27.1371 66.2232C23.7702 62.8563 21.8784 58.2899 21.8777 53.5284Z" fill="black"/>
                           </g>
                           <defs>

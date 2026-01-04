@@ -4,8 +4,6 @@ import { uploadFile, deleteFile, getFileUrl } from "@/app/lib/s3/s3Service";
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { action } = req.query;
 
-  console.log("s3 api is called......");
-  console.log("action name :",action);
 
   try {
     if (action === "upload" && req.method === "POST") {

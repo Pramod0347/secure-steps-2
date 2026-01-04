@@ -56,7 +56,6 @@ export default function UniversityPageClient({
   // Enhanced function to find university in different ways
   const findUniversityInStore = useCallback(
     (slug: string): UniversityInterface | null => {
-      console.log("🔍 Searching for university with slug:", slug);
 
       // Helper function to match university by different criteria
       const matchUniversity = (uni: UniversityInterface): boolean => {
@@ -75,7 +74,6 @@ export default function UniversityPageClient({
       // First, try to find in the main universities list (from cache)
       const foundInMain = universities.find(matchUniversity);
       if (foundInMain) {
-        console.log("✅ Found university in main cache:", foundInMain.name);
         return foundInMain;
       }
 
@@ -83,21 +81,15 @@ export default function UniversityPageClient({
       const foundInDetails =
         Object.values(universityDetails).find(matchUniversity);
       if (foundInDetails) {
-        console.log(
-          "✅ Found university in details cache:",
-          foundInDetails.name
-        );
         return foundInDetails;
       }
 
       // Third, try to get by ID directly (if slug is an ID)
       const foundById = getUniversityById(slug);
       if (foundById) {
-        console.log("✅ Found university by ID:", foundById.name);
         return foundById;
       }
 
-      console.log("❌ University not found in store");
       return null;
     },
     [universities, universityDetails, getUniversityById]
@@ -107,7 +99,6 @@ export default function UniversityPageClient({
   const fetchUniversityFromAPI = useCallback(
     async (slug: string): Promise<UniversityInterface | null> => {
       try {
-        console.log("🌐 Fetching university from API with slug:", slug);
 
         // Try different API endpoints - PRIORITIZING SLUG-BASED QUERIES
         const endpoints = [
@@ -118,7 +109,6 @@ export default function UniversityPageClient({
 
         for (const endpoint of endpoints) {
           try {
-            console.log("🌐 Trying endpoint:", endpoint);
 
             const response = await fetch(endpoint, {
               method: "GET",
@@ -128,22 +118,9 @@ export default function UniversityPageClient({
               credentials: "include",
             });
 
-            console.log("📡 Response status:", response.status);
 
             if (response.ok) {
               const data = await response.json();
-              console.log(
-                "✅ API Response received:",
-                JSON.stringify(data, null, 2)
-              );
-              console.log(
-                "✅ API Response careerOutcomes:",
-                data.careerOutcomes
-              );
-              console.log(
-                "✅ API Response careerOutcomes length:",
-                data.careerOutcomes?.length
-              );
 
               // Handle different response formats
               let university: UniversityInterface | null = null;
@@ -161,49 +138,20 @@ export default function UniversityPageClient({
               }
 
               if (university && university.id) {
-                console.log(
-                  "✅ Successfully parsed university:",
-                  university.name
-                );
-                console.log(
-                  "✅ Parsed university careerOutcomes:",
-                  university.careerOutcomes
-                );
-                console.log(
-                  "✅ Parsed university careerOutcomes length:",
-                  university.careerOutcomes?.length
-                );
-                console.log(
-                  "✅ Parsed university careerOutcomes type:",
-                  typeof university.careerOutcomes
-                );
-                console.log(
-                  "✅ Parsed university careerOutcomes isArray:",
-                  Array.isArray(university.careerOutcomes)
-                );
                 return university;
               }
             } else if (response.status === 404) {
-              console.log("❌ University not found at endpoint:", endpoint);
               continue; // Try next endpoint
             } else {
-              console.log(
-                "❌ API error at endpoint:",
-                endpoint,
-                response.status
-              );
               continue; // Try next endpoint
             }
           } catch (endpointError) {
-            console.log("❌ Error with endpoint:", endpoint, endpointError);
             continue; // Try next endpoint
           }
         }
 
-        console.log("❌ All API endpoints failed");
         return null;
-      } catch (error) {
-        console.error("❌ API fetch error:", error);
+      } catch {
         return null;
       }
     },
@@ -213,11 +161,9 @@ export default function UniversityPageClient({
   // Main effect to find and load university
   useEffect(() => {
     const loadUniversity = async () => {
-      console.log("🚀 Starting university load process for slug:", slug);
 
       // Wait for store hydration
       if (!hasHydrated) {
-        console.log("⏸️ Waiting for store hydration...");
         return;
       }
 
@@ -226,47 +172,35 @@ export default function UniversityPageClient({
 
       try {
         // Step 1: Try to find in store first
-        console.log("📋 Step 1: Checking store for university...");
         const foundUniversity = findUniversityInStore(slug);
 
         if (foundUniversity) {
-          console.log("✅ Using university from store:", foundUniversity.name);
-          console.log("✅ Using university from store Data:", foundUniversity);
           setUniversity(foundUniversity);
           setIsLoading(false);
           return;
         }
 
         // Step 2: Try using the store's fetchUniversityById method (now optimized for slugs)
-        console.log("📋 Step 2: Using store's fetchUniversityById...");
         const storeResult = await fetchUniversityById(slug);
 
         if (storeResult) {
-          console.log("✅ Successfully fetched via store:", storeResult.name);
           setUniversity(storeResult);
           setIsLoading(false);
           return;
         }
 
         // Step 3: Try direct API call as fallback
-        console.log("📋 Step 3: Trying direct API call...");
         const apiResult = await fetchUniversityFromAPI(slug);
 
         if (apiResult) {
-          console.log(
-            "✅ Successfully fetched via direct API:",
-            apiResult.name
-          );
           setUniversity(apiResult);
           setIsLoading(false);
           return;
         }
 
         // Step 4: If still not found, set error
-        console.log("❌ University not found after all attempts");
         setError("University not found");
-      } catch (err) {
-        console.error("❌ Error in loadUniversity:", err);
+      } catch {
         setError("Failed to load university details");
       } finally {
         setIsLoading(false);
@@ -282,36 +216,13 @@ export default function UniversityPageClient({
     fetchUniversityFromAPI,
   ]);
 
-  // Debug effect to log current state
-  useEffect(() => {
-    console.log("🔍 Current state:", {
-      slug,
-      hasHydrated,
-      isLoading,
-      error,
-      university: university?.name || null,
-      universitiesInStore: universities.length,
-      universityDetailsInStore: Object.keys(universityDetails).length,
-    });
-  }, [
-    slug,
-    hasHydrated,
-    isLoading,
-    error,
-    university,
-    universities.length,
-    universityDetails,
-  ]);
-
   // Show loading skeleton while loading or before hydration
   if (!hasHydrated || isLoading) {
-    console.log("🔄 Showing loading skeleton");
     return <UniversityPageSkeleton />;
   }
 
   // Show error state
   if (error || !university) {
-    console.log("❌ Showing error state:", error);
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
         <div className="text-center max-w-md">
@@ -343,31 +254,6 @@ export default function UniversityPageClient({
       </div>
     );
   }
-
-  console.log("✅ Rendering university page for:", university.name);
-  console.log("✅ Rendering university Data", university);
-  console.log("✅ careerOutcomes", university.careerOutcomes);
-  console.log("✅ careerOutcomes type:", typeof university.careerOutcomes);
-  console.log(
-    "✅ careerOutcomes isArray:",
-    Array.isArray(university.careerOutcomes)
-  );
-  console.log("✅ careerOutcomes length:", university.careerOutcomes?.length);
-
-  // Extract career outcome data for debugging
-  console.log("🔍 Raw university.careerOutcomes:", university.careerOutcomes);
-  console.log(
-    "🔍 university.careerOutcomes type:",
-    typeof university.careerOutcomes
-  );
-  console.log(
-    "🔍 university.careerOutcomes isArray:",
-    Array.isArray(university.careerOutcomes)
-  );
-  console.log(
-    "🔍 university.careerOutcomes length:",
-    university.careerOutcomes?.length
-  );
 
   type ActualCareerOutcomeFromAPI = {
     id: string;
@@ -401,40 +287,6 @@ export default function UniversityPageClient({
     university.careerOutcomes.length > 0
       ? (university.careerOutcomes[0] as unknown as ActualCareerOutcomeFromAPI)
       : null;
-
-  console.log(
-    "✅ Extracted careerOutcomeData:",
-    JSON.stringify(careerOutcomeData, null, 2)
-  );
-  console.log("✅ careerOutcomeData type:", typeof careerOutcomeData);
-  console.log("✅ careerOutcomeData is null:", careerOutcomeData === null);
-  console.log(
-    "✅ careerOutcomeData keys:",
-    careerOutcomeData ? Object.keys(careerOutcomeData) : []
-  );
-
-  if (careerOutcomeData) {
-    console.log(
-      "✅ Career outcome has salaryChartData:",
-      !!careerOutcomeData.salaryChartData,
-      careerOutcomeData.salaryChartData?.length
-    );
-    console.log(
-      "✅ Career outcome has employmentRateMeter:",
-      !!careerOutcomeData.employmentRateMeter
-    );
-    console.log(
-      "✅ Career outcome has courseTimelineData:",
-      !!careerOutcomeData.courseTimelineData,
-      careerOutcomeData.courseTimelineData?.length
-    );
-  } else {
-    console.log("❌ No career outcome data found for university");
-    console.log("❌ This means either:");
-    console.log("   - university.careerOutcomes is null/undefined");
-    console.log("   - university.careerOutcomes is not an array");
-    console.log("   - university.careerOutcomes is an empty array");
-  }
 
   // Show university details
   return (

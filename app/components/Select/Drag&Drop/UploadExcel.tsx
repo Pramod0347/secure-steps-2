@@ -249,7 +249,6 @@ export default function UploadExcel() {
 
   // Helper function to add to the processing log
   const addToLog = useCallback((message: string) => {
-    console.log(message)
     setProcessingLog((prev) => [...prev, message])
   }, [])
 

@@ -25,7 +25,6 @@ const Popup: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onC
     setIsSubmitting(true)
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 2000))
-    console.log("Form submitted:", { email, phone, date, time })
     setIsSubmitting(false)
     setIsSubmitted(true)
     setTimeout(() => {
@@ -218,8 +217,7 @@ const Hero: React.FC = () => {
       }
     }
 
-    const handleError = (e: Event): void => {
-      console.error("Video error:", e)
+    const handleError = (): void => {
       setVideoError("Error loading video")
     }
 
@@ -229,7 +227,7 @@ const Hero: React.FC = () => {
     // For Safari, try playing after a short delay
     const playTimeout = setTimeout(() => {
       if (video.paused) {
-        video.play().catch((err) => console.error("Delayed play error:", err))
+        video.play().catch(() => {})
       }
     }, 300)
 
@@ -241,7 +239,7 @@ const Hero: React.FC = () => {
   }, [])
 
   return (
-    <div className="relative z-50 md:h-screen h-[85vh] w-full overflow-hidden bg-gray-800 max-w-full ">
+    <div className="relative z-50 md:h-screen h-[85vh] w-full overflow-hidden bg-gray-800 max-w-full">
       {videoError && <div className="absolute top-0 left-0 w-full bg-red-500 text-white p-2 z-50">{videoError}</div>}
       <video
         ref={videoRef}
@@ -261,10 +259,10 @@ const Hero: React.FC = () => {
       </video>
       <div className="relative z-10 flex h-full w-full items-end gap-20 bg-gradient-to-b from-transparent via-transparent to-white/10">
         <div className="flex md:flex-row md:items-center flex-col w-full justify-between rounded-lg p-4 md:p-8 md:px-20 text-center">
-          <h1 className="mb-4 md:mb-0 text-center md:text-left text-[25px] md:text-[50px] 2xl:text-[60px]  leading-[1.2] md:leading-[1.1] 2xl:leading-[1.1] text-white z-10 ">
-            <span className="whitespace-nowrap">Begin your journey with</span>
+          <h1 className="mb-4 md:mb-0 text-center md:text-left text-[22px] sm:text-[28px] md:text-[42px] lg:text-[50px] xl:text-[56px] 2xl:text-[60px] leading-[1.25] md:leading-[1.15] text-white z-10">
+            <span className="whitespace-nowrap uppercase font-bold">Begin your journey with</span>
             <br />
-            <span className="whitespace-nowrap font-bold">
+            <span className="whitespace-nowrap font-bold uppercase">
               right{" "}
               <span className="animated-text-wrapper inline-block align-bottom">
                 {textOptions.map((text, index) => (

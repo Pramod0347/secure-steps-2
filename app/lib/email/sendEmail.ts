@@ -21,7 +21,6 @@ export const sendEmail = async (
       ...emailContent
     });
 
-    console.log("Email sent successfully:", result.messageId);
     return true;
   } catch (error) {
     console.error("Error sending email:", error);
@@ -97,7 +96,6 @@ export const sendGeneralMessageEmail = async (
 ): Promise<boolean> => {
   try {
     const transporter = createTransporter();
-    console.log("user email :",email);
     const emailContent = EmailTemplates.generalMessage(email, messageDetails);
     return await sendEmail(transporter, emailContent);
   } catch (error) {

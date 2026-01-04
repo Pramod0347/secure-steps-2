@@ -44,7 +44,6 @@ const Results: React.FC = () => {
       const data = await response.json();
 
       setAccommodations(data.accommodations);
-      console.log("dataAccomodation :", data.accommodations);
       setTotalPages(data.pagination.pages);
     } catch (error) {
       console.error('Error fetching accommodations:', error);

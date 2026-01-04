@@ -21,10 +21,9 @@ export function Background({ stage }: { stage: number }) {
           <Image 
             src={StarsImg}
             alt="Stars"
-            layout="responsive"
-            width={1000}
-            height={1000}
-            className="absolute inset-0 object-cover"
+            fill
+            sizes="100vw"
+            className="object-cover"
           />
         </div>
       )}
