@@ -404,7 +404,7 @@ const Cards = () => {
             {/* Mobile Cards Grid - 2x2 layout */}
             <div className="w-full grid grid-cols-2 gap-3">
               {/* University Image Card */}
-              <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-md">
+              <div className="aspect-[3/4] rounded-2xl overflow-hidden relative shadow-md">
                 <Image
                   src={UnisImg || "/placeholder.svg"}
                   alt="Curated Universities"
@@ -412,6 +412,17 @@ const Cards = () => {
                   height={520}
                   className="w-full h-full object-cover"
                 />
+                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-white/95 via-white/80 to-transparent">
+                  <p className="text-[8px] text-gray-900 font-medium tracking-wider">
+                    SECURE STEPS
+                  </p>
+                  <h2 className="font-bold text-[12px] text-gray-900">
+                    Curated Ideal Universities
+                  </h2>
+                  <p className="text-[9px] leading-tight text-gray-600 mt-0.5">
+                    Answer 6 questions in under 60 seconds, explore 600+ universities, and get your perfect 6. ALL BY YOURSELF!
+                  </p>
+                </div>
               </div>
 
               {/* Card 1 - Ultimate Guide */}
