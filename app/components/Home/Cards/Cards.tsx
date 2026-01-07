@@ -404,7 +404,7 @@ const Cards = () => {
             {/* Mobile Cards Grid - 2x2 layout */}
             <div className="w-full grid grid-cols-2 gap-3">
               {/* University Image Card */}
-              <div className="aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer relative shadow-md">
+              <div className="aspect-[3/4] rounded-2xl overflow-hidden relative shadow-md">
                 <Image
                   src={UnisImg || "/placeholder.svg"}
                   alt="Curated Universities"
