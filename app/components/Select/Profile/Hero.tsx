@@ -75,9 +75,9 @@ export default function Hero({ university }: { university: UniversityInterface }
     university.description.length > 150 ? `${university.description.substring(0, 150)}...` : university.description
 
   return (
-    <div className="w-screen bg-cover justify-center md:mt-20 mt-10 flex-col flex items-center gap-4 bg-center text-white pt-20 md:pt-0">
+    <div className="w-full max-w-7xl mx-auto bg-cover justify-center md:mt-20 mt-10 flex-col flex items-center gap-4 bg-center text-white pt-20 md:pt-0 px-4 md:px-8">
       {/* Mobile Header */}
-      <div className="text-black items-center justify-center md:hidden flex flex-col w-full px-4">
+      <div className="text-black items-center justify-center md:hidden flex flex-col w-full">
         {university.logoUrl && (
           <div className="mb-3">
             <Image
@@ -89,7 +89,7 @@ export default function Hero({ university }: { university: UniversityInterface }
             />
           </div>
         )}
-        <h1 className="text-xl font-extrabold uppercase text-center">{university.name}</h1>
+        <h1 className="text-2xl font-bold text-center leading-tight px-2">{university.name}</h1>
         <div className="flex text-[10px] mt-3 gap-2 font-semibold flex-wrap justify-center">
           <h2 className="px-3 py-1 rounded-full border flex items-center gap-1">
             <BookOpen size={12} />
@@ -138,7 +138,7 @@ export default function Hero({ university }: { university: UniversityInterface }
               className="rounded-lg border-2 border-gray-200"
             />
           )}
-          <h1 className="text-black md:text-[80px] text-center 2xl:text-8xl font-bold w-[90%]">{university.name}</h1>
+          <h1 className="text-black text-3xl md:text-5xl lg:text-6xl xl:text-7xl text-center font-bold max-w-4xl leading-tight">{university.name}</h1>
         </div>
 
         <div className="hidden md:flex text-[10px] text-black md:text-[20px] mt-6 gap-8 font-semibold mb-8 flex-wrap justify-center">

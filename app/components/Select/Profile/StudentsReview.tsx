@@ -98,8 +98,8 @@ export default function StudentReviewCarousel({ university }: { university: Univ
   }
 
   return (
-    <div className="w-screen max-w-6xl mx-auto my-6 md:my-8 px-4">
-      <h2 className="text-xl md:text-3xl font-bold text-center mb-4 md:mb-6">What Our Students Say</h2>
+    <div className="w-full max-w-6xl mx-auto px-4 md:px-8">
+      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-6 md:mb-8">What Our Students Say</h2>
       <div className="relative overflow-hidden rounded-lg text-white">
         <div
           ref={carouselRef}

@@ -2,6 +2,7 @@
 
 // import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Home/Footer";
@@ -10,6 +11,14 @@ import AuthWrapper from "@/app/context/AuthWrapper";
 // import { SessionProvider } from 'next-auth/react'
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from "sonner";
+
+// Inter font for the entire app
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 // this is comment//
 // Font configurations
@@ -48,7 +57,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable}`}
+      className={`${inter.variable} ${geistSans.variable} ${geistMono.variable}`}
     >
       <head>
         {/* Add global head tags like meta tags, styles, and Google script */}
@@ -57,7 +66,7 @@ export default function RootLayout({
           src="https://accounts.google.com/gsi/client"
         ></script>
       </head>
-      <body className="antialiased min-h-screen flex flex-col overflow-x-hidden">
+      <body className={`antialiased min-h-screen flex flex-col overflow-x-hidden ${inter.className}`}>
 
           <AuthProvider>
             <AuthWrapper>

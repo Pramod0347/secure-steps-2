@@ -34,8 +34,8 @@ const alumni = [
 
 export default function AlumniSection() {
   return (
-    <section className="py-12">
-      <h2 className="text-center text-xl font-semibold mb-10">
+    <section className="w-full max-w-6xl mx-auto px-4 md:px-8">
+      <h2 className="text-center text-2xl md:text-3xl lg:text-4xl font-bold mb-6 md:mb-8">
         Contact Alumni from this college
       </h2>
       <div className="flex justify-center flex-wrap gap-6">

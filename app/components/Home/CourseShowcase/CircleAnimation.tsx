@@ -50,9 +50,8 @@ const CircleAnimation: React.FC<CircleAnimationProps> = ({ avatars }) => {
   }
 
   return (
-    <div className="relative w-full md:h-screen  flex flex-col items-center justify-center overflow-hidden  ">
-      <div className="text-[20px] md:text-5xl leading-[25.2px] text-center   ">
-
+    <div className="relative w-full md:h-screen  flex flex-col items-center overflow-hidden  ">
+      {/* <div className="text-[20px] md:text-5xl leading-[25.2px] text-center   ">
         <TypeAnimation
           sequence={[
             "Why think better with Secure  ?",
@@ -68,8 +67,18 @@ const CircleAnimation: React.FC<CircleAnimationProps> = ({ avatars }) => {
           repeat={Number.POSITIVE_INFINITY}
           cursor={true}
         />
-      </div>
+      </div> */}
 
+      {/* Title text outside the circle */}
+      <div className=" text-center">
+        <h1 className="font-bold text-4xl transition-opacity duration-500 h-10">
+          {avatars[currentIndex].count ? `${avatars[currentIndex].count}+` : ""}
+        </h1>
+ 
+        <h2 className="text-base font-semibold text-gray-800 transition-opacity duration-500 font-sf-pro-display">
+          {avatars[currentIndex].title}
+        </h2>
+      </div>
 
       <div
         className="relative mt-14"
@@ -137,16 +146,7 @@ const CircleAnimation: React.FC<CircleAnimationProps> = ({ avatars }) => {
       )}
       <br/>
 
-      {/* Title text outside the circle */}
-      <div className=" text-center">
-        <h1 className="font-bold text-4xl transition-opacity duration-500 h-10">
-          {avatars[currentIndex].count ? `${avatars[currentIndex].count}+` : ""}
-        </h1>
- 
-        <h2 className="text-base font-semibold text-gray-800 transition-opacity duration-500 font-sf-pro-display">
-          {avatars[currentIndex].title}
-        </h2>
-      </div>
+
 
      
 

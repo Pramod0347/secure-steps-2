@@ -8,7 +8,7 @@ import Image from "next/image"
 import CompareIcon from "@/app/assets/CompareIcon.png"
 import ApplyIcon from "@/app/assets/ApplyIcon.png"
 import { motion } from "framer-motion"
-import Loader from "../../ui/Loader"
+import FullScreenLoader from "../../ui/FullScreenLoader"
 import { useAuth } from "@/app/context/AuthContext"
 import { toast } from "sonner"
 import CourseSelectionModal from "../Models/CourseSelectionModal"
@@ -133,6 +133,9 @@ const UniversityCard: React.FC<{
 
   return (
     <>
+      {/* Full Screen Loader when navigating */}
+      <FullScreenLoader isLoading={isNavigating} message="Loading university..." />
+
       <CourseSelectionModal
         isOpen={isCourseModalOpen}
         onClose={() => setIsCourseModalOpen(false)}
@@ -141,20 +144,14 @@ const UniversityCard: React.FC<{
         onCourseSelect={handleCourseSelect}
       />
 
-      <div className="w-full h-[420px] 2xl:h-[480px] max-w-[420px] mx-auto relative">
-        {/* Show loader in place of card when navigating */}
-        {isNavigating ? (
-          <div className="w-full h-full flex items-center justify-center">
-            <Loader isLoading={true} />
-          </div>
-        ) : (
-          <motion.div
-            className="group relative flex overflow-hidden rounded-3xl h-full w-full shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer"
-            whileHover={{ y: -12, scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            onClick={handleCardClick}
-          >
+      <div className="w-full h-[420px] 2xl:h-[480px] max-w-[380px] sm:max-w-[420px] xl:max-w-[400px] 2xl:max-w-[480px] relative">
+        <motion.div
+          className="group relative flex overflow-hidden rounded-3xl h-full w-full shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer"
+          whileHover={{ y: -12, scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          onClick={handleCardClick}
+        >
             {/* Enhanced Background Image */}
             <Image
               src={university.banner || "/placeholder.svg"}
@@ -269,7 +266,6 @@ const UniversityCard: React.FC<{
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
             </div>
           </motion.div>
-        )}
       </div>
     </>
   )

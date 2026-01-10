@@ -290,8 +290,8 @@ export default function UniversityPageClient({
 
   // Show university details
   return (
-    <main className="min-h-screen w-screen">
-      <div className="w-full flex flex-col items-center justify-center">
+    <main className="min-h-screen w-screen overflow-x-hidden">
+      <div className="w-full flex flex-col items-center justify-center gap-8 md:gap-12 lg:gap-16">
         <Suspense
           fallback={
             <div className="w-full h-64 animate-pulse bg-gray-200 rounded-lg"></div>
@@ -331,6 +331,13 @@ export default function UniversityPageClient({
         >
           <Gallery university={university} />
         </Suspense>
+        <Suspense
+          fallback={
+            <div className="w-full h-96 animate-pulse bg-gray-200 rounded-lg"></div>
+          }
+        >
+          <Courses university={university} />
+        </Suspense>
 
         <Suspense
           fallback={
@@ -340,13 +347,6 @@ export default function UniversityPageClient({
           <FAQ faqData={university.faqs} />
         </Suspense>
 
-        <Suspense
-          fallback={
-            <div className="w-full h-96 animate-pulse bg-gray-200 rounded-lg"></div>
-          }
-        >
-          <Courses university={university} />
-        </Suspense>
       </div>
     </main>
   );

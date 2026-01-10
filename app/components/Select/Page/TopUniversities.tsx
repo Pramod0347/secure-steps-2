@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import Link from "next/link"
 import { useAuth } from "@/app/context/AuthContext"
 import UniversityApplicationModal from "../Models/UniversityApplicationModal"
@@ -11,7 +11,7 @@ import { Building2, Heart } from "lucide-react"
 import UniversityCardSkeleton from "./UniversityCardSkeleton"
 import UniversityCard from "./UniversityCard"
 import Pagination from "../../ui/pagination"
-import Loader from "../../ui/Loader"
+import FullScreenLoader from "../../ui/FullScreenLoader"
 import type { FilterValues } from "./Hero"
 import { useScrollLock } from "@/hooks/useScrollLock"
 import { useUniversities } from "@/hooks/useUniversities"
@@ -39,11 +39,21 @@ const TopUniversities: React.FC<TopUniversitiesProps> = ({
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false)
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false)
   const [isWiseListModalOpen, setIsWiseListModalOpen] = useState(false)
+  
+  // Local loading state for pagination/search
+  const [isPaginationLoading, setIsPaginationLoading] = useState(false)
+  const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const loadingStartTimeRef = useRef<number>(0)
+  const targetPageRef = useRef<number | null>(null)
+  const initialUniversityIdsRef = useRef<string[]>([])
+  const MINIMUM_LOADER_TIME = 800 // Minimum time loader should show (ms)
 
   // Use the hook
   const {
     currentUniversities,
     isLoading,
+    isFetchingPage,
+    isRefreshing,
     showLoader,
     error,
     setModalInteraction,
@@ -52,12 +62,85 @@ const TopUniversities: React.FC<TopUniversitiesProps> = ({
     isHydrated,
     totalPages,
     currentPage,
-    handlePageChange,
+    handlePageChange: hookHandlePageChange,
   } = useUniversities({
     searchQuery,
     filters,
     autoFetch: true,
   })
+
+  // Wrap handlePageChange to track loading
+  const handlePageChange = useCallback((page: number) => {
+    // Clear any existing timeout
+    if (loadingTimeoutRef.current) {
+      clearTimeout(loadingTimeoutRef.current)
+    }
+    // Store the current university IDs to compare when new data arrives
+    initialUniversityIdsRef.current = currentUniversities.map(u => u.id)
+    targetPageRef.current = page
+    loadingStartTimeRef.current = Date.now()
+    setIsPaginationLoading(true)
+    hookHandlePageChange(page)
+  }, [hookHandlePageChange, currentUniversities])
+
+  // Track when loading should end - only when new data is actually rendered
+  useEffect(() => {
+    if (!isPaginationLoading) return
+    
+    // Get current university IDs
+    const currentIds = currentUniversities.map(u => u.id)
+    const initialIds = initialUniversityIdsRef.current
+    
+    // Check if data has actually changed (different universities are now showing)
+    const dataActuallyChanged = currentIds.length > 0 && (
+      currentIds.length !== initialIds.length ||
+      !currentIds.every((id, index) => id === initialIds[index])
+    )
+    
+    // Check if we've reached the target page and data is loaded
+    const reachedTargetPage = targetPageRef.current === currentPage
+    const dataIsLoaded = !isLoading && !isFetchingPage
+    
+    // Only close loader when data has actually changed AND minimum time has passed
+    if (dataActuallyChanged && dataIsLoaded) {
+      const elapsedTime = Date.now() - loadingStartTimeRef.current
+      const remainingTime = Math.max(0, MINIMUM_LOADER_TIME - elapsedTime)
+      
+      // Wait for remaining minimum time before closing
+      loadingTimeoutRef.current = setTimeout(() => {
+        setIsPaginationLoading(false)
+        targetPageRef.current = null
+        initialUniversityIdsRef.current = []
+      }, remainingTime)
+    }
+    
+    return () => {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current)
+      }
+    }
+  }, [currentPage, currentUniversities, isLoading, isFetchingPage, isPaginationLoading])
+
+  // Track search changes
+  const prevSearchQuery = useRef(searchQuery)
+  const prevFilters = useRef(filters)
+  
+  useEffect(() => {
+    const searchChanged = prevSearchQuery.current !== searchQuery
+    const filtersChanged = JSON.stringify(prevFilters.current) !== JSON.stringify(filters)
+    
+    if (searchChanged || filtersChanged) {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current)
+      }
+      // Store current IDs before search changes
+      initialUniversityIdsRef.current = currentUniversities.map(u => u.id)
+      loadingStartTimeRef.current = Date.now()
+      setIsPaginationLoading(true)
+      prevSearchQuery.current = searchQuery
+      prevFilters.current = filters
+    }
+  }, [searchQuery, filters, currentUniversities])
 
   // Lock scroll when modals are open
   useScrollLock(isApplicationModalOpen || isCompareModalOpen || isWiseListModalOpen)
@@ -150,7 +233,7 @@ const TopUniversities: React.FC<TopUniversitiesProps> = ({
 
   // Helper function to render skeleton cards
   const renderSkeletonCards = (count: number = 9) => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 xl:gap-12 place-items-center">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 xl:gap-10 2xl:gap-12 justify-items-center">
       {Array(count)
         .fill(0)
         .map((_, index) => (
@@ -180,16 +263,19 @@ const TopUniversities: React.FC<TopUniversitiesProps> = ({
 
   // Main content after loading
   return (
-    <div className="flex flex-col min-h-screen p-4 md:p-16 lg:p-20 2xl:p-28 text-left font-sans">
-      {/* Show loader overlay when fetching additional data */}
-      {isLoading && hasData && <Loader isLoading={true} />}
+    <div className="flex flex-col min-h-screen p-4 md:p-16 lg:p-20 2xl:p-28 text-left ">
+      {/* Show full screen loader overlay when fetching data (search, pagination, refresh) */}
+      <FullScreenLoader 
+        isLoading={isPaginationLoading} 
+        message="Loading..." 
+      />
 
-      <div className="mb-8 sm:mb-8 lg:mb-8 flex flex-col items-start justify-between">
+      <div className="mb-4 lg:mb-8 flex flex-col items-start justify-between">
         {/* <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold flex items-center gap-2">
           <span>Top Universities</span>
         </h1> */}
         <div className="h-full flex-col gap-4 flex items-center">
-          <h1 className="md:text-5xl 2xl:text-[90px] text-3xl font-bold  2xl:leading-[87px] md:leading-[70px] leading-[43px] text-black text-center">
+          <h1 className="md:text-5xl 2xl:text-[90px] text-3xl 2xl:leading-[87px] md:leading-[70px] leading-[43px] text-black text-center bg-gradient-to-r from-[#DA202E] to-[#3B367D] bg-clip-text text-transparent font-bold">
             Let&apos;s Find Your Dream Universities
           </h1>
         </div>
@@ -230,7 +316,7 @@ const TopUniversities: React.FC<TopUniversitiesProps> = ({
         renderSkeletonCards()
       ) : (
         // Show data when available
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 xl:gap-12 place-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 xl:gap-10 2xl:gap-12 justify-items-center">
           {currentUniversities.map((university) => (
             <UniversityCard
               key={university.id}
