@@ -326,8 +326,8 @@ const TopUniversities: React.FC<TopUniversitiesProps> = ({
       ) : isLoading ? (
         // Show skeleton when loading
         renderSkeletonCards()
-      ) : isEmpty ? (
-        // Show empty state when no universities found
+      ) : isEmpty && (searchQuery || filters?.country || filters?.universityName || filters?.course) ? (
+        // Show empty state ONLY when search/filter returns no results
         <div className="flex-grow flex items-center justify-center min-h-[400px]">
           <div className="text-center py-10">
             <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
@@ -339,10 +339,13 @@ const TopUniversities: React.FC<TopUniversitiesProps> = ({
                 ? `We couldn't find any universities in "${filters.country}". Try a different country or clear the filter.`
                 : searchQuery 
                   ? `No universities match "${searchQuery}". Try a different search term.`
-                  : "No universities available at the moment. Please check back later."}
+                  : "No universities match your filters. Try different criteria."}
             </p>
           </div>
         </div>
+      ) : isEmpty ? (
+        // Initial load with no data - show skeleton loader
+        renderSkeletonCards()
       ) : (
         // Show data when available
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 xl:gap-10 2xl:gap-12 justify-items-center">
