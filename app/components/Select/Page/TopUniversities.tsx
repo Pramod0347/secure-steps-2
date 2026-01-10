@@ -17,6 +17,9 @@ import { useScrollLock } from "@/hooks/useScrollLock"
 import { useUniversities } from "@/hooks/useUniversities"
 import type { UniversityInterface, CourseInterface } from "@/store/universitystore"
 
+// Configuration constants
+const MINIMUM_LOADER_TIME = 800 // Minimum time loader should show (ms)
+
 interface TopUniversitiesProps {
   searchQuery?: string
   filters?: FilterValues
@@ -46,14 +49,12 @@ const TopUniversities: React.FC<TopUniversitiesProps> = ({
   const loadingStartTimeRef = useRef<number>(0)
   const targetPageRef = useRef<number | null>(null)
   const initialUniversityIdsRef = useRef<string[]>([])
-  const MINIMUM_LOADER_TIME = 800 // Minimum time loader should show (ms)
 
   // Use the hook
   const {
     currentUniversities,
     isLoading,
     isFetchingPage,
-    isRefreshing,
     showLoader,
     error,
     setModalInteraction,

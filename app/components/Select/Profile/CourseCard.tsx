@@ -3,7 +3,6 @@ import Image from "next/image"
 import type React from "react"
 
 import { Heart, Clock, GraduationCap, Languages, Calendar } from "lucide-react"
-import Course1 from "@/app/assets/Select/Course1.png"
 import type { CourseInterface } from "@/store/universitystore"
 
 interface CourseCardProps {
@@ -18,14 +17,14 @@ export default function CourseCard({ course, isWishlisted, onToggleWishlist }: C
       {/* Course Image */}
       <div className="relative h-[100px] md:h-[140px] lg:h-[160px]">
         <Image
-          src={course.image || Course1}
+          src={course.image || "/placeholder.svg?height=160&width=300"}
           alt={course.name}
           fill
           className="object-cover"
           onError={(e) => {
             const target = e.target as HTMLImageElement
             target.onerror = null
-            target.src = "/placeholder.svg?key=3s5xt"
+            target.src = "/placeholder.svg?height=160&width=300"
           }}
         />
         
