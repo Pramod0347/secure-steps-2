@@ -38,26 +38,47 @@ const Hero: React.FC<SearchProps> = ({ onSearch }) => {
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0, width: 0 })
   const [isMobile, setIsMobile] = useState(false)
 
-  // Use the universities hook to get data for filter options
-  // Note: This fetches the first page, which should be enough for filter dropdowns
-  // For a complete list, we might need a separate endpoint or fetch all pages
-  const { universities: hookUniversities } = useUniversities({
-    searchQuery: "",
-    filters: undefined,
-    autoFetch: true,
-  })
+  // State for all universities (for filter dropdowns)
+  const [allUniversities, setAllUniversities] = useState<UniversityInterface[]>([])
 
-  // Use hook data for filter options
-  const universitiesData = hookUniversities
+  // Fetch all universities for filter dropdowns (with higher limit)
+  useEffect(() => {
+    const fetchAllUniversities = async () => {
+      try {
+        const baseUrl = typeof window !== "undefined" ? window.location.origin : ""
+        // Fetch with higher limit for dropdown options, use lightweight for speed
+        const response = await fetch(`${baseUrl}/api/universities?page=1&limit=100&lightweight=true`)
+        if (response.ok) {
+          const data = await response.json()
+          if (data.universities && Array.isArray(data.universities)) {
+            setAllUniversities(data.universities)
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching universities for filters:", error)
+      }
+    }
+    fetchAllUniversities()
+  }, [])
+
+  // Use all universities data for filter options (fallback to hook data if not loaded)
+  const universitiesData = allUniversities.length > 0 ? allUniversities : []
 
   // Extract unique countries from universities data
   const countries = [...new Set(universitiesData.map((uni) => uni.country).filter(Boolean))].sort()
 
-  // Extract unique university names from universities data
-  const universityNames = [...new Set(universitiesData.map((uni) => uni.name).filter(Boolean))].sort()
+  // Filter universities based on selected country (if any)
+  const filteredUniversitiesData = activeFilters.country
+    ? universitiesData.filter((uni) => 
+        uni.country?.toLowerCase().includes(activeFilters.country.toLowerCase())
+      )
+    : universitiesData
 
-  // Extract unique course names from universities data
-  const courses = [...new Set(universitiesData.flatMap((uni) => uni.courses.map((course) => course.name)))]
+  // Extract unique university names - filtered by country if selected
+  const universityNames = [...new Set(filteredUniversitiesData.map((uni) => uni.name).filter(Boolean))].sort()
+
+  // Extract unique course names - filtered by country if selected
+  const courses = [...new Set(filteredUniversitiesData.flatMap((uni) => uni.courses?.map((course) => course.name) || []))]
     .filter(Boolean)
     .sort()
 

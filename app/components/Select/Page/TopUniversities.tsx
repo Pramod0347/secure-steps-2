@@ -92,17 +92,28 @@ const TopUniversities: React.FC<TopUniversitiesProps> = ({
     const initialIds = initialUniversityIdsRef.current
     
     // Check if data has actually changed (different universities are now showing)
-    const dataActuallyChanged = currentIds.length > 0 && (
-      currentIds.length !== initialIds.length ||
-      !currentIds.every((id, index) => id === initialIds[index])
-    )
+    // Also consider empty results as a valid change (e.g., search with no matches)
+    const dataActuallyChanged = 
+      // Results changed to different universities
+      (currentIds.length > 0 && (
+        currentIds.length !== initialIds.length ||
+        !currentIds.every((id, index) => id === initialIds[index])
+      )) ||
+      // Results became empty (no matches for search/filter)
+      (currentIds.length === 0 && initialIds.length > 0) ||
+      // Was already empty and search completed (isEmpty state)
+      (currentIds.length === 0 && isEmpty)
     
-    // Check if we've reached the target page and data is loaded
-    const reachedTargetPage = targetPageRef.current === currentPage
+    // Check if data loading is complete
     const dataIsLoaded = !isLoading && !isFetchingPage
     
-    // Only close loader when data has actually changed AND minimum time has passed
-    if (dataActuallyChanged && dataIsLoaded) {
+    // Close loader when:
+    // 1. Data has actually changed AND loading is complete, OR
+    // 2. There's an error, OR
+    // 3. Empty results and loading is complete
+    const shouldCloseLoader = (dataActuallyChanged && dataIsLoaded) || (error && dataIsLoaded)
+    
+    if (shouldCloseLoader) {
       const elapsedTime = Date.now() - loadingStartTimeRef.current
       const remainingTime = Math.max(0, MINIMUM_LOADER_TIME - elapsedTime)
       
@@ -119,7 +130,7 @@ const TopUniversities: React.FC<TopUniversitiesProps> = ({
         clearTimeout(loadingTimeoutRef.current)
       }
     }
-  }, [currentPage, currentUniversities, isLoading, isFetchingPage, isPaginationLoading])
+  }, [currentPage, currentUniversities, isLoading, isFetchingPage, isPaginationLoading, error, isEmpty])
 
   // Track search changes
   const prevSearchQuery = useRef(searchQuery)
@@ -311,9 +322,26 @@ const TopUniversities: React.FC<TopUniversitiesProps> = ({
             <p className="mt-2">Please try again later.</p>
           </div>
         </div>
-      ) : isEmpty || isLoading ? (
-        // Always show skeleton when loading or when no data
+      ) : isLoading ? (
+        // Show skeleton when loading
         renderSkeletonCards()
+      ) : isEmpty ? (
+        // Show empty state when no universities found
+        <div className="flex-grow flex items-center justify-center min-h-[400px]">
+          <div className="text-center py-10">
+            <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+              <Building2 className="w-12 h-12 text-gray-400" />
+            </div>
+            <h3 className="text-2xl font-semibold text-gray-700 mb-2">No Universities Found</h3>
+            <p className="text-gray-500 max-w-md mx-auto">
+              {filters?.country 
+                ? `We couldn't find any universities in "${filters.country}". Try a different country or clear the filter.`
+                : searchQuery 
+                  ? `No universities match "${searchQuery}". Try a different search term.`
+                  : "No universities available at the moment. Please check back later."}
+            </p>
+          </div>
+        </div>
       ) : (
         // Show data when available
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 xl:gap-10 2xl:gap-12 justify-items-center">
