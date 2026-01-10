@@ -21,9 +21,11 @@ export async function GET(req: Request): Promise<NextResponse> {
       id: url.searchParams.get("id") ?? undefined,
       name: url.searchParams.get("name") ?? undefined,
       location: url.searchParams.get("location") ?? undefined,
-      country: url.searchParams.get("country") ?? undefined,
       slug: url.searchParams.get("slug") ?? undefined,
     };
+    
+    // Country filter for pagination (not for single lookup)
+    const countryFilter = url.searchParams.get("country") ?? undefined;
 
     // CONSISTENT INCLUDE OBJECT - Use this everywhere
     const includeClause = {
@@ -41,13 +43,12 @@ export async function GET(req: Request): Promise<NextResponse> {
       faqs: true,
     };
 
-    // Handle specific search parameters
+    // Handle specific search parameters (single lookups by id, slug, name, location)
     if (Object.values(searchParams).some(Boolean)) {
       const whereClause: Prisma.UniversityWhereInput = {
         ...(searchParams.id && { id: searchParams.id }),
         ...(searchParams.name && { name: { contains: searchParams.name, mode: "insensitive" } }),
         ...(searchParams.location && { location: { contains: searchParams.location, mode: "insensitive" } }),
-        ...(searchParams.country && { country: { contains: searchParams.country, mode: "insensitive" } }),
         ...(searchParams.slug && { slug: searchParams.slug }),
       };
 
@@ -87,16 +88,24 @@ export async function GET(req: Request): Promise<NextResponse> {
 
 
       const skip = (page - 1) * limit;
-      const whereClause: Prisma.UniversityWhereInput = query
-        ? {
-            OR: [
-              { name: { contains: query, mode: "insensitive" } },
-              { location: { contains: query, mode: "insensitive" } },
-              { country: { contains: query, mode: "insensitive" } },
-              { slug: { contains: query, mode: "insensitive" } },
-            ],
-          }
-        : {};
+      
+      // Build where clause with query search and country filter
+      let whereClause: Prisma.UniversityWhereInput = {};
+      
+      // Add text search if query provided
+      if (query) {
+        whereClause.OR = [
+          { name: { contains: query, mode: "insensitive" } },
+          { location: { contains: query, mode: "insensitive" } },
+          { country: { contains: query, mode: "insensitive" } },
+          { slug: { contains: query, mode: "insensitive" } },
+        ];
+      }
+      
+      // Add country filter if provided
+      if (countryFilter) {
+        whereClause.country = { contains: countryFilter, mode: "insensitive" };
+      }
 
 
       const [universities, total] = await Promise.all([

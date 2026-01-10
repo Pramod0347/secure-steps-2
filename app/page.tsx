@@ -15,20 +15,11 @@ import { StatsSection } from "./components/Home/CircleCards/StatsSection";
 // import NewHero from "./components/Home/NewHero";
 import InfiniteLogoCarousel from "./components/Home/InfiniteScrollUniv";
 import FAQ from "./components/Home/FAQ/faq-section";
-import { Inter } from "next/font/google";
-
-
-// Load Inter font
-const inter = Inter({
-  subsets: ["latin"], // Choose the subsets you need
-  weight: ["400", "500", "600", "700"], // Load specific weights
-  variable: "--font-inter", // Set a CSS variable for Tailwind usage
-});
 
 const Page: React.FC = () => {
   return (
     <>
-      <div className={`w-screen flex flex-col items-center justify-center overflow-x-hidden gap-4 md:gap-10 lg:gap-14 ${inter.className}`}>
+      <div className="w-screen flex flex-col items-center justify-center overflow-x-hidden gap-4 md:gap-10 lg:gap-14">
 
         <Hero />
         {/* <NewHero /> */}

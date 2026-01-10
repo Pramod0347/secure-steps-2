@@ -74,8 +74,8 @@ export default function Gallery({ university }: { university: UniversityInterfac
   }
 
   return (
-    <div className="w-screen max-w-6xl mx-auto my-8 md:my-16 px-4">
-      <h2 className="text-xl md:text-3xl font-bold mb-4 md:mb-8 text-center">Campus Gallery</h2>
+    <div className="w-full max-w-6xl mx-auto px-4 md:px-8">
+      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 md:mb-8 text-center">Campus Gallery</h2>
 
       {/* Main Gallery */}
       <div className="relative">
@@ -124,7 +124,7 @@ export default function Gallery({ university }: { university: UniversityInterfac
         </div>
 
         {/* Thumbnail strip - scrollable on mobile */}
-        <div className="flex gap-1 md:gap-2 mt-2 md:mt-4 overflow-x-auto pb-2 hide-scrollbar">
+        <div className="flex gap-1 md:gap-2 mt-2 md:mt-4 overflow-x-auto pb-2 hide-scrollbar md:justify-center">
           {university.imageUrls.map((image, index) => (
             <button
               key={index}

@@ -63,7 +63,7 @@ const AccordionTrigger: React.FC<AccordionTriggerProps> = ({ children, className
 
 const AccordionContent: React.FC<AccordionContentProps> = ({ children, isOpen }) => (
   <div className={`overflow-hidden transition-all duration-200 ${isOpen ? 'max-h-96 pb-4' : 'max-h-0'}`}>
-    <div className="px-2 text-gray-600 leading-relaxed">
+    <div className="px-2 text-gray-600 leading-relaxed text-xs md:text-sm">
       {children}
     </div>
   </div>
@@ -110,11 +110,11 @@ const FAQ: React.FC<FAQProps> = ({ faqData = [] }) => {
   const faqs: FAQItem[] = faqData.length > 0 ? faqData : defaultFaqData;
 
   return (
-    <div className="w-full py-8 lg:py-20 px-5">
-      <div className="container mx-auto max-w-5xl">
+    <div className="w-full max-w-6xl mx-auto px-4 md:px-8 mb-8 md:mb-16">
+      <div className="w-full">
         {/* Header Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-2xl md:text-4xl font-bold mb-4">
+        <div className="text-center mb-8 md:mb-10">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
             Frequently Asked Questions
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">

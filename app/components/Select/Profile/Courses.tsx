@@ -305,9 +305,9 @@ export default function Courses({ university }: CoursesProps) {
   }
 
   return (
-    <div className="md:px-24 px-4 md:py-32 pt-40 relative w-screen mb-6 md:mb-0" id="courses-section">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="md:text-[40px] text-[32px] md:font-normal font-medium">
+    <div className="w-full max-w-6xl mx-auto px-4 md:px-8" id="courses-section">
+      <div className="flex justify-between items-center mb-6 md:mb-8">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">
           {showSearch ? "Find Your Course" : "Trending Courses"}
         </h1>
       </div>
@@ -375,14 +375,14 @@ export default function Courses({ university }: CoursesProps) {
       {/* Courses Grid with min-height to maintain layout */}
       <div
         ref={coursesContainerRef}
-        className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 min-h-[400px]"
+        className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8"
       >
         {isLoadingWishlist
           ? // Show loading placeholders while fetching wishlist
             Array.from({ length: 8 }).map((_, index) => (
               <div
                 key={`loading-${index}`}
-                className="bg-gray-100 rounded-lg animate-pulse h-[200px] md:h-[300px]"
+                className="bg-gray-100 rounded-xl animate-pulse aspect-[3/4]"
               ></div>
             ))
           : // Show actual courses

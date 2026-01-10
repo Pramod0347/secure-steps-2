@@ -5,8 +5,8 @@ import { useState, useEffect } from "react";
 import Image, { type StaticImageData } from "next/image";
 
 // Last Three Card
-import rec2 from "@/app/assets/Home/BudgetCal_Img.jpg";
-import rec1 from "@/app/assets/Home/LoanImg.jpg";
+import rec2 from "@/app/assets/Home/BudgetCal_Img.jpeg";
+import rec1 from "@/app/assets/Home/LoanImg.jpeg";
 import rec3 from "@/app/assets/Home/DocuCheckImg.jpeg";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -420,7 +420,7 @@ const Cards = () => {
                     Curated Ideal Universities
                   </h2>
                   <p className="text-[9px] leading-tight text-gray-600 mt-0.5">
-                    Answer 6 questions in under 60 seconds, explore 600+ universities, and get your perfect 6. ALL BY YOURSELF!
+                    Answer 6 questions in under 60 seconds, explore 600+ courses, and get your perfect 6. ALL BY YOURSELF!
                   </p>
                 </div>
               </div>

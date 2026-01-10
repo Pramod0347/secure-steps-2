@@ -2,12 +2,12 @@
 
 import UploadExcel from "@/app/components/Select/Drag&Drop/UploadExcel";
 
-const page = () =>{
-  return(
+const page = () => {
+  return (
     <div className="w-screen">
-      <UploadExcel/>
+      <UploadExcel />
     </div>
-  )
-}
+  );
+};
 
 export default page;

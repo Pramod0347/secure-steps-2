@@ -485,10 +485,10 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
   };
 
   return (
-    <div className="relative w-full max-w-6xl mx-auto p-8 rounded-3xl">
+    <div className="relative w-full max-w-6xl mx-auto px-4 md:px-8">
       {/* Header */}
-      <div className="text-center mb-16">
-        <h2 className="text-xl md:text-3xl font-bold mb-4 md:mb-8 text-center">{title}</h2>
+      <div className="text-center mb-8 md:mb-12">
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center">{title}</h2>
       </div>
 
       {/* Icons Grid */}
@@ -720,7 +720,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
                 <div className="flex flex-col items-center justify-center pt-4 pb-4">
                   {/* Speedometer - Semicircle from left to right */}
                   <div className="w-full max-w-sm mx-auto mb-4 relative">
-                    <svg width="100%" height="auto" viewBox="0 0 200 120" className="w-full">
+                    <svg width="100%" viewBox="0 0 200 120" className="w-full" preserveAspectRatio="xMidYMid meet">
                       {/* Background Arc - gray semicircle */}
                       <path
                         d="M 20 100 A 80 80 0 0 1 180 100"
