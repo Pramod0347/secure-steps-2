@@ -71,22 +71,37 @@ export default function UniversityPageClient({
         return matches.some((match) => match);
       };
 
+      // Helper function to check if university has full data (not lightweight)
+      // Check for description AND that courses have full data (degreeType exists)
+      const hasFullData = (uni: UniversityInterface): boolean => {
+        const hasBaseFields = !!(uni.description && uni.established && uni.website);
+        const hasFullCourseData = uni.courses && uni.courses.length > 0 
+          ? uni.courses[0].degreeType !== undefined 
+          : true;
+        return hasBaseFields && hasFullCourseData;
+      };
+
       // First, try to find in the main universities list (from cache)
-      const foundInMain = universities.find(matchUniversity);
+      // Only use if it has full data (not lightweight)
+      const foundInMain = universities.find(
+        (uni) => matchUniversity(uni) && hasFullData(uni)
+      );
       if (foundInMain) {
         return foundInMain;
       }
 
       // Second, try to find in university details cache
-      const foundInDetails =
-        Object.values(universityDetails).find(matchUniversity);
+      // Also check hasFullData as a safety measure
+      const foundInDetails = Object.values(universityDetails).find(
+        (uni) => matchUniversity(uni) && hasFullData(uni)
+      );
       if (foundInDetails) {
         return foundInDetails;
       }
 
       // Third, try to get by ID directly (if slug is an ID)
       const foundById = getUniversityById(slug);
-      if (foundById) {
+      if (foundById && hasFullData(foundById)) {
         return foundById;
       }
 

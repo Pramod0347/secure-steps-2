@@ -17,8 +17,10 @@ export default function Hero({ university }: { university: UniversityInterface }
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false)
   const [showFullDescription, setShowFullDescription] = useState(false)
 
-  // Format established date
-  const establishedYear = new Date(university.established).getFullYear()
+  // Format established date (with fallback)
+  const establishedYear = university.established 
+    ? new Date(university.established).getFullYear() 
+    : null
 
   // Convert our UniversityInterface to the type expected by UniversityCompareModal
   const mapToCompareUniversity = (uni: UniversityInterface): CompareUniversity => {
@@ -71,8 +73,9 @@ export default function Hero({ university }: { university: UniversityInterface }
   }
 
   // Truncate description for mobile view
-  const truncatedDescription =
-    university.description.length > 150 ? `${university.description.substring(0, 150)}...` : university.description
+  const truncatedDescription = university.description
+    ? (university.description.length > 150 ? `${university.description.substring(0, 150)}...` : university.description)
+    : ""
 
   return (
     <div className="w-full max-w-7xl mx-auto bg-cover justify-center md:mt-20 mt-10 flex-col flex items-center gap-4 bg-center text-white pt-20 md:pt-0 px-4 md:px-8">
@@ -93,22 +96,26 @@ export default function Hero({ university }: { university: UniversityInterface }
         <div className="flex text-[10px] mt-3 gap-2 font-semibold flex-wrap justify-center">
           <h2 className="px-3 py-1 rounded-full border flex items-center gap-1">
             <BookOpen size={12} />
-            {university.courses.length} Courses
+            {university.courses?.length || 0} Courses
           </h2>
           <h2 className="px-3 py-1 rounded-full border flex items-center gap-1">
             <MapPin size={12} />
             {university.location}
           </h2>
-          <h2 className="px-3 py-1 rounded-full border flex items-center gap-1">
-            <Calendar size={12} />
-            Est. {establishedYear}
-          </h2>
-          <div className="px-3 py-1 rounded-full border flex items-center gap-1">
-            <Link size={12} />
-            <a href={university.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
-              Website
-            </a>
-          </div>
+          {establishedYear && (
+            <h2 className="px-3 py-1 rounded-full border flex items-center gap-1">
+              <Calendar size={12} />
+              Est. {establishedYear}
+            </h2>
+          )}
+          {university.website && (
+            <div className="px-3 py-1 rounded-full border flex items-center gap-1">
+              <Link size={12} />
+              <a href={university.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                Website
+              </a>
+            </div>
+          )}
         </div>
       </div>
 
@@ -144,24 +151,28 @@ export default function Hero({ university }: { university: UniversityInterface }
         <div className="hidden md:flex text-[10px] text-black md:text-[20px] mt-6 gap-8 font-semibold mb-8 flex-wrap justify-center">
           <div className="flex items-center gap-2">
             <BookOpen size={20} />
-            <h2>{university.courses.length} Courses</h2>
+            <h2>{university.courses?.length || 0} Courses</h2>
           </div>
           <div className="flex items-center gap-2">
             <MapPin size={20} />
             <h2>
-              {university.location}, {university.country}
+              {university.location}{university.country ? `, ${university.country}` : ''}
             </h2>
           </div>
-          <div className="flex items-center gap-2">
-            <Calendar size={20} />
-            <h2>Est. {establishedYear}</h2>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link size={20} />
-            <a href={university.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
-              Website
-            </a>
-          </div>
+          {establishedYear && (
+            <div className="flex items-center gap-2">
+              <Calendar size={20} />
+              <h2>Est. {establishedYear}</h2>
+            </div>
+          )}
+          {university.website && (
+            <div className="flex items-center gap-2">
+              <Link size={20} />
+              <a href={university.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                Website
+              </a>
+            </div>
+          )}
         </div>
 
         {/* Banner Image */}
@@ -182,20 +193,22 @@ export default function Hero({ university }: { university: UniversityInterface }
         </div>
 
         {/* University Facilities */}
-        <div className="w-full md:w-[80%] mt-4 md:mt-6 px-4 md:px-0">
-          <h3 className="text-base md:text-xl font-semibold text-black mb-2">Facilities</h3>
-          <div className="flex flex-wrap gap-1.5 md:gap-3">
-            {university.facilities.map((facility, index) => (
-              <span
-                key={index}
-                className="bg-gray-100 text-black px-2 md:px-3 py-1 rounded-full text-xs md:text-sm flex items-center gap-1"
-              >
-                <Users size={12} className="md:block hidden" />
-                {facility}
-              </span>
-            ))}
+        {university.facilities && university.facilities.length > 0 && (
+          <div className="w-full md:w-[80%] mt-4 md:mt-6 px-4 md:px-0">
+            <h3 className="text-base md:text-xl font-semibold text-black mb-2">Facilities</h3>
+            <div className="flex flex-wrap gap-1.5 md:gap-3">
+              {university.facilities.map((facility, index) => (
+                <span
+                  key={index}
+                  className="bg-gray-100 text-black px-2 md:px-3 py-1 rounded-full text-xs md:text-sm flex items-center gap-1"
+                >
+                  <Users size={12} className="md:block hidden" />
+                  {facility}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Action Buttons */}
         <div className="inter font-medium flex flex-wrap justify-center gap-3 md:gap-8 mt-6 md:mt-8 px-4">
@@ -224,8 +237,8 @@ export default function Hero({ university }: { university: UniversityInterface }
         <div className="text-[10px] md:text-[18px] leading-[16px] md:leading-[30px] text-black md:px-1 px-4 md:w-[80%] text-center py-4 md:py-10">
           {/* Mobile description with show more/less toggle */}
           <div className="md:hidden">
-            <p>{showFullDescription ? university.description : truncatedDescription}</p>
-            {university.description.length > 150 && (
+            <p>{showFullDescription ? (university.description || "") : truncatedDescription}</p>
+            {university.description && university.description.length > 150 && (
               <button
                 onClick={() => setShowFullDescription(!showFullDescription)}
                 className="text-blue-600 font-medium mt-2 text-xs"
@@ -236,7 +249,7 @@ export default function Hero({ university }: { university: UniversityInterface }
           </div>
 
           {/* Desktop description (always full) */}
-          <p className="hidden md:block">{university.description}</p>
+          <p className="hidden md:block">{university.description || ""}</p>
         </div>
       </div>
 

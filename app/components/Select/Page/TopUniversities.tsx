@@ -49,6 +49,7 @@ const TopUniversities: React.FC<TopUniversitiesProps> = ({
   const loadingStartTimeRef = useRef<number>(0)
   const targetPageRef = useRef<number | null>(null)
   const initialUniversityIdsRef = useRef<string[]>([])
+  const MINIMUM_LOADER_TIME = 500 // Minimum time loader should show (ms) - reduced since API is faster now
 
   // Use the hook
   const {
