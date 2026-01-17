@@ -20,10 +20,16 @@ const formatFees = (fees: string | undefined): string => {
     .replace(/^(CAD|C\$)(\d)/i, '$1 $2')
   
   // Add thousand separators if number doesn't have them
-  // Match currency + space + number without commas
+  // Match currency + space + plain number (no commas), and nothing after except optional text
   formatted = formatted.replace(
-    /^([A-Za-z€$£]+)\s+(\d{4,})(?!\d*,)/,
-    (_, currency, num) => `${currency} ${Number(num).toLocaleString()}`
+    /^([A-Za-z€$£]+)\s+(\d{4,})(\s|$)/,
+    (match, currency, num, suffix) => {
+      // Only format if the number doesn't already contain commas
+      if (!num.includes(',')) {
+        return `${currency} ${Number(num).toLocaleString()}${suffix}`
+      }
+      return match
+    }
   )
   
   return formatted

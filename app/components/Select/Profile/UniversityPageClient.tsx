@@ -73,11 +73,14 @@ export default function UniversityPageClient({
 
       // Helper function to check if university has full data (not lightweight)
       // Check for description AND that courses have full data (degreeType exists)
-      const hasFullData = (uni: UniversityInterface): boolean => {
+      const hasFullData = (
+        uni: Partial<UniversityInterface>
+      ): uni is UniversityInterface => {
         const hasBaseFields = !!(uni.description && uni.established && uni.website);
-        const hasFullCourseData = uni.courses && uni.courses.length > 0 
-          ? uni.courses[0].degreeType !== undefined 
-          : true;
+        const hasFullCourseData =
+          uni.courses && uni.courses.length > 0
+            ? uni.courses[0].degreeType !== undefined
+            : true;
         return hasBaseFields && hasFullCourseData;
       };
 

@@ -442,9 +442,13 @@ export const useUniversityStore = create<UniversityState>()(
         // Only cache universities with full data (not lightweight)
         setUniversityDetails: (university) =>
           set((state) => {
-            // Only cache if university has full data (description indicates full data)
-            // This prevents lightweight listing data from overwriting full detail data
-            if (university.description) {
+            // Only cache if university has full data.
+            // We defensively check that a non-empty description string is present,
+            // to avoid lightweight listing data overwriting full detail data.
+            const hasFullDescription =
+              typeof university.description === "string" &&
+              university.description.trim().length > 0
+            if (hasFullDescription) {
               state.universityDetails[university.id] = university
             }
           }),
@@ -596,8 +600,11 @@ export const useUniversityStore = create<UniversityState>()(
           // Check cache first unless forcing refresh
           if (!forceRefresh) {
             const cached = state.getUniversityById(slug)
-            // Only use cached data if it has full data (description field indicates full data)
-            if (cached && cached.description) {
+            // Only use cached data if it has full data (non-empty description indicates full data)
+            const cachedHasFullData = cached && 
+              typeof cached.description === "string" && 
+              cached.description.trim().length > 0
+            if (cachedHasFullData) {
               return cached
             }
 
@@ -608,7 +615,7 @@ export const useUniversityStore = create<UniversityState>()(
                 uni.slug === slug ||
                 uni.name.toLowerCase().replace(/\s+/g, "-") === slug.toLowerCase() ||
                 uni.name.toLowerCase().replace(/[^a-z0-9]/g, "-") === slug.toLowerCase()) &&
-                uni.description // Only use if has full data
+                typeof uni.description === "string" && uni.description.trim().length > 0
             )
             if (foundInMain) {
               state.setUniversityDetails(foundInMain)

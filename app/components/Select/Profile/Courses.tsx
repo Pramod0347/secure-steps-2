@@ -81,7 +81,10 @@ export default function Courses({ university }: CoursesProps) {
   // Filter courses based on search and filters
   const filteredCourses = (university.courses || []).filter((course) => {
     const matchesSearch = course.name.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesDegree = selectedDegreeType ? course.degreeType === selectedDegreeType : true
+    const matchesDegree =
+      !selectedDegreeType || !course.degreeType
+        ? !selectedDegreeType // If no filter selected, show all; if filter selected but no degreeType, hide
+        : course.degreeType === selectedDegreeType
     return matchesSearch && matchesDegree
   })
 
