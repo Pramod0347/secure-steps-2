@@ -74,7 +74,7 @@ export default function CourseCard({ course, isWishlisted, onToggleWishlist }: C
         {/* Price */}
         <div className="pt-2 md:pt-3 mt-auto border-t border-gray-100">
           <p className="text-[#DA202E] font-bold text-sm md:text-base lg:text-lg">
-            ${course.fees}
+            {course.fees}
           </p>
         </div>
       </div>
