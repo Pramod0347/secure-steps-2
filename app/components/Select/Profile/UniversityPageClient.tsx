@@ -20,9 +20,17 @@ interface UniversityPageClientProps {
   slug: string;
 }
 
-// Loading skeleton component
+// Loading skeleton component with spinner overlay
 const UniversityPageSkeleton = () => (
-  <main className="min-h-screen w-full">
+  <main className="min-h-screen w-full relative">
+    {/* Loading overlay with spinner */}
+    <div className="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-12 h-12 border-4 border-gray-200 border-t-[#DA202E] rounded-full animate-spin"></div>
+        <p className="text-gray-600 font-medium">Loading university details...</p>
+      </div>
+    </div>
+    
     <div className="w-full flex flex-col items-center justify-center space-y-8 p-4">
       {/* Hero skeleton */}
       <div className="w-full max-w-6xl h-64 md:h-80 lg:h-96 animate-pulse bg-gray-200 rounded-lg"></div>
