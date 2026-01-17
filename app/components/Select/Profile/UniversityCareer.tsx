@@ -492,7 +492,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
       </div>
 
       {/* Icons Grid */}
-      <div className="flex justify-around items-center gap-12 md:gap-16 flex-wrap">
+      <div className="flex justify-around items-center gap-6 sm:gap-12 md:gap-16 flex-wrap">
         {displayData.map((item: CareerOutcomeItem) => {
 
           if (!item || !item.id) {
@@ -665,7 +665,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
                 <div className="flex flex-col items-center justify-center">
                   {/* Circular Progress - Speedometer Style */}
                   <div className="relative w-full h-full flex items-center justify-center">
-                    <svg className="w-full h-[24rem]" viewBox="0 0 200 200">
+                    <svg className="w-full h-[16rem] sm:h-[20rem] md:h-[24rem]" viewBox="0 0 200 200">
                       {/* Background Arc (White) - from bottom-left going up and around */}
                       <path
                         d="M 50 150 A 70 70 0 1 1 150 150"
@@ -687,22 +687,22 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
                     </svg>
                     {/* Center Content */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center h-fit top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                      <p className="text-slate-500 text-xl mb-1">Average Income</p>
-                      <p className="text-4xl font-bold text-slate-800">
+                      <p className="text-slate-500 text-sm sm:text-base md:text-xl mb-1">Average Income</p>
+                      <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-800">
                         {modalData.value}
                       </p>
                     </div>
                   </div>
 
                   {/* Salary Breakdown Grid */}
-                  <div className="w-full grid grid-cols-2 gap-3">
+                  <div className="w-full grid grid-cols-2 gap-2 sm:gap-3">
                     {modalData.rawData?.map((item: any, index: number) => (
-                      <div key={index} className="bg-white/60 rounded-lg p-3 hover:bg-white/80 transition-colors duration-200 shadow relative">
-                        <p className="text-xs text-slate-500 mb-1">{item.sector}</p>
-                        <p className="text-sm font-extrabold text-slate-800">
+                      <div key={index} className="bg-white/60 rounded-lg p-2 sm:p-3 hover:bg-white/80 transition-colors duration-200 shadow relative">
+                        <p className="text-[10px] sm:text-xs text-slate-500 mb-1">{item.sector}</p>
+                        <p className="text-xs sm:text-sm font-extrabold text-slate-800">
                           £{item.min?.toLocaleString()} – £{item.max?.toLocaleString()}
                         </p>
-                        <svg className="w-4 h-4 text-slate-400 mt-2 absolute bottom-[-5px] right-[-5px]" xmlns="http://www.w3.org/2000/svg" width="207" height="208" viewBox="0 0 207 208" fill="none">
+                        <svg className="w-3 h-3 text-slate-400 mt-2 absolute bottom-[-3px] right-[-3px]" xmlns="http://www.w3.org/2000/svg" width="207" height="208" viewBox="0 0 207 208" fill="none">
                           <g>
                           <path d="M21.8777 53.5284C21.8784 48.7668 23.7702 44.2005 27.1371 40.8336C30.5041 37.4666 35.0704 35.5748 39.8319 35.5741L154.11 35.5741C158.871 35.5748 163.437 37.4666 166.804 40.8336C170.171 44.2005 172.063 48.7668 172.064 53.5284L172.064 167.806C171.982 172.514 170.054 177.001 166.696 180.301C163.338 183.602 158.818 185.451 154.11 185.451C149.401 185.451 144.881 183.602 141.523 180.301C138.165 177.001 136.237 172.514 136.155 167.806L135.063 97.9697L65.2287 167.804C61.8611 171.172 57.2936 173.064 52.5312 173.064C47.7687 173.064 43.2012 171.172 39.8336 167.804C36.466 164.437 34.5742 159.869 34.5742 155.107C34.5742 150.344 36.466 145.777 39.8336 142.409L109.668 72.5746L39.8319 71.4827C35.0704 71.4819 30.5041 69.5901 27.1371 66.2232C23.7702 62.8563 21.8784 58.2899 21.8777 53.5284Z" fill="black"/>
                           </g>
@@ -763,7 +763,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
                           </div>
                           <span className="text-sm font-medium text-slate-800">{item.course}</span>
                         </div>
-                        <svg className='w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors flex-shrink-0' xmlns="http://www.w3.org/2000/svg" width="207" height="208" viewBox="0 0 207 208" fill="none">
+                        <svg className='w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors flex-shrink-0' xmlns="http://www.w3.org/2000/svg" width="207" height="208" viewBox="0 0 207 208" fill="none">
                           <g>
                           <path d="M21.8777 53.5284C21.8784 48.7668 23.7702 44.2005 27.1371 40.8336C30.5041 37.4666 35.0704 35.5748 39.8319 35.5741L154.11 35.5741C158.871 35.5748 163.437 37.4666 166.804 40.8336C170.171 44.2005 172.063 48.7668 172.064 53.5284L172.064 167.806C171.982 172.514 170.054 177.001 166.696 180.301C163.338 183.602 158.818 185.451 154.11 185.451C149.401 185.451 144.881 183.602 141.523 180.301C138.165 177.001 136.237 172.514 136.155 167.806L135.063 97.9697L65.2287 167.804C61.8611 171.172 57.2936 173.064 52.5312 173.064C47.7687 173.064 43.2012 171.172 39.8336 167.804C36.466 164.437 34.5742 159.869 34.5742 155.107C34.5742 150.344 36.466 145.777 39.8336 142.409L109.668 72.5746L39.8319 71.4827C35.0704 71.4819 30.5041 69.5901 27.1371 66.2232C23.7702 62.8563 21.8784 58.2899 21.8777 53.5284Z" fill="black"/>
                           </g>

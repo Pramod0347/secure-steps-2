@@ -27,8 +27,11 @@ export async function GET(req: Request): Promise<NextResponse> {
     // Country filter for pagination (not for single lookup)
     const countryFilter = url.searchParams.get("country") ?? undefined;
 
-    // CONSISTENT INCLUDE OBJECT - Use this everywhere
-    const includeClause = {
+    // Check if lightweight mode is requested (for listing pages - faster response)
+    const isLightweight = url.searchParams.get("lightweight") === "true";
+
+    // FULL INCLUDE - for single university detail pages
+    const fullIncludeClause = {
       courses: true,
       applications: true,
       loans: true,
@@ -43,7 +46,26 @@ export async function GET(req: Request): Promise<NextResponse> {
       faqs: true,
     };
 
-    // Handle specific search parameters (single lookups by id, slug, name, location)
+    // LIGHTWEIGHT SELECT - for listing pages (only fields needed for cards)
+    // This dramatically reduces data transfer and DB query time
+    const lightweightSelectClause = {
+      id: true,
+      name: true,
+      slug: true,
+      banner: true,
+      location: true,
+      country: true,
+      createdAt: true,
+      courses: {
+        select: {
+          id: true,
+          name: true,
+          fees: true,
+        },
+      },
+    };
+
+    // Handle specific search parameters (single university lookup - always full data)
     if (Object.values(searchParams).some(Boolean)) {
       const whereClause: Prisma.UniversityWhereInput = {
         ...(searchParams.id && { id: searchParams.id }),
@@ -55,7 +77,7 @@ export async function GET(req: Request): Promise<NextResponse> {
 
       const universities = await prisma.university.findMany({
         where: whereClause,
-        include: includeClause, // Use consistent include
+        include: fullIncludeClause, // Always use full include for single lookups
       });
 
 
@@ -109,13 +131,21 @@ export async function GET(req: Request): Promise<NextResponse> {
 
 
       const [universities, total] = await Promise.all([
-        prisma.university.findMany({
-          where: whereClause,
-          include: includeClause, // Use consistent include
-          skip,
-          take: limit,
-          orderBy: { createdAt: "desc" },
-        }),
+        isLightweight 
+          ? prisma.university.findMany({
+              where: whereClause,
+              select: lightweightSelectClause, // Use select for lightweight (faster)
+              skip,
+              take: limit,
+              orderBy: { createdAt: "desc" },
+            })
+          : prisma.university.findMany({
+              where: whereClause,
+              include: fullIncludeClause, // Use include for full data
+              skip,
+              take: limit,
+              orderBy: { createdAt: "desc" },
+            }),
         prisma.university.count({ where: whereClause }),
       ]);
 

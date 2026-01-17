@@ -76,12 +76,15 @@ export default function Courses({ university }: CoursesProps) {
   }, [isAuthenticated, user])
 
   // Get trending courses (first 8 or all if less than 8)
-  const trendingCourses = university.courses.slice(0, 8)
+  const trendingCourses = (university.courses || []).slice(0, 8)
 
   // Filter courses based on search and filters
-  const filteredCourses = university.courses.filter((course) => {
+  const filteredCourses = (university.courses || []).filter((course) => {
     const matchesSearch = course.name.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesDegree = selectedDegreeType ? course.degreeType === selectedDegreeType : true
+    const matchesDegree =
+      !selectedDegreeType || !course.degreeType
+        ? !selectedDegreeType // If no filter selected, show all; if filter selected but no degreeType, hide
+        : course.degreeType === selectedDegreeType
     return matchesSearch && matchesDegree
   })
 
@@ -90,7 +93,7 @@ export default function Courses({ university }: CoursesProps) {
   const currentCourses = filteredCourses.slice((currentPage - 1) * coursesPerPage, currentPage * coursesPerPage)
 
   // Degree types for filter
-  const degreeTypes = Array.from(new Set(university.courses.map((course) => course.degreeType)))
+  const degreeTypes = Array.from(new Set(university.courses?.map((course) => course.degreeType).filter(Boolean) || []))
 
   // Toggle wishlist - now updates both local state and server
   const toggleWishlist = async (courseId: string, e?: React.MouseEvent) => {

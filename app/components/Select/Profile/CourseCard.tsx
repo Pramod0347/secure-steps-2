@@ -6,6 +6,35 @@ import { Heart, Clock, GraduationCap, Languages, Calendar } from "lucide-react"
 import Course1 from "@/app/assets/Select/Course1.png"
 import type { CourseInterface } from "@/store/universitystore"
 
+// Helper function to format fees properly
+// Handles cases like "EU13,500" -> "EUR 13,500" or "Euro15600" -> "Euro 15,600"
+const formatFees = (fees: string | undefined): string => {
+  if (!fees) return "N/A"
+  
+  // Normalize common currency prefixes and add space if missing
+  let formatted = fees
+    .replace(/^(EUR|Euro|EU|€)(\d)/i, '$1 $2')  // Add space between currency and number
+    .replace(/^(USD|US\$|\$)(\d)/i, '$1 $2')
+    .replace(/^(GBP|£)(\d)/i, '$1 $2')
+    .replace(/^(AUD|A\$)(\d)/i, '$1 $2')
+    .replace(/^(CAD|C\$)(\d)/i, '$1 $2')
+  
+  // Add thousand separators if number doesn't have them
+  // Match currency + space + plain number (no commas), and nothing after except optional text
+  formatted = formatted.replace(
+    /^([A-Za-z€$£]+)\s+(\d{4,})(\s|$)/,
+    (match, currency, num, suffix) => {
+      // Only format if the number doesn't already contain commas
+      if (!num.includes(',')) {
+        return `${currency} ${Number(num).toLocaleString()}${suffix}`
+      }
+      return match
+    }
+  )
+  
+  return formatted
+}
+
 interface CourseCardProps {
   course: CourseInterface
   isWishlisted: boolean
@@ -57,24 +86,30 @@ export default function CourseCard({ course, isWishlisted, onToggleWishlist }: C
         
         {/* Course Info */}
         <div className="space-y-1.5 md:space-y-2">
-          <div className="flex items-center gap-1.5 text-gray-600">
-            <GraduationCap size={12} className="md:w-3.5 md:h-3.5 flex-shrink-0" />
-            <span className="text-[9px] md:text-xs truncate">{course.degreeType}</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-gray-600">
-            <Languages size={12} className="md:w-3.5 md:h-3.5 flex-shrink-0" />
-            <span className="text-[9px] md:text-xs truncate">IELTS: {course.ieltsScore}</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-gray-600">
-            <Calendar size={12} className="md:w-3.5 md:h-3.5 flex-shrink-0" />
-            <span className="text-[9px] md:text-xs truncate">{course.intake.slice(0, 2).join(", ")}</span>
-          </div>
+          {course.degreeType && (
+            <div className="flex items-center gap-1.5 text-gray-600">
+              <GraduationCap size={12} className="md:w-3.5 md:h-3.5 flex-shrink-0" />
+              <span className="text-[9px] md:text-xs truncate">{course.degreeType}</span>
+            </div>
+          )}
+          {course.ieltsScore && (
+            <div className="flex items-center gap-1.5 text-gray-600">
+              <Languages size={12} className="md:w-3.5 md:h-3.5 flex-shrink-0" />
+              <span className="text-[9px] md:text-xs truncate">IELTS: {course.ieltsScore}</span>
+            </div>
+          )}
+          {course.intake && course.intake.length > 0 && (
+            <div className="flex items-center gap-1.5 text-gray-600">
+              <Calendar size={12} className="md:w-3.5 md:h-3.5 flex-shrink-0" />
+              <span className="text-[9px] md:text-xs truncate">{course.intake.slice(0, 2).join(", ")}</span>
+            </div>
+          )}
         </div>
 
         {/* Price */}
         <div className="pt-2 md:pt-3 mt-auto border-t border-gray-100">
           <p className="text-[#DA202E] font-bold text-sm md:text-base lg:text-lg">
-            ${course.fees}
+            {formatFees(course.fees)}
           </p>
         </div>
       </div>

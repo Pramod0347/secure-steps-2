@@ -18,7 +18,7 @@ import { useUniversities } from "@/hooks/useUniversities"
 import type { UniversityInterface, CourseInterface } from "@/store/universitystore"
 
 // Configuration constants
-const MINIMUM_LOADER_TIME = 800 // Minimum time loader should show (ms)
+const MINIMUM_LOADER_TIME = 500 // Minimum time loader should show (ms)
 
 interface TopUniversitiesProps {
   searchQuery?: string

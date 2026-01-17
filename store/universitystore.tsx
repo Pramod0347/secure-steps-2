@@ -230,6 +230,8 @@ const buildApiUrl = (searchQuery: string, filters: FilterValues, page: number): 
 
   url.searchParams.append("page", validPage.toString())
   url.searchParams.append("limit", validLimit.toString())
+  // Use lightweight mode for faster listing responses
+  url.searchParams.append("lightweight", "true")
 
   const trimmedQuery = (searchQuery || "").trim()
   if (trimmedQuery) {
@@ -437,9 +439,18 @@ export const useUniversityStore = create<UniversityState>()(
           return state.universityDetails[id] || null
         },
 
+        // Only cache universities with full data (not lightweight)
         setUniversityDetails: (university) =>
           set((state) => {
-            state.universityDetails[university.id] = university
+            // Only cache if university has full data.
+            // We defensively check that a non-empty description string is present,
+            // to avoid lightweight listing data overwriting full detail data.
+            const hasFullDescription =
+              typeof university.description === "string" &&
+              university.description.trim().length > 0
+            if (hasFullDescription) {
+              state.universityDetails[university.id] = university
+            }
           }),
 
         // IMPROVED: Main fetch function with better loading state management
@@ -589,17 +600,22 @@ export const useUniversityStore = create<UniversityState>()(
           // Check cache first unless forcing refresh
           if (!forceRefresh) {
             const cached = state.getUniversityById(slug)
-            if (cached) {
+            // Only use cached data if it has full data (non-empty description indicates full data)
+            const cachedHasFullData = cached && 
+              typeof cached.description === "string" && 
+              cached.description.trim().length > 0
+            if (cachedHasFullData) {
               return cached
             }
 
-            // Also check if it exists in the main universities array
+            // Also check if it exists in the main universities array with full data
             const foundInMain = state.universities.find(
               (uni) =>
-                uni.id === slug ||
+                (uni.id === slug ||
                 uni.slug === slug ||
                 uni.name.toLowerCase().replace(/\s+/g, "-") === slug.toLowerCase() ||
-                uni.name.toLowerCase().replace(/[^a-z0-9]/g, "-") === slug.toLowerCase(),
+                uni.name.toLowerCase().replace(/[^a-z0-9]/g, "-") === slug.toLowerCase()) &&
+                typeof uni.description === "string" && uni.description.trim().length > 0
             )
             if (foundInMain) {
               state.setUniversityDetails(foundInMain)
