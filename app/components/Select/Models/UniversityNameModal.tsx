@@ -3,14 +3,116 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { Search, X } from "lucide-react"
+import { hasFlag } from 'country-flag-icons'
+import * as Flags from 'country-flag-icons/react/3x2'
+
+// Type for university with country info
+interface UniversityWithCountry {
+  name: string
+  country?: string
+}
+
+// Country name to ISO code mapping
+const countryToCode: Record<string, string> = {
+  'usa': 'US',
+  'united states': 'US',
+  'united states of america': 'US',
+  'uk': 'GB',
+  'united kingdom': 'GB',
+  'england': 'GB',
+  'scotland': 'GB',
+  'wales': 'GB',
+  'britain': 'GB',
+  'great britain': 'GB',
+  'germany': 'DE',
+  'france': 'FR',
+  'italy': 'IT',
+  'spain': 'ES',
+  'netherlands': 'NL',
+  'belgium': 'BE',
+  'austria': 'AT',
+  'ireland': 'IE',
+  'portugal': 'PT',
+  'finland': 'FI',
+  'greece': 'GR',
+  'luxembourg': 'LU',
+  'slovakia': 'SK',
+  'slovenia': 'SI',
+  'estonia': 'EE',
+  'latvia': 'LV',
+  'lithuania': 'LT',
+  'malta': 'MT',
+  'cyprus': 'CY',
+  'australia': 'AU',
+  'canada': 'CA',
+  'india': 'IN',
+  'china': 'CN',
+  'japan': 'JP',
+  'south korea': 'KR',
+  'korea': 'KR',
+  'singapore': 'SG',
+  'new zealand': 'NZ',
+  'switzerland': 'CH',
+  'sweden': 'SE',
+  'norway': 'NO',
+  'denmark': 'DK',
+  'poland': 'PL',
+  'czech republic': 'CZ',
+  'czechia': 'CZ',
+  'hungary': 'HU',
+  'russia': 'RU',
+  'brazil': 'BR',
+  'mexico': 'MX',
+  'south africa': 'ZA',
+  'uae': 'AE',
+  'united arab emirates': 'AE',
+  'dubai': 'AE',
+  'florida': 'US',
+  'colorado': 'US',
+  'california': 'US',
+  'texas': 'US',
+  'new york': 'US',
+}
+
+// Helper function to get country code from country name or location string
+const getCountryCode = (country?: string): string | null => {
+  if (!country) return null
+  const normalized = country.toLowerCase().trim()
+  
+  // First try exact match
+  if (countryToCode[normalized]) {
+    return countryToCode[normalized]
+  }
+  
+  // Then try to find any country name within the string (for location strings like "London, England, UK")
+  for (const [countryName, code] of Object.entries(countryToCode)) {
+    if (normalized.includes(countryName)) {
+      return code
+    }
+  }
+  
+  return null
+}
+
+// Flag component that renders the appropriate flag
+const CountryFlag: React.FC<{ country?: string; className?: string }> = ({ country, className = "w-5 h-4" }) => {
+  const code = getCountryCode(country)
+  
+  if (!code || !hasFlag(code)) {
+    return <span className={`${className} inline-block bg-gray-200 rounded`}></span>
+  }
+  
+  const FlagComponent = Flags[code as keyof typeof Flags]
+  return FlagComponent ? <FlagComponent className={className} /> : null
+}
 
 interface UniversityNameModalProps {
   onSelect: (name: string) => void
   selectedName: string
   position?: { top: number; left: number; width: number }
-  universities?: string[]
+  universities?: string[] | UniversityWithCountry[]
   isOpen?: boolean
-  isMobile?: boolean // New prop for responsive design
+  isMobile?: boolean
 }
 
 const UniversityNameModal: React.FC<UniversityNameModalProps> = ({
@@ -19,23 +121,38 @@ const UniversityNameModal: React.FC<UniversityNameModalProps> = ({
   position,
   universities: providedUniversities,
   isOpen = false,
-  isMobile = false, // Default to desktop
+  isMobile = false,
 }) => {
   const [searchTerm, setSearchTerm] = useState("")
-  const [universities, setUniversities] = useState<string[]>(providedUniversities || [])
-  const [filteredUniversities, setFilteredUniversities] = useState<string[]>(universities)
+  const [universities, setUniversities] = useState<UniversityWithCountry[]>([])
+  const [filteredUniversities, setFilteredUniversities] = useState<UniversityWithCountry[]>([])
+
+  // Normalize input to always be UniversityWithCountry[]
+  const normalizeUniversities = (input?: string[] | UniversityWithCountry[]): UniversityWithCountry[] => {
+    if (!input || input.length === 0) return []
+    
+    // Check if first item is a string or object
+    if (typeof input[0] === 'string') {
+      return (input as string[]).map(name => ({ name, country: undefined }))
+    }
+    return input as UniversityWithCountry[]
+  }
 
   // Update universities if provided from props
   useEffect(() => {
     if (providedUniversities && providedUniversities.length > 0) {
-      setUniversities(providedUniversities)
+      const normalized = normalizeUniversities(providedUniversities)
+      setUniversities(normalized)
     }
   }, [providedUniversities])
 
   useEffect(() => {
     if (searchTerm) {
       setFilteredUniversities(
-        universities.filter((university) => university.toLowerCase().includes(searchTerm.toLowerCase())),
+        universities.filter((uni) => 
+          uni.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          uni.country?.toLowerCase().includes(searchTerm.toLowerCase())
+        ),
       )
     } else {
       setFilteredUniversities(universities)
@@ -108,13 +225,17 @@ const UniversityNameModal: React.FC<UniversityNameModalProps> = ({
           <div className="space-y-2">
             {filteredUniversities.map((university) => (
               <div
-                key={university}
-                className={`p-3 rounded-lg cursor-pointer hover:bg-gray-100 ${
-                  selectedName === university ? "bg-gray-100" : ""
+                key={university.name}
+                className={`p-3 rounded-lg cursor-pointer hover:bg-gray-100 flex items-center gap-3 ${
+                  selectedName === university.name ? "bg-gray-100" : ""
                 }`}
-                onClick={() => onSelect(university)}
+                onClick={() => onSelect(university.name)}
               >
-                {university}
+                <CountryFlag country={university.country} className="w-6 h-4 rounded-sm flex-shrink-0" />
+                <span className="flex-1">{university.name}</span>
+                {university.country && (
+                  <span className="text-xs text-gray-400">{university.country}</span>
+                )}
               </div>
             ))}
           </div>

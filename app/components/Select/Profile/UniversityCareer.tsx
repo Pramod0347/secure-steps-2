@@ -99,12 +99,45 @@ type ActualCareerOutcomeData = {
 interface UniversityCareerOutcomesProps {
   universityData?: any | null;
   title?: string;
+  country?: string;
 }
 
+// Helper function to get currency symbol based on country
+const getCurrencySymbol = (country?: string): string => {
+  if (!country) return '$';
+  
+  const countryLower = country.toLowerCase();
+  
+  // UK
+  if (countryLower.includes('uk') || 
+      countryLower.includes('united kingdom') || 
+      countryLower.includes('england') || 
+      countryLower.includes('scotland') || 
+      countryLower.includes('wales') ||
+      countryLower.includes('britain')) {
+    return '£';
+  }
+  
+  // European countries (Euro zone)
+  const euroCountries = [
+    'germany', 'france', 'italy', 'spain', 'netherlands', 'belgium', 
+    'austria', 'ireland', 'portugal', 'finland', 'greece', 'luxembourg',
+    'slovakia', 'slovenia', 'estonia', 'latvia', 'lithuania', 'malta', 
+    'cyprus', 'europe', 'eu'
+  ];
+  
+  if (euroCountries.some(ec => countryLower.includes(ec))) {
+    return '€';
+  }
+  
+  // Default to USD for USA and others
+  return '$';
+};
 
 const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
   universityData = null,
-  title = "University Career Outcomes"
+  title = "University Career Outcomes",
+  country
 }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalData, setModalData] = useState<CareerOutcomeItem | null>(null);
@@ -151,17 +184,21 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
         );
         
         if (salaryData.length > 0) {
-          const avgSalary = salaryData.reduce((acc, item) => {
-            const avg = (item.min + item.max) / 2;
-            const scaledAvg = avg * 1000; // Scale up the values
-            return acc + scaledAvg;
-          }, 0) / salaryData.length;
+          // Calculate average of all min values
+          const avgMin = salaryData.reduce((acc, item) => acc + item.min, 0) / salaryData.length;
+          // Calculate average of all max values
+          const avgMax = salaryData.reduce((acc, item) => acc + item.max, 0) / salaryData.length;
+          // Average of both averages (values are already in full numbers, no scaling needed)
+          const avgSalary = (avgMin + avgMax) / 2;
+          
+          // Get currency symbol based on country
+          const currencySymbol = getCurrencySymbol(country);
 
           const salaryItem: CareerOutcomeItem = {
             id: 1,
             iconName: 'Briefcase',
             title: "Roles and Paycheck",
-            value: `$${Math.round(avgSalary).toLocaleString()}`,
+            value: `${currencySymbol}${Math.round(avgSalary).toLocaleString()}`,
             description: "Median starting salary for graduates",
             details: "Competitive starting salaries across different sectors and roles.",
             color: "from-orange-400 to-red-500",
@@ -293,7 +330,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
     }
 
     return [];
-  }, [universityData]);
+  }, [universityData, country]);
 
   // If no data at all, don't render
   if (!displayData || displayData.length === 0) {
@@ -363,7 +400,21 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
     
     // Trigger animation after modal is shown
     setTimeout(() => {
-      setCircleFillPercentage(0.75);
+      // For salary chart, calculate percentage based on avg salary relative to max salary in data
+      if (item.component === 'AnimatedSalaryChart' && item.rawData && Array.isArray(item.rawData)) {
+        const salaryData = item.rawData;
+        // Find the maximum salary value in the data
+        const maxSalary = Math.max(...salaryData.map((s: { max: number }) => s.max));
+        // Calculate average salary (same formula as in transform function)
+        const avgMin = salaryData.reduce((acc: number, s: { min: number }) => acc + s.min, 0) / salaryData.length;
+        const avgMax = salaryData.reduce((acc: number, s: { max: number }) => acc + s.max, 0) / salaryData.length;
+        const avgSalary = (avgMin + avgMax) / 2;
+        // Calculate fill percentage (avg salary relative to max salary, capped at 100%)
+        const fillPercentage = Math.min(avgSalary / maxSalary, 1);
+        setCircleFillPercentage(fillPercentage);
+      } else {
+        setCircleFillPercentage(0.75); // Default fallback
+      }
       // For employment rate, animate to the actual target rate
       if (item.rawData?.targetRate) {
         setEmploymentRateFill(item.rawData.targetRate);
@@ -700,7 +751,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
                       <div key={index} className="bg-white/60 rounded-lg p-2 sm:p-3 hover:bg-white/80 transition-colors duration-200 shadow relative">
                         <p className="text-[10px] sm:text-xs text-slate-500 mb-1">{item.sector}</p>
                         <p className="text-xs sm:text-sm font-extrabold text-slate-800">
-                          £{item.min?.toLocaleString()} – £{item.max?.toLocaleString()}
+                          {getCurrencySymbol(country)}{item.min?.toLocaleString()} – {getCurrencySymbol(country)}{item.max?.toLocaleString()}
                         </p>
                         <svg className="w-3 h-3 text-slate-400 mt-2 absolute bottom-[-3px] right-[-3px]" xmlns="http://www.w3.org/2000/svg" width="207" height="208" viewBox="0 0 207 208" fill="none">
                           <g>
@@ -748,7 +799,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
 
                   {/* Center Content */}
                   <p className="text-sm text-slate-600 text-center">
-                    Average salary : <span className="font-semibold text-slate-800">{modalData.value}</span>
+                    Based on 2025 Alumin Survey
                   </p>
                 </div>
               ) : modalData.component === 'CourseTimeline' && modalData.rawData ? (

@@ -33,7 +33,8 @@ const TopUniversities: React.FC<TopUniversitiesProps> = ({
 
   // Modal state
   const [universityToCompare, setUniversityToCompare] = useState<UniversityInterface | null>(null)
-  const [selectedUniversity, setSelectedUniversity] = useState<UniversityInterface | null>(null)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_selectedUniversity, setSelectedUniversity] = useState<UniversityInterface | null>(null)
   const [applicationData, setApplicationData] = useState<{
     universityId: string
     courses: CourseInterface[]

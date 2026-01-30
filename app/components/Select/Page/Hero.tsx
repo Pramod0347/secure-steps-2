@@ -7,7 +7,6 @@ import CountryModal from "../Models/CountryModal"
 import UniversityNameModal from "../Models/UniversityNameModal"
 import FeesModal from "../Models/FeesModal"
 import CourseModal from "../Models/CourseModal"
-import { useUniversities } from "@/hooks/useUniversities"
 import type { UniversityInterface } from "@/store/universitystore"
 
 interface SearchProps {
@@ -74,8 +73,14 @@ const Hero: React.FC<SearchProps> = ({ onSearch }) => {
       )
     : universitiesData
 
-  // Extract unique university names - filtered by country if selected
-  const universityNames = [...new Set(filteredUniversitiesData.map((uni) => uni.name).filter(Boolean))].sort()
+  // Extract unique university objects with name and country - filtered by country if selected
+  const universityNamesWithCountry = filteredUniversitiesData
+    .filter((uni) => uni.name)
+    .map((uni) => ({ name: uni.name, country: uni.country }))
+    .filter((uni, index, self) => 
+      index === self.findIndex((u) => u.name === uni.name)
+    )
+    .sort((a, b) => a.name.localeCompare(b.name))
 
   // Extract unique course names - filtered by country if selected
   const courses = [...new Set(filteredUniversitiesData.flatMap((uni) => uni.courses?.map((course) => course.name) || []))]
@@ -117,7 +122,7 @@ const Hero: React.FC<SearchProps> = ({ onSearch }) => {
 
   // Apply filters and close modal (don't trigger search - wait for search button)
   const applyFilter = useCallback(
-    (filterType: keyof FilterValues, value: any) => {
+    (filterType: keyof FilterValues, value: string) => {
       setActiveFilters((prev) => ({
         ...prev,
         [filterType]: value,
@@ -128,8 +133,9 @@ const Hero: React.FC<SearchProps> = ({ onSearch }) => {
     [],
   )
 
-  // Clear all filters
-  const clearAllFilters = useCallback(() => {
+  // Clear all filters - used by clear all button if added
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _clearAllFilters = useCallback(() => {
     setActiveFilters({
       country: "",
       universityName: "",
@@ -267,7 +273,8 @@ const Hero: React.FC<SearchProps> = ({ onSearch }) => {
     const video = videoRef.current
     if (video) {
       const handleLoadedData = () => {};
-      const handleError = (e: Event) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const handleError = (_e: Event) => {
         // console.error("Error loading video:", e)
         setVideoError("Error loading video")
       }
@@ -287,7 +294,8 @@ const Hero: React.FC<SearchProps> = ({ onSearch }) => {
   // Update modal position based on clicked element
   const updateModalPosition = (
     e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
-    filterType: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _filterType: string,
   ) => {
     const element = e.currentTarget
     const rect = element.getBoundingClientRect()
@@ -315,8 +323,9 @@ const Hero: React.FC<SearchProps> = ({ onSearch }) => {
     // On mobile, we don't need to set position as we'll use fixed positioning
   }
 
-  // Check if any filters are active
-  const hasActiveFilters = Object.values(activeFilters).some((filter) => filter !== "")
+  // Check if any filters are active - can be used for UI indicators
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _hasActiveFilters = Object.values(activeFilters).some((filter) => filter !== "")
 
   // Helper function to handle filter item touch/click events
   const handleFilterInteraction = (
@@ -404,7 +413,7 @@ const Hero: React.FC<SearchProps> = ({ onSearch }) => {
                   <UniversityNameModal
                     onSelect={(name) => applyFilter("universityName", name)}
                     selectedName={activeFilters.universityName}
-                    universities={universityNames.length > 0 ? universityNames : undefined}
+                    universities={universityNamesWithCountry.length > 0 ? universityNamesWithCountry : undefined}
                     isOpen={true}
                     isMobile={true}
                   />
@@ -443,7 +452,7 @@ const Hero: React.FC<SearchProps> = ({ onSearch }) => {
                 style={{
                   top: `${modalPosition.top}px`,
                   left: `${modalPosition.left}px`,
-                  width: `${Math.max(modalPosition.width, 320)}px`, // Minimum width of 320px
+                  width: "400px",
                   height:"60%",
                   pointerEvents: "auto",
                   zIndex: 10001,
@@ -464,7 +473,7 @@ const Hero: React.FC<SearchProps> = ({ onSearch }) => {
                   <UniversityNameModal
                     onSelect={(name) => applyFilter("universityName", name)}
                     selectedName={activeFilters.universityName}
-                    universities={universityNames.length > 0 ? universityNames : undefined}
+                    universities={universityNamesWithCountry.length > 0 ? universityNamesWithCountry : undefined}
                     isOpen={true}
                     isMobile={false}
                   />

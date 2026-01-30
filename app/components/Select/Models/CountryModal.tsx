@@ -1,8 +1,44 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Search, X } from "lucide-react"
+import { hasFlag } from 'country-flag-icons'
+import * as Flags from 'country-flag-icons/react/3x2'
+
+// Country name to ISO code mapping
+const countryToCode: Record<string, string> = {
+  'uk': 'GB',
+  'usa': 'US',
+  'canada': 'CA',
+  'dubai': 'AE',
+  'australia': 'AU',
+  'france': 'FR',
+  'italy': 'IT',
+  'sweden': 'SE',
+  'germany': 'DE',
+  'united states': 'US',
+  'united kingdom': 'GB',
+  'united arab emirates': 'AE',
+}
+
+// Helper function to get country code
+const getCountryCode = (country: string): string | null => {
+  const normalized = country.toLowerCase().trim()
+  return countryToCode[normalized] || null
+}
+
+// Flag component
+const CountryFlag: React.FC<{ country: string; className?: string }> = ({ country, className = "w-6 h-4" }) => {
+  const code = getCountryCode(country)
+  
+  if (!code || !hasFlag(code)) {
+    return <span className={`${className} inline-block bg-gray-200 rounded`}></span>
+  }
+  
+  const FlagComponent = Flags[code as keyof typeof Flags]
+  return FlagComponent ? <FlagComponent className={className} /> : null
+}
 
 interface CountryModalProps {
   onSelect: (country: string) => void
@@ -17,7 +53,8 @@ const CountryModal: React.FC<CountryModalProps> = ({
   onSelect,
   selectedCountry,
   position,
-  countries: providedCountries,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  countries: _providedCountries,
   isOpen = false,
   isMobile = false,
 }) => {
@@ -26,7 +63,7 @@ const CountryModal: React.FC<CountryModalProps> = ({
   const [filteredCountries, setFilteredCountries] = useState<string[]>([])
 
   // Define the preferred order for countries - ONLY these will be shown
-  const preferredCountries = [
+  const preferredCountries = useMemo(() => [
     "UK",
     "USA", 
     "CANADA",
@@ -36,13 +73,13 @@ const CountryModal: React.FC<CountryModalProps> = ({
     "ITALY",
     "SWEDEN",
     "GERMANY"
-  ]
+  ], [])
 
   // Initialize countries with only preferred countries
   useEffect(() => {
     // Always use only the preferred countries, regardless of what's provided
     setCountries(preferredCountries)
-  }, [])
+  }, [preferredCountries])
 
   useEffect(() => {
     if (searchTerm) {
@@ -122,12 +159,13 @@ const CountryModal: React.FC<CountryModalProps> = ({
             {filteredCountries.map((country) => (
               <div
                 key={country}
-                className={`p-3 rounded-lg cursor-pointer hover:bg-gray-100 ${
+                className={`p-3 rounded-lg cursor-pointer hover:bg-gray-100 flex items-center gap-3 ${
                   selectedCountry === country ? "bg-gray-100" : ""
                 }`}
                 onClick={() => onSelect(country)}
               >
-                {country}
+                <CountryFlag country={country} className="w-6 h-4 rounded-sm flex-shrink-0" />
+                <span>{country}</span>
               </div>
             ))}
           </div>

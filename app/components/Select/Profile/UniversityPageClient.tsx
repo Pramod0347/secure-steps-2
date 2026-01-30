@@ -340,9 +340,9 @@ export default function UniversityPageClient({
           }
         >
           {careerOutcomeData ? (
-            <UniversityCareerOutcomes universityData={careerOutcomeData} />
+            <UniversityCareerOutcomes universityData={careerOutcomeData} country={university.country} />
           ) : (
-            <UniversityCareerOutcomes universityData={null} />
+            <UniversityCareerOutcomes universityData={null} country={university.country} />
           )}
         </Suspense>
 
