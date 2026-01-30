@@ -799,7 +799,7 @@ const UniversityCareerOutcomes: React.FC<UniversityCareerOutcomesProps> = ({
 
                   {/* Center Content */}
                   <p className="text-sm text-slate-600 text-center">
-                    Based on 2025 Alumin Survey
+                    Based on 2025 Alumni Survey
                   </p>
                 </div>
               ) : modalData.component === 'CourseTimeline' && modalData.rawData ? (
