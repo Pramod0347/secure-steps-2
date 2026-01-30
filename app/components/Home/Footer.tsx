@@ -106,7 +106,7 @@ const Footer = () => {
             <div className="   flex flex-col md:gap-4 gap-4 text-[14px] text-[#909090]">
               <h1 className="  text-[#F5F5F1]  text-[16px]  md:text-xl">About</h1>
               <p>Our Story</p>
-              <p>Contact with İndie</p>
+              <p>Contact with Us</p>
               <p>Blog</p>
               <p>F.A.Q</p>
             </div>
