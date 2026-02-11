@@ -53,19 +53,6 @@ const nextConfig = {
       }
     ],
   },
-  eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
-  },
-  extends:["next/core-web-vitals", "plugin:react-hooks/recommended", "prettier"],
-  rules: {
-    "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn",
-  },
-  env: {
-    DATABASE_URL: process.env.DATABASE_URL,
-  }
 };
 
 module.exports = nextConfig;
