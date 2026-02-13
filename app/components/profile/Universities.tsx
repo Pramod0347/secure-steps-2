@@ -112,7 +112,7 @@ export default function Universities() {
   )
 
   return (
-    <section className="py-8 px-8 bg-white dark:bg-black min-h-screen">
+    <section className="p-8 bg-white dark:bg-black min-h-screen">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">

@@ -9,6 +9,7 @@ import Features from '@/app/components/profile/Features';
 import ClientBenefits from '@/app/components/profile/ClientBenefits';
 import PackageCards from '@/app/components/profile/PackageCards';
 import Universities from '@/app/components/profile/Universities';
+import Documents from '@/app/components/profile/Documents';
 
 function ProfileContent() {
   const searchParams = useSearchParams()
@@ -27,10 +28,9 @@ function ProfileContent() {
         )
       case 'universities':
         return <Universities />
-      case 'journey':
-        return <div className="p-8 text-center text-gray-500">Journey roadmap - Coming soon</div>
       case 'documents':
-        return <div className="p-8 text-center text-gray-500">Documents - Coming soon</div>
+        return <Documents />
+      case 'journey':
       case 'portfolio':
         return <div className="p-8 text-center text-gray-500">Portfolio - Coming soon</div>
       case 'applications':
