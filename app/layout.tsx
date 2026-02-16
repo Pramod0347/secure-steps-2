@@ -71,7 +71,7 @@ export default function RootLayout({
           <AuthProvider>
             <AuthWrapper>
               <Navbar />
-              <main className="flex-grow ">
+              <main className="flex-grow w-full">
               <Toaster/>
                 {children}
                 <SpeedInsights />
