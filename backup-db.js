@@ -19,21 +19,9 @@ async function backupDatabase() {
     const backup = {};
     let totalRecords = 0;
     
-    console.log('📦 Backing up Universities with all relations...');
-    backup.universities = await prisma.university.findMany({
-      include: {
-        courses: true,
-        faqs: true,
-        careerOutcomes: {
-          include: {
-            salaryChartData: true,
-            employmentRateMeter: true,
-            courseTimelineData: true,
-          }
-        },
-        applications: true,
-      }
-    });
+    // Backing up normalized data (related tables exported separately)
+    console.log('📦 Backing up Universities...');
+    backup.universities = await prisma.university.findMany();
     totalRecords += backup.universities.length;
     
     console.log('📦 Backing up Users...');
@@ -123,7 +111,8 @@ async function backupDatabase() {
     totalRecords += backup.quizAnswers.length;
     
     const backupFile = path.join(backupDir, `complete-backup-${timestamp}.json`);
-    fs.writeFileSync(backupFile, JSON.stringify(backup, null, 2));
+    // NOTE: Backup contains sensitive data; using restrictive permissions (owner read/write only)
+    fs.writeFileSync(backupFile, JSON.stringify(backup, null, 2), { mode: 0o600 });
     
     const fileSizeKB = (fs.statSync(backupFile).size / 1024).toFixed(2);
     
@@ -157,7 +146,7 @@ async function backupDatabase() {
   } catch (error) {
     console.error('❌ Backup failed:', error.message);
     console.error('Stack:', error.stack);
-    process.exit(1);
+    process.exitCode = 1;
   } finally {
     await prisma.$disconnect();
   }
