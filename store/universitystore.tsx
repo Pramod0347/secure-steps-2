@@ -25,6 +25,7 @@ export interface UniversityInterface {
   id: string
   slug?: string
   name: string
+  descriptionTitle?: string | null
   description: string
   location: string
   country: string

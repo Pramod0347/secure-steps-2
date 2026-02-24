@@ -87,17 +87,18 @@ model Faq {
 }
 
 model University {
-  id          String   @id @default(cuid())
-  slug        String?  @unique
-  name        String
-  description String
-  location    String
-  country     String
-  website     String
-  established DateTime
-  banner      String
-  logoUrl     String?
-  youtubeLink String?
+  id               String   @id @default(cuid())
+  slug             String?  @unique
+  name             String
+  description      String
+  descriptionTitle String?
+  location         String
+  country          String
+  website          String
+  established      DateTime
+  banner           String
+  logoUrl          String?
+  youtubeLink      String?
   imageUrls   String[]
   facilities  String[]
   
