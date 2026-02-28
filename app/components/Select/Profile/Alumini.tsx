@@ -33,6 +33,9 @@ const alumni = [
 ];
 
 export default function AlumniSection() {
+  // TODO: Re-enable when new design is ready
+  return null;
+  
   return (
     <section className="w-full max-w-6xl mx-auto px-4 md:px-8">
       <h2 className="text-center text-2xl md:text-3xl lg:text-4xl font-bold mb-6 md:mb-8">

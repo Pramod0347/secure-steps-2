@@ -235,6 +235,13 @@ export default function Hero({ university }: { university: UniversityInterface }
 
         {/* Description */}
         <div className="text-[10px] md:text-[18px] leading-[16px] md:leading-[30px] text-black md:px-1 px-4 md:w-[80%] text-center py-4 md:py-10">
+          {/* Description Title */}
+          {university.descriptionTitle && (
+            <h2 className="text-lg md:text-2xl font-bold text-black mb-3 md:mb-4">
+              {university.descriptionTitle}
+            </h2>
+          )}
+
           {/* Mobile description with show more/less toggle */}
           <div className="md:hidden">
             <p>{showFullDescription ? (university.description || "") : truncatedDescription}</p>

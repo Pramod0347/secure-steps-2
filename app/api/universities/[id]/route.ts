@@ -184,6 +184,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }):
 
     if (validatedData.name !== undefined) updateData.name = validatedData.name;
     if (validatedData.description !== undefined) updateData.description = validatedData.description;
+    if (validatedData.descriptionTitle !== undefined) updateData.descriptionTitle = validatedData.descriptionTitle;
     if (validatedData.location !== undefined) updateData.location = validatedData.location;
     if (validatedData.country !== undefined) updateData.country = validatedData.country;
     if (validatedData.website !== undefined) updateData.website = validatedData.website;

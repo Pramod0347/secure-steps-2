@@ -20,48 +20,27 @@ export default function Page() {
 
         <div className="space-y-10 leading-[1.85] text-[16px]">
           
-          {/* 1. Refund Eligibility */}
+          {/* 1. Non-Refundable Services */}
           <div>
-            <h3 className="text-[18px] font-semibold text-gray-900 mb-3">1. Refund Eligibility</h3>
+            <h3 className="text-[18px] font-semibold text-gray-900 mb-3">1. Non-Refundable Services</h3>
             <p>
-              Refunds may only be requested by emailing 
-              <span className="font-semibold text-[#9C1B3C]"> info@securesteps.co.in</span>.
-              Refunds are issued only if requested within 24 hours of payment AND if no counselling,
-              document review, or preparatory work has commenced.
+              All service fees paid to the Company are non-refundable in the event of a change in plans, 
+              personal decisions, or any other circumstances on the part of the Client.
             </p>
           </div>
 
-          {/* 2. Non-Refundable Scenarios */}
+          {/* 2. Refund Eligibility */}
           <div>
-            <h3 className="text-[18px] font-semibold text-gray-900 mb-3">2. Non-Refundable Scenarios</h3>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>Missed or delayed sessions</li>
-              <li>Change of mind after service initiation</li>
-              <li>User-caused delays</li>
-              <li>Completed document reviews</li>
-              <li>Any work already allocated to counsellors/editors</li>
-            </ul>
-          </div>
-
-          {/* 3. Duplicate & Technical Refunds */}
-          <div>
-            <h3 className="text-[18px] font-semibold text-gray-900 mb-3">3. Duplicate & Technical Refunds</h3>
+            <h3 className="text-[18px] font-semibold text-gray-900 mb-3">2. Refund Eligibility</h3>
             <p>
-              Gateway-related errors or duplicate payments are fully refunded after verification.
+              Refunds shall be issued only in cases of verified errors or duplicate payments received 
+              by the Company within 6 to 7 working days.
             </p>
           </div>
 
-          {/* 4. Timeline */}
+          {/* 3. Session Rescheduling */}
           <div>
-            <h3 className="text-[18px] font-semibold text-gray-900 mb-3">4. Timeline</h3>
-            <p>
-              Refunds are processed within 5–7 business days.
-            </p>
-          </div>
-
-          {/* 5. Session Rescheduling */}
-          <div>
-            <h3 className="text-[18px] font-semibold text-gray-900 mb-3">5. Session Rescheduling</h3>
+            <h3 className="text-[18px] font-semibold text-gray-900 mb-3">3. Session Rescheduling</h3>
             <p>
               One complimentary reschedule is provided. Further rescheduling may attract a fee or may not be permitted.
             </p>

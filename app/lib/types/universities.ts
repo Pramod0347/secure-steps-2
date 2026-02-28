@@ -72,6 +72,7 @@ export const UniversitySchema = z.object({
   id: z.string().optional(),
   name: z.string(),
   slug: z.string().optional(),
+  descriptionTitle: z.string().nullable().optional(),
   description: z.string(),
   location: z.string(),
   country: z.string(),

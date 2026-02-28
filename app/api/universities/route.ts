@@ -266,6 +266,7 @@ export async function POST(req: Request): Promise<NextResponse> {
         data: {
           name: validatedData.name,
           description: validatedData.description,
+          descriptionTitle: validatedData.descriptionTitle,
           location: validatedData.location,
           country: validatedData.country,
           website: validatedData.website,

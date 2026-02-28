@@ -1,0 +1,14 @@
+export { default as HeroSection } from './HeroSection';
+export { default as StatsSection } from './StatsSection';
+export { default as CompanyLogosSection } from './CompanyLogosSection';
+export { default as FeaturedCoursesSection } from './FeaturedCoursesSection';
+export { default as TestimonialsSection } from './TestimonialsSection';
+export { default as KeyBenefitsSection } from './KeyBenefitsSection';
+export { default as PricingSection } from './PricingSection';
+export { default as AboutSection } from './AboutSection';
+export { default as FAQSection } from './FAQSection';
+export { default as CourseTopicsSection } from './CourseTopicsSection';
+export { default as CommunitySection } from './CommunitySection';
+export { default as FinalCTASection } from './FinalCTASection';
+export { default as InteractiveFeaturesSection } from './InteractiveFeaturesSection';
+export { default as FooterSection } from "./FooterSection";

@@ -114,7 +114,33 @@ body {
   animation: infinite-scroll 50s linear infinite;
 }
 
+/* Marquee Animation for New Landing Page */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
 
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+/* Vertical Scroll Animation for Curriculum */
+@keyframes scroll-vertical {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+.animate-scroll-vertical {
+  animation: scroll-vertical 15s linear infinite;
+}
 
 .phone-input-container {
   width: 20%;
