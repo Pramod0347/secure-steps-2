@@ -11,7 +11,7 @@ const HeroSection = () => {
       {/* Subtle gradient overlays */}
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/60 via-transparent to-pink-200/40" />
       
-      <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 lg:pt-28">
+      <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 lg:pt-32">
         {/* Trust Badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -22,7 +22,7 @@ const HeroSection = () => {
           <div className="inline-flex items-center gap-2 bg-white/50 backdrop-blur-sm border border-white/60 rounded-full px-5 py-2.5 shadow-sm">
             <div className="w-1.5 h-1.5 rounded-full bg-gray-800" />
             <span className="text-gray-800 text-sm font-medium">
-              Trusted by 20,000+ Happy Learners
+              Counselled 847+ Students
             </span>
           </div>
         </motion.div>
@@ -35,9 +35,9 @@ const HeroSection = () => {
           className="text-center"
         >
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.15] tracking-tight px-2">
-            <span className="text-gray-900">Web Dev & Design made</span>
+            <span className="text-gray-900">From confusion to career</span>
             <br />
-            <span className="text-gray-900">Simple, Better.</span>
+            <span className="text-gray-900">clarity</span>
           </h1>
         </motion.div>
 
@@ -48,8 +48,8 @@ const HeroSection = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-6 text-base sm:text-lg text-gray-700 text-center max-w-2xl mx-auto leading-relaxed"
         >
-          Practical project-based courses that are easy to understand, straight to the
-          point, and distractions while ensuring comprehensive learning.
+          Too many options. Too many opinions. Too much pressure.
+          We simplify the noise and help you design a clear path that fits who you are and where you want to go.
         </motion.p>
 
         {/* CTA Buttons */}
@@ -60,15 +60,18 @@ const HeroSection = () => {
           className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 px-4"
         >
           <Link
-            href="/courses"
+            href="/select"
             className="w-full sm:w-auto text-center px-7 py-3.5 bg-pink-50/70 backdrop-blur-md text-gray-900 font-medium rounded-full border border-white/80 hover:bg-pink-100/80 transition-all duration-300 hover:scale-105 shadow-[0_0_15px_rgba(255,255,255,0.5)] hover:shadow-[0_0_20px_rgba(255,255,255,0.7)]"
           >
-            View All Courses
+            Know who you are
           </Link>
 
-          <button className="w-full sm:w-auto px-7 py-3.5 bg-white/80 backdrop-blur-md text-gray-900 font-medium rounded-full border border-white/90 hover:bg-white transition-all duration-300 hover:scale-105 shadow-[0_0_15px_rgba(255,255,255,0.5)] hover:shadow-[0_0_20px_rgba(255,255,255,0.7)]">
-            Start Learning Now
-          </button>
+          <Link
+            href="/auth/signup"
+            className="w-full sm:w-auto text-center px-7 py-3.5 bg-white/80 backdrop-blur-md text-gray-900 font-medium rounded-full border border-white/90 hover:bg-white transition-all duration-300 hover:scale-105 shadow-[0_0_15px_rgba(255,255,255,0.5)] hover:shadow-[0_0_20px_rgba(255,255,255,0.7)]"
+          >
+            What&apos;s next after college?
+          </Link>
         </motion.div>
 
         {/* Glass Cards Section */}
