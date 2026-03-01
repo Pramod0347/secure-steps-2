@@ -32,7 +32,7 @@ const CompanyLogosSection = () => {
       <section className="py-10 sm:py-16 border-y border-gray-100 bg-white overflow-hidden">
         <div className="w-full">
           <p className="text-center text-gray-600 text-sm sm:text-base mb-6 sm:mb-10 px-4">
-            Some renowned Unis where Secure students are
+            Some renowned universities where Secure students study
           </p>
 
           {/* Marquee Container */}
@@ -45,7 +45,9 @@ const CompanyLogosSection = () => {
               {[...universities, ...universities].map((uni, index) => (
                 <div
                   key={index}
-                  className="inline-flex items-center gap-3 mx-3 sm:mx-4 px-4 py-2.5 rounded-full bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer flex-shrink-0"
+                  className="inline-flex items-center gap-3 mx-3 sm:mx-4 px-4 py-2.5 rounded-full bg-gray-50 border border-gray-200 transition-colors flex-shrink-0"
+                  title={uni.name}
+                  aria-label={uni.name}
                 >
                   <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${uni.color} flex items-center justify-center text-white text-xs font-bold flex-shrink-0`}>
                     {uni.short.charAt(0)}

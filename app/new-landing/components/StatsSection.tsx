@@ -73,7 +73,7 @@ const StatsSection = () => {
               }}
               transition={{ duration: 0.5, delay: index * 0.15 }}
               viewport={{ once: true }}
-              className="group cursor-pointer"
+              className="group"
             >
               <div className="relative overflow-hidden rounded-2xl sm:rounded-[2rem] bg-gradient-to-b from-gray-50 to-white border border-gray-100 p-6 sm:p-8 lg:p-10 shadow-lg shadow-gray-200/50 hover:shadow-2xl hover:shadow-gray-300/60 hover:border-gray-200 transition-all duration-500 text-center h-full">
                 {/* Subtle top gradient highlight */}
@@ -92,7 +92,7 @@ const StatsSection = () => {
                   </div>
                 </motion.div>
 
-                {/* Number with count-up animation effect */}
+                {/* Number */}
                 <motion.div 
                   className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 mb-2 sm:mb-3 tracking-tight relative z-10 group-hover:text-gray-800 transition-colors"
                   initial={{ opacity: 0 }}
