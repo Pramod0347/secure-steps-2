@@ -2,51 +2,30 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { GraduationCap, Building2, Globe } from "lucide-react";
 
 const StatsSection = () => {
   const stats = [
     {
       number: "100+",
-      label: "HOURS OF CONTENT",
+      label: "FUTURE READY DEGREES",
       iconBg: "from-red-100 to-red-50",
       iconColor: "text-red-500",
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="currentColor">
-          <rect x="3" y="4" width="18" height="16" rx="3" className="text-red-400" fill="currentColor" />
-          <rect x="3" y="4" width="18" height="6" rx="3" className="text-red-500" fill="currentColor" />
-          <circle cx="7" cy="7" r="1.5" className="text-white" fill="currentColor" />
-          <circle cx="12" cy="7" r="1.5" className="text-white" fill="currentColor" />
-          <circle cx="17" cy="7" r="1.5" className="text-white" fill="currentColor" />
-        </svg>
-      ),
+      icon: <GraduationCap className="w-8 h-8" />,
     },
     {
-      number: "15+",
-      label: "COURSES",
+      number: "880+",
+      label: "UNIVERSITIES TO CHOOSE FROM",
       iconBg: "from-blue-100 to-cyan-50",
       iconColor: "text-blue-500",
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="currentColor">
-          <path d="M4 4h16v16H4V4z" className="text-blue-400" fill="currentColor" rx="3" />
-          <path d="M4 4h16v8H4V4z" className="text-blue-500" fill="currentColor" />
-          <path d="M8 14h8v2H8v-2z" className="text-white" fill="currentColor" />
-          <path d="M12 8l-4 4h8l-4-4z" className="text-white" fill="currentColor" />
-        </svg>
-      ),
+      icon: <Building2 className="w-8 h-8" />,
     },
     {
-      number: "20k+",
-      label: "STUDENTS",
+      number: "32+",
+      label: "COUNTRIES TO EXPLORE",
       iconBg: "from-purple-100 to-violet-50",
       iconColor: "text-purple-500",
-      icon: (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" fill="currentColor">
-          <circle cx="12" cy="8" r="4" className="text-purple-400" fill="currentColor" />
-          <circle cx="7" cy="10" r="3" className="text-purple-300" fill="currentColor" />
-          <circle cx="17" cy="10" r="3" className="text-purple-300" fill="currentColor" />
-          <path d="M12 14c-4 0-7 2-7 5v1h14v-1c0-3-3-5-7-5z" className="text-purple-400" fill="currentColor" />
-        </svg>
-      ),
+      icon: <Globe className="w-8 h-8" />,
     },
   ];
 
@@ -66,18 +45,18 @@ const StatsSection = () => {
                 <path d="M12 14c-4 0-7 2-7 5v1h14v-1c0-3-3-5-7-5z" />
               </svg>
             </span>
-            We Offer
+            We help you
           </span>
         </div>
 
         {/* Section Title */}
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 text-center mb-4">
-          Boost Your Skills
+          10X your career opportunities
         </h2>
 
         <p className="text-gray-600 text-center max-w-2xl mx-auto mb-10 sm:mb-16 text-sm sm:text-base px-2">
-          From critical skills to technical topics, we support your professional
-          development with courses that help you grow and succeed.
+          We don&apos;t just help you discover what you&apos;re good at or identify the right career,
+          we design a strategic roadmap that opens multiple pathways through one powerful degree.
         </p>
 
         {/* Stats Grid */}
@@ -85,32 +64,52 @@ const StatsSection = () => {
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              whileHover={{ 
+                scale: 1.03,
+                y: -8,
+                transition: { duration: 0.3, ease: "easeOut" }
+              }}
+              transition={{ duration: 0.5, delay: index * 0.15 }}
               viewport={{ once: true }}
-              className="group"
+              className="group cursor-pointer"
             >
-              <div className="relative overflow-hidden rounded-2xl sm:rounded-[2rem] bg-gradient-to-b from-gray-50 to-white border border-gray-100 p-6 sm:p-8 lg:p-10 hover:shadow-xl hover:shadow-gray-100/50 transition-all duration-500 text-center h-full">
+              <div className="relative overflow-hidden rounded-2xl sm:rounded-[2rem] bg-gradient-to-b from-gray-50 to-white border border-gray-100 p-6 sm:p-8 lg:p-10 shadow-lg shadow-gray-200/50 hover:shadow-2xl hover:shadow-gray-300/60 hover:border-gray-200 transition-all duration-500 text-center h-full">
                 {/* Subtle top gradient highlight */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gray-200/50 to-transparent" />
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gray-200/50 to-transparent group-hover:via-purple-300/50 transition-all duration-500" />
+                
+                {/* Glow effect on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-50/0 via-transparent to-blue-50/0 group-hover:from-purple-50/30 group-hover:to-blue-50/30 transition-all duration-500 rounded-2xl sm:rounded-[2rem]" />
 
                 {/* Icon Container */}
-                <div className="flex justify-center mb-6 sm:mb-8">
-                  <div className={`w-16 sm:w-20 h-16 sm:h-20 rounded-xl sm:rounded-2xl bg-gradient-to-br ${stat.iconBg} flex items-center justify-center shadow-sm ${stat.iconColor}`}>
+                <motion.div 
+                  className="flex justify-center mb-6 sm:mb-8 relative z-10"
+                  whileHover={{ rotate: [0, -10, 10, -5, 0], transition: { duration: 0.5 } }}
+                >
+                  <div className={`w-16 sm:w-20 h-16 sm:h-20 rounded-xl sm:rounded-2xl bg-gradient-to-br ${stat.iconBg} flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all duration-300 ${stat.iconColor}`}>
                     {stat.icon}
                   </div>
-                </div>
+                </motion.div>
 
-                {/* Number */}
-                <div className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 mb-2 sm:mb-3 tracking-tight">
+                {/* Number with count-up animation effect */}
+                <motion.div 
+                  className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 mb-2 sm:mb-3 tracking-tight relative z-10 group-hover:text-gray-800 transition-colors"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ duration: 0.8, delay: index * 0.2 + 0.3 }}
+                  viewport={{ once: true }}
+                >
                   {stat.number}
-                </div>
+                </motion.div>
 
                 {/* Label */}
-                <div className="text-gray-500 text-xs sm:text-sm tracking-[0.2em] uppercase">
+                <div className="text-gray-500 text-xs sm:text-sm tracking-[0.15em] sm:tracking-[0.2em] uppercase relative z-10 group-hover:text-gray-700 transition-colors">
                   {stat.label}
                 </div>
+                
+                {/* Bottom accent line */}
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-purple-400 to-blue-400 group-hover:w-1/2 transition-all duration-500 rounded-full" />
               </div>
             </motion.div>
           ))}
