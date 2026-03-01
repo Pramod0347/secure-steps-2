@@ -10,6 +10,8 @@ import ClientBenefits from '@/app/components/profile/ClientBenefits';
 import PackageCards from '@/app/components/profile/PackageCards';
 import Universities from '@/app/components/profile/Universities';
 import Documents from '@/app/components/profile/Documents';
+import Portfolio from '@/app/components/profile/Portfolio';
+import VisaFinance from '@/app/components/profile/VisaFinance';
 
 function ProfileContent() {
   const searchParams = useSearchParams()
@@ -32,11 +34,11 @@ function ProfileContent() {
         return <Documents />
       case 'journey':
       case 'portfolio':
-        return <div className="p-8 text-center text-gray-500">Portfolio - Coming soon</div>
+        return <Portfolio />
       case 'applications':
         return <div className="p-8 text-center text-gray-500">Application Tracking - Coming soon</div>
       case 'visa':
-        return <div className="p-8 text-center text-gray-500">Visa & Finance - Coming soon</div>
+        return <VisaFinance />
       case 'ebooks':
         return <div className="p-8 text-center text-gray-500">E-Books - Coming soon</div>
       case 'fire':
