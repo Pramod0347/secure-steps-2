@@ -1,7 +1,8 @@
 'use client'
 
-import React, { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import React, { useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useAuth } from '@/app/context/AuthContext';
 import Sidebar from '@/app/components/profile/Sidebar';
 import Hero from '@/app/components/profile/Hero';
 import Features from '@/app/components/profile/Features';
@@ -68,6 +69,16 @@ function ProfileTestContent() {
 }
 
 const ProfileTestPage: React.FC = () => {
+  const { user: authUser } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!authUser?.id) {
+      router.push('/auth/signin');
+      return;
+    }
+  }, [authUser?.id, router]);
+
   return (
     <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
       <ProfileTestContent />
