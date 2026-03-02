@@ -3,12 +3,16 @@
 import React from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/app/context/AuthContext'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, usePathname } from 'next/navigation'
 
 export default function Sidebar() {
   const { user } = useAuth()
   const searchParams = useSearchParams()
+  const pathname = usePathname()
   const activeSection = searchParams.get('section') || 'onboarding'
+
+  // Use current pathname for links (works for both /profile and /profile-test)
+  const basePath = pathname || '/profile'
 
   const menuItems = [
     { icon: '🚀', label: 'Journey roadmap', section: 'journey' },
@@ -40,7 +44,7 @@ export default function Sidebar() {
         {menuItems.map((item) => (
           <Link
             key={item.section}
-            href={`/profile?section=${item.section}`}
+            href={`${basePath}?section=${item.section}`}
           >
             <div
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all text-sm ${
