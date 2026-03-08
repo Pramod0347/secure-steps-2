@@ -7,7 +7,7 @@ import { Check } from "lucide-react";
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-[90vh] sm:min-h-screen w-full overflow-hidden bg-gradient-to-b from-pink-50 via-pink-100 to-pink-300">
+    <section className="relative min-h-[90vh] w-full overflow-hidden bg-gradient-to-b from-pink-50 via-pink-100 to-pink-300">
       {/* Subtle gradient overlays */}
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/60 via-transparent to-pink-200/40" />
       
