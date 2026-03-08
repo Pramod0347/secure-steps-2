@@ -21,6 +21,8 @@ export default function NewLandingPage() {
     <main className="min-h-screen bg-white">
       <HeroSection />
       <StatsSection />
+      <FinalCTASection />
+      <InteractiveFeaturesSection />
       <CompanyLogosSection />
       <FeaturedCoursesSection />
       <TestimonialsSection />
@@ -30,8 +32,6 @@ export default function NewLandingPage() {
       <FAQSection />
       <CourseTopicsSection />
       <CommunitySection />
-      <FinalCTASection />
-      <InteractiveFeaturesSection />
     </main>
   );
 }
