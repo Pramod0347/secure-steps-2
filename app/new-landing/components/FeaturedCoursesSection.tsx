@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { GraduationCap, Clock, MapPin, ExternalLink } from "lucide-react";
+import { GraduationCap, Clock, ExternalLink } from "lucide-react";
 
 interface Course {
   id: string;

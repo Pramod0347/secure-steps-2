@@ -7,9 +7,9 @@ export async function GET() {
     const courses = await prisma.course.findMany({
       where: {
         OR: [
-          { university: { name: { contains: "NEOMA" } } },
-          { university: { name: { contains: "Warwick" } } },
-          { university: { name: { contains: "Purdue" } } },
+          { university: { name: { contains: "NEOMA", mode: "insensitive" } } },
+          { university: { name: { contains: "Warwick", mode: "insensitive" } } },
+          { university: { name: { contains: "Purdue", mode: "insensitive" } } },
         ]
       },
       select: {

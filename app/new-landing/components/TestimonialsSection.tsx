@@ -79,7 +79,7 @@ const TestimonialsSection = () => {
     setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
-  const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+  const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const swipeThreshold = 50;
     if (info.offset.x < -swipeThreshold) {
       nextSlide();
@@ -263,10 +263,11 @@ const TestimonialsSection = () => {
                             target.style.display = 'none';
                           }}
                         />
-                      ) : null}
-                      <span className="absolute inset-0 flex items-center justify-center">
-                        {testimonial.name.split(' ').map(n => n[0]).join('')}
-                      </span>
+                      ) : (
+                        <span className="absolute inset-0 flex items-center justify-center">
+                          {testimonial.name.split(' ').map(n => n[0]).join('')}
+                        </span>
+                      )}
                     </div>
                     
                     {/* Verified badge */}

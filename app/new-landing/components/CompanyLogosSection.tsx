@@ -1,22 +1,27 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 
+const R2_BASE = "https://pub-1ed7e98a27564218aec0343ef05fbd57.r2.dev";
+
 const CompanyLogosSection = () => {
+  const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
+
   const universities = [
-    { name: "SKEMA Business School", short: "SKEMA", color: "from-blue-600 to-blue-800" },
-    { name: "UCL", short: "UCL", color: "from-purple-600 to-purple-800" },
-    { name: "NYIT", short: "NYIT", color: "from-blue-500 to-indigo-700" },
-    { name: "Warwick Business School", short: "Warwick", color: "from-purple-700 to-purple-900" },
-    { name: "Toronto Metropolitan University", short: "TMU", color: "from-blue-600 to-blue-900" },
-    { name: "Monash University", short: "Monash", color: "from-gray-700 to-gray-900" },
-    { name: "James Cook University", short: "JCU", color: "from-yellow-500 to-yellow-700" },
-    { name: "SP Jain", short: "SP Jain", color: "from-red-600 to-red-800" },
-    { name: "Johns Hopkins University", short: "Johns Hopkins", color: "from-blue-700 to-blue-900" },
-    { name: "Queen Mary University of London", short: "QMUL", color: "from-red-700 to-red-900" },
-    { name: "Kings College London", short: "KCL", color: "from-red-600 to-red-800" },
-    { name: "Heriot-Watt University", short: "Heriot Watt", color: "from-blue-800 to-indigo-900" },
+    { name: "SKEMA Business School", short: "SKEMA", color: "from-blue-600 to-blue-800", logo: `${R2_BASE}/skema_business_school_logo.png` },
+    { name: "UCL", short: "UCL", color: "from-purple-600 to-purple-800", logo: `${R2_BASE}/ucl_logo.png` },
+    { name: "NYIT", short: "NYIT", color: "from-blue-500 to-indigo-700", logo: `${R2_BASE}/nyit_logo.png` },
+    { name: "Warwick Business School", short: "Warwick", color: "from-purple-700 to-purple-900", logo: "" },
+    { name: "Toronto Metropolitan University", short: "TMU", color: "from-blue-600 to-blue-900", logo: `${R2_BASE}/tmu_logo.png` },
+    { name: "Monash University", short: "Monash", color: "from-gray-700 to-gray-900", logo: "" },
+    { name: "James Cook University", short: "JCU", color: "from-yellow-500 to-yellow-700", logo: "" },
+    { name: "SP Jain", short: "SP Jain", color: "from-red-600 to-red-800", logo: `${R2_BASE}/sp_jain.png` },
+    { name: "Johns Hopkins University", short: "Johns Hopkins", color: "from-blue-700 to-blue-900", logo: "" },
+    { name: "Queen Mary University of London", short: "QMUL", color: "from-red-700 to-red-900", logo: `${R2_BASE}/qmul_logo.png` },
+    { name: "Kings College London", short: "KCL", color: "from-red-600 to-red-800", logo: `${R2_BASE}/hku_kings_logo.png` },
+    { name: "Heriot-Watt University", short: "Heriot Watt", color: "from-blue-800 to-indigo-900", logo: `${R2_BASE}/heriot_watt_university_logo.png` },
   ];
 
   const stats = [
@@ -49,9 +54,21 @@ const CompanyLogosSection = () => {
                   title={uni.name}
                   aria-label={uni.name}
                 >
-                  <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${uni.color} flex items-center justify-center text-white text-xs font-bold flex-shrink-0`}>
-                    {uni.short.charAt(0)}
-                  </div>
+                  {uni.logo && !imgErrors[`${uni.short}-${index}`] ? (
+                    <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 relative bg-white">
+                      <Image
+                        src={uni.logo}
+                        alt={uni.name}
+                        fill
+                        className="object-contain p-0.5"
+                        onError={() => setImgErrors(prev => ({ ...prev, [`${uni.short}-${index}`]: true }))}
+                      />
+                    </div>
+                  ) : (
+                    <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${uni.color} flex items-center justify-center text-white text-xs font-bold flex-shrink-0`}>
+                      {uni.short.charAt(0)}
+                    </div>
+                  )}
                   <span className="text-sm sm:text-base font-medium text-gray-700">
                     {uni.short}
                   </span>

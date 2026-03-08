@@ -87,7 +87,7 @@ const InteractiveFeaturesSection = () => {
             <span className="text-indigo-600 text-xs">98% Match</span>
           </div>
         </div>
-        <div className="w-10 h-10 rounded-full border-3 border-indigo-500 flex items-center justify-center">
+        <div className="w-10 h-10 rounded-full border-[3px] border-indigo-500 flex items-center justify-center">
           <span className="text-indigo-600 text-xs font-bold">98%</span>
         </div>
       </div>
@@ -103,7 +103,7 @@ const InteractiveFeaturesSection = () => {
             <span className="text-purple-600 text-xs">94% Match</span>
           </div>
         </div>
-        <div className="w-10 h-10 rounded-full border-3 border-purple-500 flex items-center justify-center">
+        <div className="w-10 h-10 rounded-full border-[3px] border-purple-500 flex items-center justify-center">
           <span className="text-purple-600 text-xs font-bold">94%</span>
         </div>
       </div>
@@ -119,7 +119,7 @@ const InteractiveFeaturesSection = () => {
             <span className="text-cyan-600 text-xs">91% Match</span>
           </div>
         </div>
-        <div className="w-10 h-10 rounded-full border-3 border-cyan-500 flex items-center justify-center">
+        <div className="w-10 h-10 rounded-full border-[3px] border-cyan-500 flex items-center justify-center">
           <span className="text-cyan-600 text-xs font-bold">91%</span>
         </div>
       </div>
@@ -236,16 +236,16 @@ const InteractiveFeaturesSection = () => {
             <p className="text-gray-500 text-xs mb-4 uppercase tracking-wider font-medium">Decide your future</p>
             <div className="space-y-3">
               {[
-                { label: "Work Environment", icon: "🏢", color: "indigo" },
-                { label: "Problem Solving", icon: "🧩", color: "purple" },
-                { label: "Research Driven", icon: "🔬", color: "cyan" },
-                { label: "Collaborative Teams", icon: "🤝", color: "emerald" },
+                { label: "Work Environment", icon: "🏢", gradient: "from-indigo-50", border: "border-indigo-100", bg: "bg-indigo-500/20" },
+                { label: "Problem Solving", icon: "🧩", gradient: "from-purple-50", border: "border-purple-100", bg: "bg-purple-500/20" },
+                { label: "Research Driven", icon: "🔬", gradient: "from-cyan-50", border: "border-cyan-100", bg: "bg-cyan-500/20" },
+                { label: "Collaborative Teams", icon: "🤝", gradient: "from-emerald-50", border: "border-emerald-100", bg: "bg-emerald-500/20" },
               ].map((item) => (
                 <div
                   key={item.label}
-                  className={`flex items-center gap-3 px-4 py-3.5 rounded-xl bg-gradient-to-r from-${item.color}-50 to-white border border-${item.color}-100 hover:shadow-md transition-all duration-200 cursor-default`}
+                  className={`flex items-center gap-3 px-4 py-3.5 rounded-xl bg-gradient-to-r ${item.gradient} to-white border ${item.border} hover:shadow-md transition-all duration-200 cursor-default`}
                 >
-                  <div className={`w-10 h-10 rounded-xl bg-${item.color}-500/20 flex items-center justify-center text-xl`}>
+                  <div className={`w-10 h-10 rounded-xl ${item.bg} flex items-center justify-center text-xl`}>
                     {item.icon}
                   </div>
                   <span className="text-gray-800 text-sm font-semibold">{item.label}</span>
