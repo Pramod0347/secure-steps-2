@@ -12,10 +12,40 @@ import type { UniversityInterface, CourseInterface } from "@/store/universitysto
 import type { University as CompareUniversity } from "../Models/UniversityCompareModal"
 import type { Course as ApplicationCourse } from "../Models/UniversityApplicationModal"
 
+// Renders description with proper line breaks and bullet points
+function DescriptionRenderer({ text }: { text: string }) {
+  if (!text) return null
+
+  const lines = text.split("\n").filter((line) => line.trim() !== "")
+
+  return (
+    <div className="space-y-2">
+      {lines.map((line, i) => {
+        const trimmed = line.trim()
+        // Check if line starts with a bullet marker (–, -, •, *)
+        const bulletMatch = trimmed.match(/^[–\-•*]\s*(.*)/)
+        if (bulletMatch) {
+          return (
+            <div key={i} className="flex gap-2 text-left">
+              <span className="text-gray-400 shrink-0">•</span>
+              <span>{bulletMatch[1]}</span>
+            </div>
+          )
+        }
+        // Regular paragraph line
+        return (
+          <p key={i}>
+            {trimmed}
+          </p>
+        )
+      })}
+    </div>
+  )
+}
+
 export default function Hero({ university }: { university: UniversityInterface }) {
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false)
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false)
-  const [showFullDescription, setShowFullDescription] = useState(false)
 
   // Format established date (with fallback)
   const establishedYear = university.established 
@@ -71,11 +101,6 @@ export default function Hero({ university }: { university: UniversityInterface }
   const scrollToCourses = () => {
     document.getElementById("courses-section")?.scrollIntoView({ behavior: "smooth" })
   }
-
-  // Truncate description for mobile view
-  const truncatedDescription = university.description
-    ? (university.description.length > 150 ? `${university.description.substring(0, 150)}...` : university.description)
-    : ""
 
   return (
     <div className="w-full max-w-7xl mx-auto bg-cover justify-center md:mt-20 mt-10 flex-col flex items-center gap-4 bg-center text-white pt-20 md:pt-0 px-4 md:px-8">
@@ -234,29 +259,15 @@ export default function Hero({ university }: { university: UniversityInterface }
         </div>
 
         {/* Description */}
-        <div className="text-[10px] md:text-[18px] leading-[16px] md:leading-[30px] text-black md:px-1 px-4 md:w-[80%] text-center py-4 md:py-10">
+        <div className="text-[10px] md:text-[18px] leading-[16px] md:leading-[30px] text-black md:px-1 px-4 md:w-[80%] py-4 md:py-10">
           {/* Description Title */}
           {university.descriptionTitle && (
-            <h2 className="text-lg md:text-2xl font-bold text-black mb-3 md:mb-4">
+            <h2 className="text-lg md:text-2xl font-bold text-black mb-3 md:mb-4 text-center">
               {university.descriptionTitle}
             </h2>
           )}
 
-          {/* Mobile description with show more/less toggle */}
-          <div className="md:hidden">
-            <p>{showFullDescription ? (university.description || "") : truncatedDescription}</p>
-            {university.description && university.description.length > 150 && (
-              <button
-                onClick={() => setShowFullDescription(!showFullDescription)}
-                className="text-blue-600 font-medium mt-2 text-xs"
-              >
-                {showFullDescription ? "Show Less" : "Show More"}
-              </button>
-            )}
-          </div>
-
-          {/* Desktop description (always full) */}
-          <p className="hidden md:block">{university.description || ""}</p>
+          <DescriptionRenderer text={university.description || ""} />
         </div>
       </div>
 
