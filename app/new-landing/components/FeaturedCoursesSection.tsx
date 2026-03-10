@@ -156,7 +156,7 @@ const FeaturedCoursesSection = () => {
                 viewport={{ once: true }}
               >
                 <Link 
-                  href={`/select/${course.university.slug || course.university.name.toLowerCase().replace(/\s+/g, '-')}`}
+                  href={`/select/${course.university.slug || course.university.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`}
                   className="block group"
                 >
                   <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-white border border-gray-200 hover:border-gray-300 hover:shadow-xl transition-all duration-500 hover:-translate-y-1 sm:hover:-translate-y-2 h-full">
