@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { GraduationCap, Clock, ExternalLink } from "lucide-react";
+import { GraduationCap, Clock } from "lucide-react";
 
 interface Course {
   id: string;
@@ -17,6 +17,7 @@ interface Course {
   university: {
     id: string;
     name: string;
+    slug?: string;
     logoUrl?: string;
   };
 }
@@ -62,30 +63,57 @@ const FeaturedCoursesSection = () => {
       duration: "12 Months",
       degreeType: "PG Degree",
       ieltsScore: "6.5",
-      websiteLink: "https://neoma-bs.com",
-      university: { id: "1", name: "NEOMA Business School", logoUrl: "" }
+      university: { id: "1", name: "SKEMA Business School", slug: "skema-business-school", logoUrl: "" }
     },
     {
       id: "2", 
-      name: "MBA Full-Time",
-      description: "Transform your career with our globally recognized MBA program featuring real-world consulting projects.",
-      fees: "£47,500",
+      name: "MSc Finance & Technology",
+      description: "Bridging the gap between finance and tech — covering blockchain, fintech, quantitative analysis, and risk management.",
+      fees: "£32,500",
       duration: "12 Months",
       degreeType: "PG Degree",
       ieltsScore: "7.0",
-      websiteLink: "https://www.wbs.ac.uk",
-      university: { id: "2", name: "Warwick Business School", logoUrl: "" }
+      university: { id: "2", name: "King's College London", slug: "kings-college-london", logoUrl: "" }
     },
     {
       id: "3",
-      name: "MS Computer Science",
-      description: "Advance your tech career with cutting-edge curriculum in AI, machine learning, and software engineering.",
-      fees: "$26,640",
+      name: "MS Cybersecurity",
+      description: "Hands-on cybersecurity training covering network defence, ethical hacking, digital forensics, and cloud security.",
+      fees: "$28,400",
+      duration: "20 Months",
+      degreeType: "PG Degree",
+      ieltsScore: "6.5",
+      university: { id: "3", name: "NYIT", slug: "nyit", logoUrl: "" }
+    },
+    {
+      id: "4",
+      name: "MBA Global Management",
+      description: "A globally recognized MBA with campuses in Dubai, Mumbai, Singapore, and Sydney for a truly international experience.",
+      fees: "$45,000",
+      duration: "16 Months",
+      degreeType: "PG Degree",
+      ieltsScore: "6.5",
+      university: { id: "4", name: "SP Jain", slug: "sp-jain", logoUrl: "" }
+    },
+    {
+      id: "5",
+      name: "MSc Robotics & AI",
+      description: "Explore the intersection of robotics and artificial intelligence with hands-on projects and industry collaboration.",
+      fees: "£26,000",
+      duration: "12 Months",
+      degreeType: "PG Degree",
+      ieltsScore: "6.5",
+      university: { id: "5", name: "Heriot-Watt University", slug: "heriot-watt-university", logoUrl: "" }
+    },
+    {
+      id: "6",
+      name: "MSc Urban Analytics",
+      description: "Combine data science with urban planning to solve real-world city challenges using GIS, IoT, and spatial analytics.",
+      fees: "CAD 38,000",
       duration: "24 Months",
       degreeType: "PG Degree",
       ieltsScore: "6.5",
-      websiteLink: "https://www.pnw.edu",
-      university: { id: "3", name: "Purdue University Northwest", logoUrl: "" }
+      university: { id: "6", name: "Toronto Metropolitan University", slug: "toronto-metropolitan-university", logoUrl: "" }
     },
   ];
 
@@ -128,9 +156,7 @@ const FeaturedCoursesSection = () => {
                 viewport={{ once: true }}
               >
                 <Link 
-                  href={course.websiteLink || '#'} 
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={`/select/${course.university.slug || course.university.name.toLowerCase().replace(/\s+/g, '-')}`}
                   className="block group"
                 >
                   <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-white border border-gray-200 hover:border-gray-300 hover:shadow-xl transition-all duration-500 hover:-translate-y-1 sm:hover:-translate-y-2 h-full">
@@ -147,12 +173,6 @@ const FeaturedCoursesSection = () => {
                           </div>
                           {course.university.name}
                         </span>
-                      </div>
-                      {/* External link icon */}
-                      <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className="p-2 bg-white/90 rounded-full">
-                          <ExternalLink className="w-4 h-4 text-gray-700" />
-                        </div>
                       </div>
                       {/* Degree type badge */}
                       <div className="absolute bottom-4 right-4">
@@ -196,7 +216,7 @@ const FeaturedCoursesSection = () => {
 
                       {/* CTA */}
                       <div className="flex items-center text-purple-600 text-sm font-medium group-hover:text-purple-700">
-                        View Program Details
+                        View University
                         <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
                       </div>
                     </div>

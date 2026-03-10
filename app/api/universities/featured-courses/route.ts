@@ -3,39 +3,49 @@ import { NextResponse } from "next/server"
 
 export async function GET() {
   try {
-    // Fetch courses from NEOMA, Warwick, and Purdue universities
-    const courses = await prisma.course.findMany({
-      where: {
-        OR: [
-          { university: { name: { contains: "NEOMA", mode: "insensitive" } } },
-          { university: { name: { contains: "Warwick", mode: "insensitive" } } },
-          { university: { name: { contains: "Purdue", mode: "insensitive" } } },
-        ]
-      },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        fees: true,
-        duration: true,
-        degreeType: true,
-        ieltsScore: true,
-        websiteLink: true,
-        university: {
+    // Step 1: Get all university IDs that have at least one course
+    const universities = await prisma.university.findMany({
+      where: { courses: { some: {} } },
+      select: { id: true },
+    })
+
+    // Step 2: Shuffle and pick up to 6 unique universities
+    const shuffled = universities.sort(() => Math.random() - 0.5).slice(0, 6)
+    const universityIds = shuffled.map((u) => u.id)
+
+    // Step 3: Fetch one course per university
+    const courses = await Promise.all(
+      universityIds.map(async (uniId) => {
+        const uniCourses = await prisma.course.findMany({
+          where: { universityId: uniId },
           select: {
             id: true,
             name: true,
-            logoUrl: true
-          }
-        }
-      },
-      take: 6,
-      orderBy: {
-        createdAt: 'desc'
-      }
-    })
+            description: true,
+            fees: true,
+            duration: true,
+            degreeType: true,
+            ieltsScore: true,
+            websiteLink: true,
+            university: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+                logoUrl: true,
+              },
+            },
+          },
+        })
+        // Pick a random course from this university
+        return uniCourses[Math.floor(Math.random() * uniCourses.length)]
+      })
+    )
 
-    return NextResponse.json(courses)
+    // Filter out any undefined entries
+    const validCourses = courses.filter(Boolean)
+
+    return NextResponse.json(validCourses)
   } catch (error) {
     console.error("Failed to fetch featured courses:", error)
     return NextResponse.json({ 
