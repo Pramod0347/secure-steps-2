@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
 
 const R2_BASE = "https://pub-1ed7e98a27564218aec0343ef05fbd57.r2.dev";
 
@@ -13,22 +12,15 @@ const CompanyLogosSection = () => {
     { name: "SKEMA Business School", short: "SKEMA", color: "from-blue-600 to-blue-800", logo: `${R2_BASE}/skema_business_school_logo.png` },
     { name: "UCL", short: "UCL", color: "from-purple-600 to-purple-800", logo: `${R2_BASE}/ucl_logo.png` },
     { name: "NYIT", short: "NYIT", color: "from-blue-500 to-indigo-700", logo: `${R2_BASE}/nyit_logo.png` },
-    { name: "Warwick Business School", short: "Warwick", color: "from-purple-700 to-purple-900", logo: "" },
+    { name: "Warwick Business School", short: "Warwick", color: "from-purple-700 to-purple-900", logo: "/warwick_logo.png" },
     { name: "Toronto Metropolitan University", short: "TMU", color: "from-blue-600 to-blue-900", logo: `${R2_BASE}/tmu_logo.png` },
-    { name: "Monash University", short: "Monash", color: "from-gray-700 to-gray-900", logo: "" },
-    { name: "James Cook University", short: "JCU", color: "from-yellow-500 to-yellow-700", logo: "" },
+    { name: "Monash University", short: "Monash", color: "from-gray-700 to-gray-900", logo: `${R2_BASE}/monash_university.png` },
+    { name: "James Cook University", short: "JCU", color: "from-yellow-500 to-yellow-700", logo: `${R2_BASE}/james_cook.png` },
     { name: "SP Jain", short: "SP Jain", color: "from-red-600 to-red-800", logo: `${R2_BASE}/sp_jain.png` },
-    { name: "Johns Hopkins University", short: "Johns Hopkins", color: "from-blue-700 to-blue-900", logo: "" },
+    { name: "Johns Hopkins University", short: "Johns Hopkins", color: "from-blue-700 to-blue-900", logo: `${R2_BASE}/johns_hopkins.png` },
     { name: "Queen Mary University of London", short: "QMUL", color: "from-red-700 to-red-900", logo: `${R2_BASE}/qmul_logo.png` },
     { name: "Kings College London", short: "KCL", color: "from-red-600 to-red-800", logo: `${R2_BASE}/hku_kings_logo.png` },
     { name: "Heriot-Watt University", short: "Heriot Watt", color: "from-blue-800 to-indigo-900", logo: `${R2_BASE}/heriot_watt_university_logo.png` },
-  ];
-
-  const stats = [
-    { number: "75+", label: "Happy Students" },
-    { number: "150+", label: "Student Enquiries" },
-    { number: "100%", label: "Transparency" },
-    { number: "100%", label: "Reliable" },
   ];
 
   return (
@@ -50,12 +42,12 @@ const CompanyLogosSection = () => {
               {[...universities, ...universities].map((uni, index) => (
                 <div
                   key={index}
-                  className="inline-flex items-center gap-3 mx-3 sm:mx-4 px-4 py-2.5 rounded-full bg-gray-50 border border-gray-200 transition-colors flex-shrink-0"
+                  className="inline-flex items-center justify-center mx-3 sm:mx-4 w-20 h-12 sm:w-24 sm:h-14 rounded-xl bg-gray-50 border border-gray-200 transition-colors flex-shrink-0"
                   title={uni.name}
                   aria-label={uni.name}
                 >
                   {uni.logo && !imgErrors[`${uni.short}-${index}`] ? (
-                    <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 relative bg-white">
+                    <div className="w-16 h-8 sm:w-20 sm:h-10 rounded-md overflow-hidden flex-shrink-0 relative bg-white">
                       <Image
                         src={uni.logo}
                         alt={uni.name}
@@ -65,68 +57,13 @@ const CompanyLogosSection = () => {
                       />
                     </div>
                   ) : (
-                    <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${uni.color} flex items-center justify-center text-white text-xs font-bold flex-shrink-0`}>
+                    <div className={`w-16 h-8 sm:w-20 sm:h-10 rounded-md bg-gradient-to-br ${uni.color} flex items-center justify-center text-white text-xs sm:text-sm font-bold flex-shrink-0`}>
                       {uni.short.charAt(0)}
                     </div>
                   )}
-                  <span className="text-sm sm:text-base font-medium text-gray-700">
-                    {uni.short}
-                  </span>
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Students Who Took A Leap of Faith Section */}
-      <section className="py-12 sm:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Heading */}
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-3"
-          >
-            <span className="bg-gradient-to-r from-[#DA202E] to-[#3B367D] bg-clip-text text-transparent">
-              STUDENTS WHO TOOK A LEAP OF FAITH WITH SECURE
-            </span>
-          </motion.h2>
-
-          {/* Subtitle */}
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            viewport={{ once: true }}
-            className="text-gray-500 text-sm sm:text-base text-center mb-10 sm:mb-16"
-          >
-            (Now with clarity in their favourite university/country/career path)
-          </motion.p>
-
-          {/* Stats */}
-          <div className="flex flex-wrap justify-center gap-6 sm:gap-8 md:gap-12 lg:gap-16">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="flex flex-col items-center"
-              >
-                <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full border-2 border-gray-200 flex items-center justify-center mb-2 hover:border-gray-400 transition-colors">
-                  <span className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
-                    {stat.number}
-                  </span>
-                </div>
-                <span className="text-xs sm:text-sm text-gray-500 text-center max-w-[80px] sm:max-w-[100px]">
-                  {stat.label}
-                </span>
-              </motion.div>
-            ))}
           </div>
         </div>
       </section>

@@ -14,24 +14,26 @@ import {
   CommunitySection,
   FinalCTASection,
   InteractiveFeaturesSection,
+  LeapOfFaithSection,
 } from "./components";
 
 export default function NewLandingPage() {
   return (
     <main className="min-h-screen bg-white">
       <HeroSection />
-      <StatsSection />
+      <AboutSection />
+      <CourseTopicsSection />
       <FinalCTASection />
       <InteractiveFeaturesSection />
+      <StatsSection />
       <CompanyLogosSection />
       <FeaturedCoursesSection />
+      <LeapOfFaithSection />
       <TestimonialsSection />
       <KeyBenefitsSection />
       <PricingSection />
-      <AboutSection />
-      <FAQSection />
-      <CourseTopicsSection />
       <CommunitySection />
+      <FAQSection />
     </main>
   );
 }

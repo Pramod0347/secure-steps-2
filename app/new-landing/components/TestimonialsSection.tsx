@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, PanInfo } from "framer-motion";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
+import { StudentOne, StudentTwo, StudentThree, StudentFour, StudentFive, StudentSix } from "@/app/assets/Home/Testimonials_Img";
 
 interface Testimonial {
   id: number;
@@ -11,7 +12,7 @@ interface Testimonial {
   name: string;
   role: string;
   company?: string;
-  avatar?: string;
+  avatar: StaticImageData;
   bgColor: string;
 }
 
@@ -21,63 +22,73 @@ const TestimonialsSection = () => {
   const testimonials: Testimonial[] = [
     {
       id: 1,
-      quote: "The attention to detail is outstanding. Clean transitions are professional. Every product page is beautifully executed.",
-      highlight: "professional",
-      name: "Daniel Brooks",
-      role: "UX Lead",
-      company: "TechFlow",
-      avatar: "/testimonials/student1.jpg",
+      quote: "My journey to move to the UK was a rollercoaster ride, to say the least. Thanks to Secure Steps, every bump on the road was easy to overcome. They alleviated all my travel anxieties and helped me settle down without any hassle. From admission to housing, opening bank accounts to being a source of emotional support, I could always rely on them.",
+      highlight: "easy to overcome",
+      name: "Anjali",
+      role: "Now an Entrepreneur",
+      avatar: StudentOne,
       bgColor: "from-purple-100 to-purple-200",
     },
     {
       id: 2,
-      quote: "It feels cinematic and never distracting. Clear, professional. Every product page runs beautifully even with complex animations.",
-      highlight: "professional",
-      name: "Marcus L",
-      role: "UX Lead",
-      company: "DesignCo",
-      avatar: "/testimonials/student2.jpg",
+      quote: "I had the pleasure of working with Secure Steps in securing a home in Manchester. From the outset, they not only helped me find the perfect home but also guided me through every step of the process with remarkable expertise and dedication. Their professionalism, knowledge, and genuine care made the entire experience smooth and stress-free.",
+      highlight: "smooth and stress-free",
+      name: "Sneha Suresh",
+      role: "Now a Professor",
+      avatar: StudentTwo,
       bgColor: "from-blue-100 to-cyan-100",
     },
     {
       id: 3,
-      quote: "Secure Steps helped me find the perfect university. The counselling sessions were incredibly insightful and I am extremely impressed with their guidance and support.",
-      highlight: "extremely impressed",
-      name: "Ananya Sharma",
-      role: "MS Computer Science",
-      company: "University of Birmingham",
-      avatar: "/testimonials/student3.jpg",
+      quote: "I had a fantastic experience with Secure Steps. I stayed at my friend's house during my initial days because I couldn't find an accommodation in London. They set up a few viewings and finalised on a beautiful 2 bed apartment in Oxford Street within a week's time. I can't thank them enough for making the entire process stress free for me!",
+      highlight: "fantastic experience",
+      name: "Zohab",
+      role: "Now a Business Owner",
+      avatar: StudentThree,
       bgColor: "from-amber-50 to-yellow-100",
     },
     {
       id: 4,
-      quote: "They transformed our entire approach from start to finish. The attention to our vision perfectly exceeded what we imagined.",
-      highlight: "exceeded",
-      name: "Sneha Thompson",
-      role: "Product Lead",
-      company: "InnovateTech",
-      avatar: "/testimonials/student4.jpg",
+      quote: "A group of six boys and I from India moved to London together to pursue our master's degree. Finding a house that could accommodate all of us was nearly impossible from India. Secure Steps fulfilled this request with just one phone call. They greeted us at the airport with the house keys and drove us straight to our new home.",
+      highlight: "just one phone call",
+      name: "Akshay",
+      role: "Now a Data Analyst",
+      avatar: StudentFour,
       bgColor: "from-green-100 to-emerald-100",
     },
     {
       id: 5,
-      quote: "The personality assessments and career mapping completely changed my perspective. I went from confused to confident about my future.",
-      highlight: "confused to confident",
-      name: "Rahul Verma",
-      role: "MBA Finance",
-      company: "Warwick Business School",
-      avatar: "/testimonials/student5.jpg",
+      quote: "Secure Steps took every aspect of my requests into consideration. From helping me secure my admission at Kingston University to finding a very reasonable private accommodation, they truly played a huge role. They don't just leave you alone once you fly out, they guide you and answer every little question until you've fully settled.",
+      highlight: "truly played a huge role",
+      name: "Alan Thomas",
+      role: "Now a DevOps Engineer",
+      avatar: StudentFive,
       bgColor: "from-rose-100 to-pink-100",
+    },
+    {
+      id: 6,
+      quote: "Moving to the UK for my master's was easy, but bringing my family of five with me was stressful. Finding a house as an immigrant family was no joke. When this gave me anxiety, Secure Steps stepped in, booking viewings and handling all discussions with landlords on our behalf. Thanks to them, we are now living in an independent house in Portsmouth.",
+      highlight: "Secure Steps stepped in",
+      name: "Diana",
+      role: "Now a Student",
+      avatar: StudentSix,
+      bgColor: "from-violet-100 to-indigo-100",
     },
   ];
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-  };
+  }, [testimonials.length]);
 
   const prevSlide = () => {
     setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
+
+  // Auto-scroll every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(nextSlide, 5000);
+    return () => clearInterval(interval);
+  }, [nextSlide]);
 
   const handleDragEnd = (_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const swipeThreshold = 50;
@@ -194,12 +205,12 @@ const TestimonialsSection = () => {
 
       {/* 3D Carousel Container */}
       <div 
-        className="relative h-[450px] sm:h-[350px] lg:h-[450px] flex items-center justify-center touch-pan-y" 
+        className="relative h-[450px] sm:h-[350px] lg:h-[450px] flex items-center justify-center touch-pan-y mx-auto" 
         style={{ perspective: "1200px" }}
       >
         {/* Cards */}
         <motion.div 
-          className="relative w-full max-w-[450px] lg:max-w-[520px] h-[300px] sm:h-[350px] lg:h-[420px]"
+          className="relative w-full h-[300px] sm:h-[350px] lg:h-[420px] flex items-center justify-center"
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0.1}
@@ -210,7 +221,7 @@ const TestimonialsSection = () => {
             return (
               <motion.div
                 key={testimonial.id}
-                className="absolute top-0 left-1/2 w-[340px] sm:w-[420px] lg:w-[480px] cursor-grab active:cursor-grabbing"
+                className="absolute w-[340px] sm:w-[420px] lg:w-[480px] cursor-grab active:cursor-grabbing"
                 initial={false}
                 animate={{
                   x: style.x,
@@ -225,7 +236,6 @@ const TestimonialsSection = () => {
                   damping: 30,
                 }}
                 style={{
-                  marginLeft: "-170px",
                   transformStyle: "preserve-3d",
                   filter: style.filter,
                 }}
@@ -251,23 +261,13 @@ const TestimonialsSection = () => {
                   {/* Author */}
                   <div className="flex items-center gap-3">
                     {/* Avatar */}
-                    <div className="relative w-11 h-11 lg:w-12 lg:h-12 rounded-full overflow-hidden bg-gradient-to-br from-gray-600 to-gray-800 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0 ring-2 ring-white shadow-md">
-                      {testimonial.avatar ? (
-                        <Image
-                          src={testimonial.avatar}
-                          alt={testimonial.name}
-                          fill
-                          className="object-cover"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
-                          }}
-                        />
-                      ) : (
-                        <span className="absolute inset-0 flex items-center justify-center">
-                          {testimonial.name.split(' ').map(n => n[0]).join('')}
-                        </span>
-                      )}
+                    <div className="relative w-11 h-11 lg:w-12 lg:h-12 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-white shadow-md">
+                      <Image
+                        src={testimonial.avatar}
+                        alt={testimonial.name}
+                        fill
+                        className="object-cover"
+                      />
                     </div>
                     
                     {/* Verified badge */}
@@ -282,7 +282,7 @@ const TestimonialsSection = () => {
                         {testimonial.name}
                       </div>
                       <div className="text-gray-600 text-xs sm:text-sm">
-                        {testimonial.role} {testimonial.company && `· ${testimonial.company}`}
+                        {testimonial.role}
                       </div>
                     </div>
                   </div>

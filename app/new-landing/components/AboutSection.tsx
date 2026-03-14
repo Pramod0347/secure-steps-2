@@ -1,156 +1,108 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { Linkedin, Twitter, Github } from "lucide-react";
+import Image from "next/image";
 
 const AboutSection = () => {
-  const leftBenefits = [
-    {
-      title: "Certificate of Completion",
-      description:
-        "Receive a recognized credential that significantly boosts your resume.",
-    },
-    {
-      title: "Networking Opportunities",
-      description:
-        "Connect with peers and valuable industry professionals for growth.",
-    },
-  ];
-
-  const rightBenefits = [
-    {
-      title: "Comprehensive Curriculum",
-      description:
-        "Master essential topics and practical skills effectively and thoroughly.",
-    },
-    {
-      title: "Expert Guidance",
-      description:
-        "Learn from experienced instructors for personalized and effective support.",
-    },
-  ];
-
   return (
     <section className="py-12 sm:py-16 lg:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Label */}
-        <div className="text-center mb-4 sm:mb-6">
-          <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 bg-gray-100 border border-gray-200 rounded-full text-xs sm:text-sm text-gray-600">
-            About Me
-          </span>
-        </div>
-
         {/* Section Title */}
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 text-center mb-4 sm:mb-6 px-2">
-          But Why CourseSite ?
-        </h2>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          className="text-center mb-6 sm:mb-10"
+        >
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 px-2">
+            Why Secure Steps?
+          </h2>
+          <p className="text-gray-600 max-w-3xl mx-auto text-sm sm:text-base lg:text-lg px-2">
+            Most consultancies start with university options, we start with you
+          </p>
+        </motion.div>
 
-        <p className="text-gray-600 text-center max-w-2xl mx-auto mb-10 sm:mb-16 text-sm sm:text-base px-2">
-          Explore the incredible advantages of enrolling in our courses and
-          enhancing your skills for the ultimate career success.
-        </p>
+        {/* Value Proposition */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          viewport={{ once: true }}
+          className="text-center mb-12 sm:mb-16"
+        >
+          <p className="text-gray-800 max-w-4xl mx-auto text-base sm:text-lg lg:text-xl leading-relaxed px-2">
+            We give you a curated roadmap, a Google Map for your career, helping you understand
+            your personality, strengths and future opportunities so you reach your destination
+            on time and with less hassle
+          </p>
+        </motion.div>
 
-        {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 items-center">
-          {/* Left Benefits */}
-          <div className="space-y-4 sm:space-y-6 order-2 lg:order-1">
-            {leftBenefits.map((benefit, index) => (
-              <motion.div
-                key={benefit.title}
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="text-left lg:text-right"
-              >
-                <div className="rounded-2xl sm:rounded-3xl bg-white border border-gray-200 p-4 sm:p-6 hover:border-gray-300 hover:shadow-xl transition-all duration-300">
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">
-                    {benefit.title}
-                  </h3>
-                  <p className="text-gray-600">{benefit.description}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Center - Instructor */}
+        {/* Co-founder Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+          {/* Photo */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="relative order-1 lg:order-2"
+            className="flex flex-col items-center"
           >
-            <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-purple-100 to-pink-100 border border-gray-200 aspect-[3/4]">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-7xl sm:text-9xl opacity-50">👨‍🏫</div>
+            <div className="relative w-64 sm:w-72 lg:w-80"
+              style={{ perspective: "800px" }}
+            >
+              {/* Dark card background - positioned lower so head overflows */}
+              <div
+                className="relative rounded-2xl sm:rounded-3xl shadow-2xl mt-16 sm:mt-20"
+                style={{ transform: "rotateY(5deg)", transformStyle: "preserve-3d" }}
+              >
+                <div className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl sm:rounded-3xl h-72 sm:h-80 lg:h-96 relative border border-gray-200">
+                  {/* Image - anchored to bottom, head overflows top of dark card */}
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-[130%] z-10">
+                    <Image
+                      src="https://pub-1ed7e98a27564218aec0343ef05fbd57.r2.dev/shreshta.png"
+                      alt="Shreshta Dechamma - Co Founder"
+                      fill
+                      className="object-contain object-bottom"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-
-            {/* Info Card */}
-            <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6">
-              <div className="bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200 shadow-lg">
-                <p className="text-gray-700 text-xs sm:text-sm mb-3 sm:mb-4">
-                  <span className="text-gray-900 font-semibold">
-                    I started my journey:
-                  </span>{" "}
-                  In web design and development in 2010 at the age of 24. I
-                  transitioned into a full-time instructor and mentor in 2018.
-                </p>
-                <p className="text-gray-700 text-xs sm:text-sm">
-                  <span className="text-gray-900 font-semibold">
-                    Through hands-on:
-                  </span>{" "}
-                  project-based courses, I simplify challenging topics and make
-                  them accessible to everyone.
-                </p>
-
-                {/* Social Links */}
-                <div className="flex gap-2 sm:gap-3 mt-3 sm:mt-4">
-                  <Link
-                    href="#"
-                    className="w-8 sm:w-10 h-8 sm:h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-colors"
-                  >
-                    <Linkedin className="w-4 sm:w-5 h-4 sm:h-5" />
-                  </Link>
-                  <Link
-                    href="#"
-                    className="w-8 sm:w-10 h-8 sm:h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-colors"
-                  >
-                    <Twitter className="w-4 sm:w-5 h-4 sm:h-5" />
-                  </Link>
-                  <Link
-                    href="#"
-                    className="w-8 sm:w-10 h-8 sm:h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-colors"
-                  >
-                    <Github className="w-4 sm:w-5 h-4 sm:h-5" />
-                  </Link>
-                </div>
-              </div>
+            <div className="mt-4 text-center">
+              <p className="text-gray-500 text-sm">Co Founder</p>
+              <p className="text-gray-900 font-semibold text-lg">Shreshta Dechamma</p>
             </div>
           </motion.div>
 
-          {/* Right Benefits */}
-          <div className="space-y-4 sm:space-y-6 order-3">
-            {rightBenefits.map((benefit, index) => (
-              <motion.div
-                key={benefit.title}
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <div className="rounded-2xl sm:rounded-3xl bg-white border border-gray-200 p-4 sm:p-6 hover:border-gray-300 hover:shadow-xl transition-all duration-300">
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">
-                    {benefit.title}
-                  </h3>
-                  <p className="text-gray-600 text-sm sm:text-base">{benefit.description}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          {/* Story */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="space-y-6 sm:space-y-8"
+          >
+            <div>
+              <p className="text-gray-800 text-base sm:text-lg lg:text-xl leading-relaxed">
+                It started when I was 13. Watching my mother teach me, I realised something powerful.
+                Impacting a student&apos;s life is the greatest success one can achieve.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3">
+                Why help you?
+              </h3>
+              <p className="text-gray-600 text-sm sm:text-base lg:text-lg leading-relaxed">
+                When I was graduating from school, I was constantly validating my career choice.
+                It took 3 trial degrees, to achieve what I truly loved. So here I am to avoid
+                trials and give you a clear direction, because no student should have to go
+                through what I went through.
+              </p>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
