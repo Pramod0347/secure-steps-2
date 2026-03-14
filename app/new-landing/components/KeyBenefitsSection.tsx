@@ -88,10 +88,10 @@ const KeyBenefitsSection = () => {
               viewport={{ once: true }}
               className="group h-full"
             >
-              <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-white border border-gray-200 p-5 sm:p-8 hover:border-gray-300 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
+              <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-white border border-gray-200 p-5 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
                 {/* Background Gradient */}
                 <div
-                  className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${benefit.gradient} opacity-5 blur-3xl group-hover:opacity-10 transition-opacity`}
+                  className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${benefit.gradient} opacity-10 blur-3xl transition-opacity`}
                 />
 
                 {/* Icon */}

@@ -45,7 +45,7 @@ const StatsSection = () => {
                 <path d="M12 14c-4 0-7 2-7 5v1h14v-1c0-3-3-5-7-5z" />
               </svg>
             </span>
-            We help you
+            What makes us different?
           </span>
         </div>
 

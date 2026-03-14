@@ -8,7 +8,7 @@ const FinalCTASection = () => {
     <section className="pt-12 sm:pt-16 lg:pt-24">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 px-2">
-          Understand how you think, work and make decisions in just 4 Steps
+          Understand how you think and make decisions in just 4 steps
         </h2>
 
         {/* CTA Buttons */}

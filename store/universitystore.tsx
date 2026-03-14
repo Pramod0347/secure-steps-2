@@ -783,6 +783,14 @@ export const useUniversityStore = create<UniversityState>()(
       {
         name: "university-store",
         storage: createJSONStorage(() => {
+          if (typeof window === "undefined") {
+            return {
+              getItem: (_key: string) => null,
+              setItem: (_key: string, _value: string) => {},
+              removeItem: (_key: string) => {},
+            }
+          }
+
           try {
             return {
               getItem: (key: string) => {

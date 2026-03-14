@@ -11,4 +11,5 @@ export { default as CourseTopicsSection } from './CourseTopicsSection';
 export { default as CommunitySection } from './CommunitySection';
 export { default as FinalCTASection } from './FinalCTASection';
 export { default as InteractiveFeaturesSection } from './InteractiveFeaturesSection';
+export { default as LeapOfFaithSection } from './LeapOfFaithSection';
 export { default as FooterSection } from "./FooterSection";

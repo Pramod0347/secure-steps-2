@@ -132,7 +132,7 @@ const FeaturedCoursesSection = () => {
 
         {/* Section Title */}
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 text-center mb-4">
-          Programs with highest ROI
+          Explore Graduate Programmes
         </h2>
 
         <p className="text-gray-600 text-center max-w-2xl mx-auto mb-10 sm:mb-16 text-sm sm:text-base px-2">
