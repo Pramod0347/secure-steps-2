@@ -12,7 +12,7 @@ const CompanyLogosSection = () => {
     { name: "SKEMA Business School", short: "SKEMA", color: "from-blue-600 to-blue-800", logo: `${R2_BASE}/skema_business_school_logo.png` },
     { name: "UCL", short: "UCL", color: "from-purple-600 to-purple-800", logo: `${R2_BASE}/ucl_logo.png` },
     { name: "NYIT", short: "NYIT", color: "from-blue-500 to-indigo-700", logo: `${R2_BASE}/nyit_logo.png` },
-    { name: "Warwick Business School", short: "Warwick", color: "from-purple-700 to-purple-900", logo: "/warwick_logo.png" },
+    { name: "Warwick Business School", short: "Warwick", color: "from-purple-700 to-purple-900", logo: `${R2_BASE}/warwick_logo.png` },
     { name: "Toronto Metropolitan University", short: "TMU", color: "from-blue-600 to-blue-900", logo: `${R2_BASE}/tmu_logo.png` },
     { name: "Monash University", short: "Monash", color: "from-gray-700 to-gray-900", logo: `${R2_BASE}/monash_university.png` },
     { name: "James Cook University", short: "JCU", color: "from-yellow-500 to-yellow-700", logo: `${R2_BASE}/james_cook.png` },

@@ -205,12 +205,12 @@ const TestimonialsSection = () => {
 
       {/* 3D Carousel Container */}
       <div 
-        className="relative h-[450px] sm:h-[350px] lg:h-[450px] flex items-center justify-center touch-pan-y mx-auto" 
+        className="relative h-[500px] sm:h-[520px] lg:h-[580px] flex items-center justify-center touch-pan-y mx-auto" 
         style={{ perspective: "1200px" }}
       >
         {/* Cards */}
         <motion.div 
-          className="relative w-full h-[300px] sm:h-[350px] lg:h-[420px] flex items-center justify-center"
+          className="relative w-full h-[470px] sm:h-[480px] lg:h-[540px] flex items-center justify-center"
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0.1}
@@ -221,7 +221,7 @@ const TestimonialsSection = () => {
             return (
               <motion.div
                 key={testimonial.id}
-                className="absolute w-[340px] sm:w-[420px] lg:w-[480px] cursor-grab active:cursor-grabbing"
+                className="absolute inset-0 m-auto w-[340px] sm:w-[420px] lg:w-[480px] cursor-grab active:cursor-grabbing"
                 initial={false}
                 animate={{
                   x: style.x,
@@ -241,7 +241,7 @@ const TestimonialsSection = () => {
                 }}
                 onClick={() => setCurrentIndex(index)}
               >
-                <div className={`rounded-3xl bg-gradient-to-br ${testimonial.bgColor} p-6 sm:p-8 lg:p-10 shadow-xl h-full`}>
+                <div className={`rounded-3xl bg-gradient-to-br ${testimonial.bgColor} p-6 sm:p-8 lg:p-10 shadow-xl h-full flex flex-col`}>
                   {/* Quote Icon */}
                   <div className="mb-4">
                     <svg 
@@ -254,12 +254,12 @@ const TestimonialsSection = () => {
                   </div>
 
                   {/* Quote */}
-                  <p className="text-gray-800 text-base sm:text-lg lg:text-xl leading-relaxed mb-8">
+                  <p className="text-gray-800 text-base sm:text-lg lg:text-lg leading-relaxed mb-8">
                     &ldquo;{renderHighlightedQuote(testimonial.quote, testimonial.highlight)}&rdquo;
                   </p>
 
                   {/* Author */}
-                  <div className="flex items-center gap-3">
+                  <div className="mt-auto flex items-center gap-3 min-w-0">
                     {/* Avatar */}
                     <div className="relative w-11 h-11 lg:w-12 lg:h-12 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-white shadow-md">
                       <Image
@@ -277,11 +277,11 @@ const TestimonialsSection = () => {
                       </svg>
                     </div>
                     
-                    <div>
-                      <div className="text-gray-900 font-semibold text-sm sm:text-base">
+                    <div className="min-w-0">
+                      <div className="text-gray-900 font-semibold text-sm sm:text-base truncate">
                         {testimonial.name}
                       </div>
-                      <div className="text-gray-600 text-xs sm:text-sm">
+                      <div className="text-gray-600 text-xs sm:text-sm truncate">
                         {testimonial.role}
                       </div>
                     </div>
