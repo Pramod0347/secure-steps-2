@@ -16,12 +16,14 @@ const AboutSection = () => {
           viewport={{ once: true }}
           className="text-center mb-6 sm:mb-10"
         >
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 px-2">
-            Why Secure Steps?
-          </h2>
-          <p className="text-gray-600 max-w-3xl mx-auto text-sm sm:text-base lg:text-lg px-2">
+          <div className="text-center mb-4 sm:mb-6">
+            <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 bg-gray-100 border border-gray-200 rounded-full text-xs sm:text-sm text-gray-600">
+              Why Secure Steps?
+            </span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 text-center mb-4 sm:mb-6 px-2">
             Most consultancies start with university options, we start with you
-          </p>
+          </h2>
         </motion.div>
 
         {/* Value Proposition */}

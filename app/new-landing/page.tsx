@@ -34,6 +34,11 @@ export default function NewLandingPage() {
       <PricingSection />
       <CommunitySection />
       <FAQSection />
+
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-40 h-14 sm:hidden bg-white/25 backdrop-blur-md [mask-image:linear-gradient(to_top,black,transparent)]"
+      />
     </main>
   );
 }
