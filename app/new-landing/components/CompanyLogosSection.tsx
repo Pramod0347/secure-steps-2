@@ -42,12 +42,12 @@ const CompanyLogosSection = () => {
               {[...universities, ...universities].map((uni, index) => (
                 <div
                   key={index}
-                  className="inline-flex items-center justify-center mx-3 sm:mx-4 w-20 h-12 sm:w-24 sm:h-14 rounded-xl bg-gray-50 border border-gray-200 transition-colors flex-shrink-0"
+                  className="inline-flex items-center justify-center mx-3 sm:mx-4 w-24 h-14 sm:w-28 sm:h-16 rounded-xl bg-gray-50 border border-gray-200 transition-colors flex-shrink-0"
                   title={uni.name}
                   aria-label={uni.name}
                 >
                   {uni.logo && !imgErrors[`${uni.short}-${index}`] ? (
-                    <div className="w-16 h-8 sm:w-20 sm:h-10 rounded-md overflow-hidden flex-shrink-0 relative bg-white">
+                    <div className="w-20 h-10 sm:w-24 sm:h-12 rounded-md overflow-hidden flex-shrink-0 relative bg-white">
                       <Image
                         src={uni.logo}
                         alt={uni.name}
@@ -57,7 +57,7 @@ const CompanyLogosSection = () => {
                       />
                     </div>
                   ) : (
-                    <div className={`w-16 h-8 sm:w-20 sm:h-10 rounded-md bg-gradient-to-br ${uni.color} flex items-center justify-center text-white text-xs sm:text-sm font-bold flex-shrink-0`}>
+                    <div className={`w-20 h-10 sm:w-24 sm:h-12 rounded-md bg-gradient-to-br ${uni.color} flex items-center justify-center text-white text-xs sm:text-sm font-bold flex-shrink-0`}>
                       {uni.short.charAt(0)}
                     </div>
                   )}
