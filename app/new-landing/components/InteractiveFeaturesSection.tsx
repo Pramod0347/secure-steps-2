@@ -6,7 +6,7 @@ import { Brain, FileText, Upload } from "lucide-react";
 
 const InteractiveFeaturesSection = () => {
   const [activeTab, setActiveTab] = useState("icebreaker");
-  const [activeSubTab, setActiveSubTab] = useState("strength");
+  const [activeGuidanceSubTab, setActiveGuidanceSubTab] = useState("future");
 
   const tabs = [
     { id: "icebreaker", label: "Ice Breaker" },
@@ -15,7 +15,8 @@ const InteractiveFeaturesSection = () => {
     { id: "applications", label: "Applications" },
   ];
 
-  const subTabs = [
+  const guidanceSubTabs = [
+    { id: "future", label: "Decide your future" },
     { id: "strength", label: "Strength Profile" },
     { id: "recommended", label: "Recommended Fields" },
   ];
@@ -133,35 +134,7 @@ const InteractiveFeaturesSection = () => {
         "Our first approach helps you gain a clear understanding of where your interests truly lie, allowing you to make the most of your natural preferences and strengths.",
       content: (
         <div className="space-y-4">
-          {/* Sub-tabs */}
-          <div className="flex gap-2">
-            {subTabs.map((subTab) => (
-              <button
-                key={subTab.id}
-                onClick={() => setActiveSubTab(subTab.id)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  activeSubTab === subTab.id
-                    ? "bg-white text-gray-900 shadow-md border border-gray-200"
-                    : "bg-white/50 text-gray-500 hover:bg-white/80 hover:text-gray-700"
-                }`}
-              >
-                {subTab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Sub-tab content */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeSubTab}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-            >
-              {activeSubTab === "strength" ? <StrengthProfileContent /> : <RecommendedFieldsContent />}
-            </motion.div>
-          </AnimatePresence>
+          <StrengthProfileContent />
         </div>
       ),
     },
@@ -231,28 +204,57 @@ const InteractiveFeaturesSection = () => {
         "Gain clarity on where you truly belong. Our industry experts carefully analyse your assessment reports, providing actionable insights that help you align your strengths with the right career path and prepare you to take off to your next step with confidence.",
       content: (
         <div className="space-y-4">
-          {/* Guidance Items */}
-          <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-6 border border-gray-200 shadow-[0_20px_50px_-30px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.95)]">
-            <p className="text-gray-500 text-xs mb-4 uppercase tracking-wider font-medium">Decide your future</p>
-            <div className="space-y-3">
-              {[
-                { label: "Work Environment", icon: "🏢", gradient: "from-indigo-50", border: "border-indigo-100", bg: "bg-indigo-500/20" },
-                { label: "Problem Solving", icon: "🧩", gradient: "from-purple-50", border: "border-purple-100", bg: "bg-purple-500/20" },
-                { label: "Research Driven", icon: "🔬", gradient: "from-cyan-50", border: "border-cyan-100", bg: "bg-cyan-500/20" },
-                { label: "Collaborative Teams", icon: "🤝", gradient: "from-emerald-50", border: "border-emerald-100", bg: "bg-emerald-500/20" },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className={`flex items-center gap-3 px-4 py-3.5 rounded-xl bg-gradient-to-r ${item.gradient} to-white border ${item.border} hover:shadow-md transition-all duration-200 cursor-default`}
-                >
-                  <div className={`w-10 h-10 rounded-xl ${item.bg} flex items-center justify-center text-xl`}>
-                    {item.icon}
-                  </div>
-                  <span className="text-gray-800 text-sm font-semibold">{item.label}</span>
-                </div>
-              ))}
-            </div>
+          <div className="flex flex-wrap gap-2">
+            {guidanceSubTabs.map((subTab) => (
+              <button
+                key={subTab.id}
+                onClick={() => setActiveGuidanceSubTab(subTab.id)}
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  activeGuidanceSubTab === subTab.id
+                    ? "bg-white text-gray-900 shadow-md border border-gray-200"
+                    : "bg-white/50 text-gray-500 hover:bg-white/80 hover:text-gray-700"
+                }`}
+              >
+                {subTab.label}
+              </button>
+            ))}
           </div>
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeGuidanceSubTab}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              {activeGuidanceSubTab === "future" && (
+                <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-6 border border-gray-200 shadow-[0_20px_50px_-30px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.95)]">
+                  <div className="space-y-3">
+                    {[
+                      { label: "Work Environment", icon: "🏢", gradient: "from-indigo-50", border: "border-indigo-100", bg: "bg-indigo-500/20" },
+                      { label: "Problem Solving", icon: "🧩", gradient: "from-purple-50", border: "border-purple-100", bg: "bg-purple-500/20" },
+                      { label: "Research Driven", icon: "🔬", gradient: "from-cyan-50", border: "border-cyan-100", bg: "bg-cyan-500/20" },
+                      { label: "Collaborative Teams", icon: "🤝", gradient: "from-emerald-50", border: "border-emerald-100", bg: "bg-emerald-500/20" },
+                    ].map((item) => (
+                      <div
+                        key={item.label}
+                        className={`flex items-center gap-3 px-4 py-3.5 rounded-xl bg-gradient-to-r ${item.gradient} to-white border ${item.border} hover:shadow-md transition-all duration-200 cursor-default`}
+                      >
+                        <div className={`w-10 h-10 rounded-xl ${item.bg} flex items-center justify-center text-xl`}>
+                          {item.icon}
+                        </div>
+                        <span className="text-gray-800 text-sm font-semibold">{item.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {activeGuidanceSubTab === "strength" && <StrengthProfileContent />}
+              {activeGuidanceSubTab === "recommended" && <RecommendedFieldsContent />}
+            </motion.div>
+          </AnimatePresence>
         </div>
       ),
     },
