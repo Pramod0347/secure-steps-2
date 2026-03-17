@@ -204,10 +204,16 @@ const InteractiveFeaturesSection = () => {
         "Gain clarity on where you truly belong. Our industry experts carefully analyse your assessment reports, providing actionable insights that help you align your strengths with the right career path and prepare you to take off to your next step with confidence.",
       content: (
         <div className="space-y-4">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2" role="tablist" aria-label="Guidance views">
             {guidanceSubTabs.map((subTab) => (
               <button
                 key={subTab.id}
+                type="button"
+                role="tab"
+                id={`guidance-tab-${subTab.id}`}
+                aria-selected={activeGuidanceSubTab === subTab.id}
+                aria-controls={`guidance-panel-${subTab.id}`}
+                tabIndex={activeGuidanceSubTab === subTab.id ? 0 : -1}
                 onClick={() => setActiveGuidanceSubTab(subTab.id)}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                   activeGuidanceSubTab === subTab.id
@@ -223,6 +229,10 @@ const InteractiveFeaturesSection = () => {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeGuidanceSubTab}
+              role="tabpanel"
+              id={`guidance-panel-${activeGuidanceSubTab}`}
+              aria-labelledby={`guidance-tab-${activeGuidanceSubTab}`}
+              tabIndex={0}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
