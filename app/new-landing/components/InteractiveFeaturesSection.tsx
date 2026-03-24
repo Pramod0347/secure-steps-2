@@ -316,12 +316,12 @@ const InteractiveFeaturesSection = () => {
     <section className="pb-12 sm:pb-16 lg:pb-24 pt-4 sm:pt-6 lg:pt-10 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Tabs */}
-        <div className="relative z-10 -mb-px flex gap-1 sm:gap-2">
+        <div className="relative z-10 -mb-px flex max-w-full gap-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:none] [-ms-overflow-style:none] sm:gap-2 [&::-webkit-scrollbar]:hidden">
           {tabs.map((tab, index) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 relative rounded-t-3xl border border-gray-200 border-b-0 px-4 sm:px-8 py-4 sm:py-5 text-sm sm:text-base font-medium backdrop-blur-lg transition-all duration-300 ${
+              className={`relative shrink-0 rounded-t-3xl border border-gray-200 border-b-0 px-4 sm:px-8 py-4 sm:py-5 text-sm sm:text-base font-medium backdrop-blur-lg transition-all duration-300 sm:flex-1 ${
                 index === 0 ? "ml-0" : ""
               } ${
                 activeTab === tab.id
