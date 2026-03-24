@@ -30,7 +30,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative min-h-[60vh] w-full overflow-hidden bg-pink-100 sm:min-h-[90vh]">
+    <section className="relative min-h-[75vh] w-full overflow-hidden bg-pink-100 sm:min-h-[90vh]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.95),_rgba(252,231,243,0.78)_38%,_rgba(249,168,212,0.62)_100%)]" />
       <div className="absolute left-1/2 top-10 h-64 w-64 -translate-x-1/2 rounded-full bg-white/50 blur-3xl sm:h-80 sm:w-80" />
       <div className="absolute left-[12%] top-28 h-40 w-40 rounded-full bg-pink-200/45 blur-3xl" />
@@ -61,9 +61,7 @@ const HeroSection = () => {
           className="text-center"
         >
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.15] tracking-tight px-2">
-            <span className="text-gray-900">From confusion to career</span>
-            <br />
-            <span className="text-gray-900">clarity</span>
+            <span className="text-gray-900">From confusion to career clarity</span>
           </h1>
         </motion.div>
 
