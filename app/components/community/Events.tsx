@@ -135,7 +135,7 @@ const Events: React.FC = () => {
             />
 
             <div className="flex flex-col md:px-3 py-1 items-start justify-between 2xl:py-7 h-full">
-              <h1 className="text-xl 2xl:text-[20px] text-[#B81D24] font-semibold">
+              <h1 className="text-xl 2xl:text-[20px] text-[#997CE1] font-semibold">
                 {event.title}
               </h1>
 
@@ -211,4 +211,3 @@ const Events: React.FC = () => {
 };
 
 export default Events;
-

@@ -30,7 +30,7 @@ const Hero = () => {
                 placeholder="Search Connects"
               />
               {/* Fixed search icon container with proper aspect ratio */}
-              <div className="text-white bg-[#BE243C] flex-shrink-0 w-[30px] h-[30px] md:w-[38px] md:h-[38px] rounded-full flex items-center justify-center mr-2 md:mr-4 cursor-pointer">
+              <div className="text-white bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] flex-shrink-0 w-[30px] h-[30px] md:w-[38px] md:h-[38px] rounded-full flex items-center justify-center mr-2 md:mr-4 cursor-pointer">
                 {/* Fixed icon size to prevent stretching */}
                 <SearchIcon className="text-[14px] md:text-[18px]" />
               </div>

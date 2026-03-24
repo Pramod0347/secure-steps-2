@@ -131,7 +131,7 @@ const WiseListModal: React.FC<WiseListModalProps> = ({ isOpen, onClose, onOpenAp
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <h2 className="text-xl font-bold flex items-center gap-2">
-            <GraduationCap className="w-5 h-5 text-[#DA202E]" />
+            <GraduationCap className="w-5 h-5 text-[#997CE1]" />
             My WiseList
           </h2>
           <button 
@@ -147,7 +147,7 @@ const WiseListModal: React.FC<WiseListModalProps> = ({ isOpen, onClose, onOpenAp
         <div className="flex-1 overflow-y-auto p-4">
           {isLoading ? (
             <div className="flex items-center justify-center h-40">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#DA202E]"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#997CE1]"></div>
             </div>
           ) : error ? (
             <div className="text-center text-red-500 py-8">{error}</div>
@@ -178,7 +178,7 @@ const WiseListModal: React.FC<WiseListModalProps> = ({ isOpen, onClose, onOpenAp
                   <h3 className="font-bold text-lg">{group.universityName}</h3>
                   <button 
                     onClick={() => handleApplyClick(group.universityId, group.universityName)}
-                    className="px-4 py-1.5 bg-[#DA202E] text-white text-sm rounded-md hover:bg-opacity-90 transition-colors flex items-center gap-1.5"
+                    className="px-4 py-1.5 bg-[#997CE1] text-white text-sm rounded-md hover:bg-opacity-90 transition-colors flex items-center gap-1.5"
                   >
                     <BookOpen className="w-4 h-4" />
                     Apply Now

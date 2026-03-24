@@ -124,7 +124,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApplyFilte
           </button>
           <button
             onClick={handleApply}
-            className="px-4 py-2 bg-[#BE243C] text-white rounded-lg hover:bg-[#a61f35]"
+            className="px-4 py-2 bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] text-white rounded-lg hover:opacity-90 transition-all"
           >
             Apply Filters
           </button>

@@ -64,18 +64,35 @@ const StatsSection = () => {
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
-              initial={{ opacity: 0, y: 30, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              whileHover={{ 
+              initial={{ opacity: 0, y: 30, scale: 0.95, rotateX: 0, rotateY: 0 }}
+              whileInView={{
+                opacity: 1,
+                y: index === 1 ? 0 : 8,
+                scale: 1,
+                rotateX: index === 1 ? 0 : 6,
+                rotateY: index === 0 ? 16 : index === 2 ? -16 : 0,
+              }}
+              whileHover={{
                 scale: 1.03,
-                y: -8,
+                y: index === 1 ? -8 : 0,
+                rotateX: index === 1 ? 0 : 5,
+                rotateY: index === 0 ? 13 : index === 2 ? -13 : 0,
                 transition: { duration: 0.3, ease: "easeOut" }
               }}
               transition={{ duration: 0.5, delay: index * 0.15 }}
               viewport={{ once: true }}
-              className="group"
+              className="group [perspective:1400px] md:odd:mt-6 md:odd:mb-2 md:even:-mt-1"
+              style={{
+                transformStyle: "preserve-3d",
+                transformOrigin:
+                  index === 0
+                    ? "right center"
+                    : index === 2
+                      ? "left center"
+                      : "center center",
+              }}
             >
-              <div className="relative overflow-hidden rounded-2xl sm:rounded-[2rem] bg-gradient-to-b from-gray-50 to-white border border-gray-100 p-6 sm:p-8 lg:p-10 shadow-lg shadow-gray-200/50 hover:shadow-2xl hover:shadow-gray-300/60 hover:border-gray-200 transition-all duration-500 text-center h-full">
+              <div className="relative overflow-hidden rounded-2xl sm:rounded-[2rem] bg-gradient-to-b from-gray-50 via-white to-white border border-gray-100 p-6 sm:p-8 lg:p-10 shadow-[0_24px_70px_rgba(148,163,184,0.18)] hover:shadow-[0_30px_90px_rgba(148,163,184,0.24)] hover:border-gray-200 transition-all duration-500 text-center h-full">
                 {/* Subtle top gradient highlight */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gray-200/50 to-transparent group-hover:via-purple-300/50 transition-all duration-500" />
                 
@@ -92,20 +109,22 @@ const StatsSection = () => {
                   </div>
                 </motion.div>
 
-                {/* Number */}
-                <motion.div 
-                  className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 mb-2 sm:mb-3 tracking-tight relative z-10 group-hover:text-gray-800 transition-colors"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ duration: 0.8, delay: index * 0.2 + 0.3 }}
-                  viewport={{ once: true }}
-                >
-                  {stat.number}
-                </motion.div>
+                <div className="relative z-10 flex min-h-[150px] sm:min-h-[170px] lg:min-h-[190px] flex-col justify-end">
+                  {/* Number */}
+                  <motion.div 
+                    className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 mb-2 sm:mb-3 tracking-tight group-hover:text-gray-800 transition-colors"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{ duration: 0.8, delay: index * 0.2 + 0.3 }}
+                    viewport={{ once: true }}
+                  >
+                    {stat.number}
+                  </motion.div>
 
-                {/* Label */}
-                <div className="text-gray-500 text-xs sm:text-sm tracking-[0.15em] sm:tracking-[0.2em] uppercase relative z-10 group-hover:text-gray-700 transition-colors">
-                  {stat.label}
+                  {/* Label */}
+                  <div className="text-gray-500 text-xs sm:text-sm tracking-[0.15em] sm:tracking-[0.2em] uppercase group-hover:text-gray-700 transition-colors">
+                    {stat.label}
+                  </div>
                 </div>
                 
                 {/* Bottom accent line */}

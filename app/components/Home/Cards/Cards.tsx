@@ -110,7 +110,7 @@ const Cards = () => {
         </div>
       </div>
       <div className="flex-1">
-        <h1 className="text-[#B81D24] text-[12px] md:text-[16px] lg:text-[18px] xl:text-[21px] font-bold">
+        <h1 className="text-[#997CE1] text-[12px] md:text-[16px] lg:text-[18px] xl:text-[21px] font-bold">
           {title}
         </h1>
         <p className="text-[#22344F] text-[10px] md:text-[14px] lg:text-[16px] xl:text-[17px] font-normal leading-relaxed text-justify max-w-[330px]">
@@ -324,7 +324,7 @@ const Cards = () => {
                         className={`w-full px-6 py-3 text-white rounded-full font-medium transition-colors duration-200 ${
                           selectedOptions.length === 1 ||
                           selectedOptions.length === 3
-                            ? "bg-[#BE243C] hover:bg-[#A61F35]"
+                            ? "bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] hover:opacity-90"
                             : "bg-gray-400 cursor-not-allowed"
                         }`}
                         whileHover={
@@ -395,7 +395,7 @@ const Cards = () => {
                 <span className="text-xs sm:text-sm font-normal text-gray-600">
                   Now At
                 </span>
-                <span className="bg-gradient-to-r from-[#DA202E] to-[#3B367D] bg-clip-text text-transparent font-bold">
+                <span className="bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] bg-clip-text text-transparent font-bold">
                   FREE OF COST
                 </span>
               </p>
@@ -609,7 +609,7 @@ const Cards = () => {
                       <span className="uppercase">N</span>ow&#160;
                       <span className="uppercase">A</span>t&#160;
                     </span>
-                    <span className="bg-gradient-to-r from-[#DA202E] to-[#3B367D] bg-clip-text text-transparent inline-block">
+                    <span className="bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] bg-clip-text text-transparent inline-block">
                       FREE OF COST
                     </span>
                   </p>

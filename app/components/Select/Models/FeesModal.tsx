@@ -90,7 +90,7 @@ const FeesModal: React.FC<FeesModalProps> = ({
       {selectedFees && selectedFees !== "Any range" && (
         <div className={`${isMobile ? "px-4 py-3 border-t mt-4" : "mt-4 pt-4 border-t border-gray-200"}`}>
           <button
-            className={`${isMobile ? "w-full py-3 bg-[#BE243C] text-white rounded-lg font-medium" : "w-full py-2 text-[#BE243C] hover:text-[#a01f35] font-medium"}`}
+            className={`${isMobile ? "w-full py-3 bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] text-white rounded-lg font-medium hover:opacity-90 transition-all" : "w-full py-2 text-[#BE243C] hover:text-[#a01f35] font-medium"}`}
             onClick={() => onSelect("")}
           >
             Clear selection

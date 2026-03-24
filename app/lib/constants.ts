@@ -21,4 +21,8 @@ export const SECURITY_CONSTANTS = {
   PASSWORD_MIN_LENGTH: 8,
   MAX_LOGIN_ATTEMPTS: 5,
   LOCKOUT_DURATION: 15 * 60 * 1000, // 15 minutes in milliseconds
-}; 
+};
+
+export const BRAND_ASSETS = {
+  LOGO_URL: "https://pub-1ed7e98a27564218aec0343ef05fbd57.r2.dev/secure-logo-gradient.png",
+};

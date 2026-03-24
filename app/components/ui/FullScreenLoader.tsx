@@ -1,6 +1,8 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { BRAND_ASSETS } from "@/app/lib/constants";
 
 interface FullScreenLoaderProps {
   isLoading?: boolean;
@@ -28,19 +30,19 @@ const FullScreenLoader: React.FC<FullScreenLoaderProps> = ({
             transition={{ duration: 0.2 }}
             className="flex flex-col items-center gap-4 p-8 rounded-2xl bg-white shadow-2xl"
           >
-            {/* Animated Loader */}
-            <div className="relative w-16 h-16">
-              {/* Outer ring */}
-              <div className="absolute inset-0 rounded-full border-4 border-gray-200"></div>
-              {/* Spinning gradient ring */}
-              <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#DA202E] border-r-[#3B367D] animate-spin"></div>
-              {/* Inner pulsing dot */}
-              <motion.div
-                className="absolute inset-3 rounded-full bg-gradient-to-br from-[#DA202E] to-[#3B367D]"
-                animate={{ scale: [1, 0.8, 1] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            <motion.div
+              animate={{ scale: [1, 1.04, 1] }}
+              transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+              className="relative h-16 w-16"
+            >
+              <Image
+                src={BRAND_ASSETS.LOGO_URL}
+                alt="Securesteps"
+                fill
+                className="object-contain"
+                priority
               />
-            </div>
+            </motion.div>
 
             {/* Loading text */}
             <p className="text-gray-700 font-medium text-sm">{message}</p>

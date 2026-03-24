@@ -1,7 +1,6 @@
 'use client'
 
 import React, { ReactNode, useState } from 'react';
-import logo from "@/app/assets/logo.png";
 import Juslogo from "@/app/assets/Juslogo.png";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -21,6 +20,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { BRAND_ASSETS } from "@/app/lib/constants";
 
 interface AdminLayoutProps {
     children: ReactNode
@@ -109,7 +109,7 @@ const AdminLayout = ({ children, currentRoute }: AdminLayoutProps) => {
                             sidebarExpanded ?
                                 (
                                     <div className='bg-black p-5 w-full rounded-xl'>
-                                        <Image src={logo} alt="Logo" className="h-[29px] w-[127px] " />
+                                        <Image src={BRAND_ASSETS.LOGO_URL} alt="Logo" width={30} height={30} className="h-[30px] w-[30px] " />
                                     </div>
                                 ) : (
                                     <div className='flex items-center  justify-center rounded-xl'>

@@ -30,16 +30,11 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative min-h-[90vh] w-full overflow-hidden bg-pink-100">
-      <video
-        className="absolute inset-0 h-full w-full object-cover"
-        autoPlay
-        muted
-        loop
-        playsInline
-      >
-        <source src="/hero-bg.mp4" type="video/mp4" />
-      </video>
+    <section className="relative min-h-[60vh] w-full overflow-hidden bg-pink-100 sm:min-h-[90vh]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.95),_rgba(252,231,243,0.78)_38%,_rgba(249,168,212,0.62)_100%)]" />
+      <div className="absolute left-1/2 top-10 h-64 w-64 -translate-x-1/2 rounded-full bg-white/50 blur-3xl sm:h-80 sm:w-80" />
+      <div className="absolute left-[12%] top-28 h-40 w-40 rounded-full bg-pink-200/45 blur-3xl" />
+      <div className="absolute right-[10%] top-24 h-48 w-48 rounded-full bg-rose-200/35 blur-3xl" />
 
       <div className="absolute inset-0 bg-gradient-to-b from-pink-50/75 via-pink-100/65 to-pink-300/75" />
       

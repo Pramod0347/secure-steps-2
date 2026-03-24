@@ -22,7 +22,7 @@ const LeapOfFaithSection = () => {
           viewport={{ once: true }}
           className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-3"
         >
-          <span className="bg-gradient-to-r from-[#DA202E] to-[#3B367D] bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] bg-clip-text text-transparent">
             Students who took a leap of faith with Secure
           </span>
         </motion.h2>

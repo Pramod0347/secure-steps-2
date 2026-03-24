@@ -138,7 +138,7 @@ const LendersArticle: React.FC = () => {
                 </p>
                 <div className=" flex gap-2 -ml-2  scale-95">
                   <div className=" flex whitespace-nowrap gap-1 items-center justify-center">
-                    <div className=" rounded-full px-2 py-2 bg-[#B81D24] w-fit">
+                    <div className=" rounded-full px-2 py-2 bg-[#997CE1] w-fit">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="20px"

@@ -73,7 +73,7 @@ export function ConfirmDialog({
         <div className="p-6">
           {isProcessing ? (
             <div className="flex flex-col items-center justify-center">
-              <Loader2 className="w-8 h-8 animate-spin text-[#DA202E]" />
+              <Loader2 className="w-8 h-8 animate-spin text-[#997CE1]" />
               <p className="mt-2 text-sm text-gray-500">Processing...</p>
             </div>
           ) : (
@@ -103,4 +103,3 @@ export function ConfirmDialog({
     </div>
   )
 }
-

@@ -23,7 +23,7 @@ const Hero = () => {
               className="lg:w-[450px] w-[240px] font-[500] pl-5 md:text-[21px] outline-none h-[50px]"
               placeholder="Search Loans"
             />
-            <div className="text-white bg-[#BE243C] w-[38px] h-[38px] rounded-[50%] flex items-center justify-center md:mr-2 mr-2 cursor-pointer">
+            <div className="text-white bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] w-[38px] h-[38px] rounded-[50%] flex items-center justify-center md:mr-2 mr-2 cursor-pointer">
               <SearchIcon className="text-[21px]" />
             </div>
           </div>

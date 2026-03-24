@@ -167,7 +167,7 @@ const Test = () => {
       {/* Content */}
       <div className="relative z-10 w-full">
         <h1 className="text-[18px] sm:text-[22px] text-center leading-[1.3] md:text-3xl lg:text-4xl xl:text-5xl mb-6 md:mb-10 uppercase md:font-semibold font-bold">
-          <span className="bg-gradient-to-r from-[#DA202E] to-[#3B367D] bg-clip-text text-transparent inline-block font-bold">Testimonials</span>
+          <span className="bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] bg-clip-text text-transparent inline-block font-bold">Testimonials</span>
         </h1>
 
         {/* Carousel */}

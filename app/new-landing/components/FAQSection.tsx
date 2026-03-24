@@ -4,32 +4,10 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import FaqList from "@/app/components/Home/FAQ/FaqList";
 
 const FAQSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const faqs = [
-    {
-      question: "What is Course Site?",
-      answer:
-        "Course Site is a comprehensive online learning platform offering practical, project-based courses in web development and design. We provide high-quality content that's easy to understand and apply.",
-    },
-    {
-      question: "Do you have refund policy?",
-      answer:
-        "Our Purchases happen through Whop. Whop has its own refund policy, which you can find on their website. We recommend reviewing their policy before making a purchase.",
-    },
-    {
-      question: "Is the community supportive?",
-      answer:
-        "Yes! Our community is incredibly supportive. You'll connect with like-minded learners, get help from instructors, and share your progress with others on the same journey.",
-    },
-    {
-      question: "Are there live classes or just recorded content?",
-      answer:
-        "We primarily offer recorded content that you can access anytime. However, we also host live Q&A sessions and workshops for our premium members.",
-    },
-  ];
 
   return (
     <section className="py-12 sm:py-16 lg:py-24 bg-gradient-to-b from-white to-gray-50">
@@ -82,9 +60,9 @@ const FAQSection = () => {
 
         {/* FAQ Accordion */}
         <div className="space-y-4">
-          {faqs.map((faq, index) => (
+          {FaqList.map((faq, index) => (
             <motion.div
-              key={faq.question}
+              key={faq.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}

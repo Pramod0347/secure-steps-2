@@ -38,12 +38,12 @@ function FAQ() {
                     <div className="md:w-[45%] flex flex-col items-center md:items-start gap-4 md:gap-6">
 
                         <h4 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tighter text-center md:text-left max-w-xl">
-                            <span className="bg-gradient-to-r from-[#DA202E] to-[#3B367D] bg-clip-text text-transparent">
+                            <span className="bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] bg-clip-text text-transparent">
                                 REAL{" "}
                             </span>
                             QUESTIONS <br />
                             REAL{" "}
-                            <span className="bg-gradient-to-r from-[#DA202E] to-[#3B367D] bg-clip-text text-transparent">
+                            <span className="bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] bg-clip-text text-transparent">
                                 ANSWERS
                             </span>
                         </h4>

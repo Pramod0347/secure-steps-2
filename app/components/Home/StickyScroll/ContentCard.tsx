@@ -39,8 +39,8 @@ export default function ContentCard({
       transition={{ duration: 0.6, ease: "easeOut" }}
       className={`hidden md:block w-full rounded-2xl overflow-hidden p-6
         ${variant === "blue"
-          ? "bg-gradient-to-b from-[#5D4A9C] to-[#DA202E]"
-          : "bg-gradient-to-b from-[#DA202E] to-[#5D4A9C]"}
+          ? "bg-gradient-to-b from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6]"
+          : "bg-gradient-to-b from-[#FA7BD6] via-[#E2B9E3] to-[#997CE1]"}
       `}
     >
       <div className="space-y-2">
