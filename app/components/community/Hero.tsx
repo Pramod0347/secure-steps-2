@@ -27,7 +27,7 @@ const Hero: React.FC = () => {
               className="lg:w-[450px] w-full bg-white text-[#6F6F6F] font-[500] pl-5  text-[21px] outline-none h-[50px]"
               placeholder="Search Groups"
             />
-            <div className="text-white bg-[#BE243C] md:w-[38px] md:h-[38px] w-[36px] h-[30px] rounded-[50%] flex items-center justify-center mr-4 cursor-pointer">
+            <div className="text-white bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] md:w-[38px] md:h-[38px] w-[36px] h-[30px] rounded-[50%] flex items-center justify-center mr-4 cursor-pointer">
               <SearchIcon className="md:text-[21px]" />
             </div>
           </div>

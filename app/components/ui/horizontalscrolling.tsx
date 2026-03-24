@@ -31,7 +31,7 @@ export default function HorizontalScrollingText({
     return (
       <>
         <span className="text-black">&#160;{remainingText}&#160;</span>
-        <span className="bg-gradient-to-r from-[#DA202E] to-[#3B367D] bg-clip-text text-transparent inline-block">
+        <span className="bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] bg-clip-text text-transparent inline-block">
           {lastWord}&#160;
         </span>
       </>
@@ -238,4 +238,3 @@ export default function HorizontalScrollingText({
     </div>
   )
 }
-

@@ -153,7 +153,7 @@ export default function Gallery({ university }: { university: UniversityInterfac
         href={youtubeLink}
         target="_blank"
         rel="noopener noreferrer"
-        className="py-3 px-3 border border-lg rounded-full bg-[#DA202E] text-white text-sm mx-auto w-[180px] flex flex-row items-center justify-center mt-10 hover:bg-white hover:border-[#DA202E] font-semibold hover:text-[#DA202E]"
+        className="py-3 px-3 border border-lg rounded-full bg-[#997CE1] text-white text-sm mx-auto w-[180px] flex flex-row items-center justify-center mt-10 hover:bg-white hover:border-[#997CE1] font-semibold hover:text-[#997CE1]"
       >
         Explore the Campus
       </a>

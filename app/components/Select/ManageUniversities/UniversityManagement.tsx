@@ -235,7 +235,7 @@ export function UniversityManagement() {
           {activeTab === "list" && (
             <button
               onClick={handleAddUniversity}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#DA202E] text-white rounded-lg hover:bg-[#DA202E]/90 transition-colors"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#997CE1] text-white rounded-lg hover:bg-[#997CE1]/90 transition-colors"
             >
               <Plus className="w-4 h-4" />
               <span>Add University</span>
@@ -320,4 +320,3 @@ export function UniversityManagement() {
     </div>
   )
 }
-

@@ -26,7 +26,7 @@ const UniversityPageSkeleton = () => (
     {/* Loading overlay with spinner */}
     <div className="fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 border-4 border-gray-200 border-t-[#DA202E] rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-gray-200 border-t-[#997CE1] rounded-full animate-spin"></div>
         <p className="text-gray-600 font-medium">Loading university details...</p>
       </div>
     </div>

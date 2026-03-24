@@ -32,8 +32,8 @@ const StickyScroll = () => {
       <div
         className={`w-full overflow-hidden hidden md:flex flex-col rounded-2xl ${
           variant === "blue"
-            ? "bg-gradient-to-br from-[#5D4A9C] to-[#DA202E]"
-            : "bg-gradient-to-br from-[#DA202E] to-[#5D4A9C]"
+            ? "bg-gradient-to-br from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6]"
+            : "bg-gradient-to-br from-[#FA7BD6] via-[#E2B9E3] to-[#997CE1]"
         } p-4 lg:p-5`}
       >
         <h3 className="font-semibold text-white text-sm lg:text-base">
@@ -105,8 +105,8 @@ const StickyScroll = () => {
         <div
           className={`${
             variant === "blue"
-              ? "bg-gradient-to-br from-[#5D4A9C] to-[#DA202E]"
-              : "bg-gradient-to-br from-[#DA202E] to-[#5D4A9C]"
+              ? "bg-gradient-to-br from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6]"
+              : "bg-gradient-to-br from-[#FA7BD6] via-[#E2B9E3] to-[#997CE1]"
           } px-3 py-3`}
         >
           <div className="flex justify-between items-start">
@@ -229,7 +229,7 @@ const StickyScroll = () => {
                     {item.id !== "select" && item.id !== "community" && (
                       <div className="flex items-center gap-2 mb-2">
                         <div className="w-0.5 h-5 bg-gradient-to-b from-[#DA202E] to-[#3B367D] rounded-full"></div>
-                        <p className="text-[9px] md:text-[10px] text-[#DA202E]">
+                        <p className="text-[9px] md:text-[10px] text-[#997CE1]">
                           {isEven
                             ? "*Pricing includes application fee"
                             : "*Pricing excludes application fee"}
@@ -244,7 +244,7 @@ const StickyScroll = () => {
 
                     {/* Price Tag for Select */}
                     {item.id === "select" && item.price && (
-                      <div className="inline-block bg-gradient-to-r from-[#3B367D] to-[#DA202E] px-4 py-1.5 rounded-lg mb-3 w-fit">
+                      <div className="inline-block bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] px-4 py-1.5 rounded-lg mb-3 w-fit">
                         <p className="text-white text-base md:text-lg lg:text-xl font-bold">
                           ₹ {item.price}
                         </p>

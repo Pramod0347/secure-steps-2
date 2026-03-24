@@ -132,7 +132,7 @@ const Results: React.FC = () => {
               >
                 <motion.div whileTap={{ scale: 0.6 }} className="w-full h-full bg-white/25 bg-opacity-70 rounded-full shadow-lg backdrop-blur-lg flex items-center justify-center">
                   {likedItems.includes(item.id) ? (
-                    <ActiveHeartIcon className="md:w-[24px] text-[#B81D24] md:h-[24px] w-[12px] h-[12px]" />
+                    <ActiveHeartIcon className="md:w-[24px] text-[#997CE1] md:h-[24px] w-[12px] h-[12px]" />
                   ) : (
                     <EmptyHeartIcon className="md:w-[24px] text-white md:h-[24px] w-[12px] h-[12px]" />
                   )}
@@ -151,7 +151,7 @@ const Results: React.FC = () => {
                   />
                   {`${item.address}, ${item.city}, ${item.country}`}
                 </p>
-                <p className="inter md:text-[14px] text-[8px] font-bold text-[#B81D24]">
+                <p className="inter md:text-[14px] text-[8px] font-bold text-[#997CE1]">
                   {`$ ${item.pricingPlans[0]?.price || 'N/A'}`}
                 </p>
               </div>

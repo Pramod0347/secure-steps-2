@@ -14,7 +14,7 @@ const Price: React.FC<{ pricingPlans: PricingPlan[] }> = ({ pricingPlans }) => {
 
   return (
     <div className="w-screen">
-      <div className="jakartha flex mt-28 flex-col gap-14 py-14 rounded-2xl items-center justify-center border-2 md:w-[80%] mx-auto w-[75%] border-[#B81D24]">
+      <div className="jakartha flex mt-28 flex-col gap-14 py-14 rounded-2xl items-center justify-center border-2 md:w-[80%] mx-auto w-[75%] border-[#997CE1]">
         <div className="text-lg">
           <button
             className={`rounded-md px-4 py-1 ${billingCycle === "monthly" ? "bg-[#F6F6F6]" : ""}`}
@@ -55,4 +55,3 @@ const Price: React.FC<{ pricingPlans: PricingPlan[] }> = ({ pricingPlans }) => {
 
 
 export default Price;
-

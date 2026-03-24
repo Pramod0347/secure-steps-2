@@ -157,7 +157,7 @@ const Popup: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onC
             </div>
             <button
               type="submit"
-              className="w-full px-6 py-3 text-white rounded-full font-medium transition-colors duration-200 bg-[#BE243C] hover:bg-[#A61F35]"
+              className="w-full px-6 py-3 text-white rounded-full font-medium transition-all duration-200 bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] hover:opacity-90"
             >
               Schedule Call
             </button>
@@ -268,7 +268,7 @@ const Hero: React.FC = () => {
                 {textOptions.map((text, index) => (
                   <span
                     key={text}
-                    className={`animated-text text-[#da202e] transition-all duration-500 ${
+                    className={`animated-text text-[#8A38F5] transition-all duration-500 ${
                       index === currentTextIndex ? "active" : index === prevTextIndex && isAnimating ? "exit" : "enter"
                     }`}
                     aria-hidden={index !== currentTextIndex}

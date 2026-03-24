@@ -9,7 +9,7 @@ export default function Page() {
       {/* Hero Section */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-[#DA202E] to-[#3B367D] mb-6">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] mb-6">
             <Shield className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -148,7 +148,7 @@ export default function Page() {
             {/* Contact Section */}
             <div className="pt-8 border-t border-gray-200">
               <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-3">
-                <span className="w-8 h-8 rounded-full bg-gradient-to-r from-[#DA202E] to-[#3B367D] text-white flex items-center justify-center text-sm font-bold">13</span>
+                <span className="w-8 h-8 rounded-full bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] text-white flex items-center justify-center text-sm font-bold">13</span>
                 Contact Us
               </h3>
               
@@ -199,7 +199,7 @@ function Section({ icon, number, title, children }: { icon: React.ReactNode; num
   return (
     <section className="scroll-mt-24" id={title.toLowerCase().replace(/\s+/g, '-')}>
       <h2 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-3">
-        <span className="w-8 h-8 rounded-full bg-gradient-to-r from-[#DA202E] to-[#3B367D] text-white flex items-center justify-center text-sm font-bold">{number}</span>
+        <span className="w-8 h-8 rounded-full bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] text-white flex items-center justify-center text-sm font-bold">{number}</span>
         <span className="flex items-center gap-2">
           <span className="text-gray-400">{icon}</span>
           {title}

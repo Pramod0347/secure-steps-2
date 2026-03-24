@@ -137,7 +137,7 @@ const CommunityArticles: React.FC = () => {
 
               <div className="  md:flex  hidden gap-2 ">
                 <div className=" flex whitespace-nowrap gap-2 items-center justify-center">
-                  <div className=" rounded-full px-2 py-2 bg-[#B81D24] w-fit">
+                  <div className=" rounded-full px-2 py-2 bg-[#997CE1] w-fit">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16px"
@@ -173,7 +173,7 @@ const CommunityArticles: React.FC = () => {
               {/* mobile upvote */}
               <div className=" mt-2 flex md:hidden   gap-2 ">
                 <div className=" flex whitespace-nowrap gap-2 items-center justify-center">
-                  <div className=" rounded-full px-2 py-2 bg-[#B81D24] w-fit">
+                  <div className=" rounded-full px-2 py-2 bg-[#997CE1] w-fit">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="10px"

@@ -609,7 +609,7 @@ const Hero: React.FC<SearchProps> = ({ onSearch }) => {
                 {/* Search Button - Fixed in its own column */}
                 <div className="flex items-center justify-center md:justify-end p-2 md:p-3">
                   <button
-                    className="bg-[#BE243C] text-white py-2 px-3 md:p-4 rounded-full flex items-center justify-center hover:bg-[#a01f35] transition-colors gap-2"
+                    className="bg-primary text-white py-2 px-3 md:p-4 rounded-full flex items-center justify-center hover:opacity-90 transition-all gap-2"
                     onClick={() => onSearch("", activeFilters)}
                   >
                     <span className="font-bold">Search</span>

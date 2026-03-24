@@ -955,7 +955,7 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
                 onChange={(e) => setCourseSearchQuery(e.target.value)}
               />
             </div>
-            <Button onClick={() => openCourseEditModal(null)} className="bg-[#DA202E] hover:bg-[#DA202E]/90">
+            <Button onClick={() => openCourseEditModal(null)} className="bg-[#997CE1] hover:bg-[#997CE1]/90">
               Add Course
             </Button>
           </div>
@@ -983,7 +983,7 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
                           onClick={() => handleCourseRemove(course.id as string)}
                           className="p-2 bg-white rounded-full"
                         >
-                          <Trash2 className="w-5 h-5 text-[#DA202E]" />
+                          <Trash2 className="w-5 h-5 text-[#997CE1]" />
                         </button>
                       </>
                     )}
@@ -1067,7 +1067,7 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
                             onClick={() => paginate(page)}
                             variant={currentPage === page ? "default" : "outline"}
                             className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${currentPage === page
-                              ? "z-10 bg-[#DA202E] text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#DA202E]"
+                              ? "z-10 bg-[#997CE1] text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#997CE1]"
                               : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
                               }`}
                           >
@@ -1110,7 +1110,7 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
             <ArrowLeft className="w-4 h-4 mr-2" />
             Cancel
           </Button>
-          <Button type="submit" disabled={isSubmitting} className="flex-1 bg-[#DA202E] hover:bg-[#DA202E]/90">
+          <Button type="submit" disabled={isSubmitting} className="flex-1 bg-[#997CE1] hover:bg-[#997CE1]/90">
             {isSubmitting ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
