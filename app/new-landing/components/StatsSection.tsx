@@ -67,21 +67,21 @@ const StatsSection = () => {
               initial={{ opacity: 0, y: 30, scale: 0.95, rotateX: 0, rotateY: 0 }}
               whileInView={{
                 opacity: 1,
-                y: index === 1 ? 0 : 8,
+                y: 0,
                 scale: 1,
-                rotateX: index === 1 ? 0 : 6,
-                rotateY: index === 0 ? 16 : index === 2 ? -16 : 0,
+                rotateX: 0,
+                rotateY: 0,
               }}
               whileHover={{
                 scale: 1.03,
-                y: index === 1 ? -8 : 0,
-                rotateX: index === 1 ? 0 : 5,
-                rotateY: index === 0 ? 13 : index === 2 ? -13 : 0,
+                y: 0,
+                rotateX: 0,
+                rotateY: 0,
                 transition: { duration: 0.3, ease: "easeOut" }
               }}
               transition={{ duration: 0.5, delay: index * 0.15 }}
               viewport={{ once: true }}
-              className="group [perspective:1400px] md:odd:mt-6 md:odd:mb-2 md:even:-mt-1"
+              className="group [perspective:1400px] lg:odd:mt-6 lg:odd:mb-2 lg:even:-mt-1"
               style={{
                 transformStyle: "preserve-3d",
                 transformOrigin:
@@ -92,7 +92,7 @@ const StatsSection = () => {
                       : "center center",
               }}
             >
-              <div className="relative overflow-hidden rounded-2xl sm:rounded-[2rem] bg-gradient-to-b from-gray-50 via-white to-white border border-gray-100 p-6 sm:p-8 lg:p-10 shadow-[0_24px_70px_rgba(148,163,184,0.18)] hover:shadow-[0_30px_90px_rgba(148,163,184,0.24)] hover:border-gray-200 transition-all duration-500 text-center h-full">
+              <div className="relative overflow-hidden rounded-2xl sm:rounded-[2rem] bg-gradient-to-b from-gray-50 via-white to-white border border-gray-100 p-6 sm:p-8 lg:p-10 shadow-[0_24px_70px_rgba(148,163,184,0.18)] hover:shadow-[0_30px_90px_rgba(148,163,184,0.24)] hover:border-gray-200 transition-all duration-500 text-center h-full min-h-[280px] sm:min-h-[340px]">
                 {/* Subtle top gradient highlight */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gray-200/50 to-transparent group-hover:via-purple-300/50 transition-all duration-500" />
                 
@@ -109,7 +109,7 @@ const StatsSection = () => {
                   </div>
                 </motion.div>
 
-                <div className="relative z-10 flex min-h-[150px] sm:min-h-[170px] lg:min-h-[190px] flex-col justify-end">
+                <div className="relative z-10 flex min-h-[80px] sm:min-h-[170px] lg:min-h-[190px] flex-col justify-end">
                   {/* Number */}
                   <motion.div 
                     className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 mb-2 sm:mb-3 tracking-tight group-hover:text-gray-800 transition-colors"
