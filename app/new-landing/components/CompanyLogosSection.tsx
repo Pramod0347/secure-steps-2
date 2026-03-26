@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { Building2 } from "lucide-react";
 
 const R2_BASE = "https://pub-1ed7e98a27564218aec0343ef05fbd57.r2.dev";
 
@@ -28,9 +29,15 @@ const CompanyLogosSection = () => {
       {/* Universities Marquee Section */}
       <section className="py-10 sm:py-16 border-y border-gray-100 bg-white overflow-hidden">
         <div className="w-full">
-          <p className="text-center text-gray-600 text-sm sm:text-base mb-6 sm:mb-10 px-4">
-            Some renowned universities where Secure students study
-          </p>
+          <div className="text-center mb-6 sm:mb-10 px-4">
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-full text-sm text-gray-700 shadow-sm">
+              <Building2 className="w-4 h-4 text-purple-500" />
+              Our University Network
+            </span>
+            <p className="mt-3 max-w-xl mx-auto text-center text-gray-700 text-base sm:text-lg font-semibold leading-snug px-3 sm:px-0">
+              Some renowned universities where Secure students study
+            </p>
+          </div>
 
           {/* Marquee Container */}
           <div className="relative overflow-hidden">

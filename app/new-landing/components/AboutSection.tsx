@@ -84,10 +84,10 @@ const AboutSection = () => {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="space-y-6 sm:space-y-8"
+            className="space-y-6 sm:space-y-8 max-w-[34rem] mx-auto lg:mx-0 text-center lg:text-left"
           >
             <div>
-              <p className="text-gray-800 text-base sm:text-lg lg:text-xl leading-relaxed">
+              <p className="text-gray-800 text-base sm:text-lg lg:text-xl leading-relaxed px-2 sm:px-0">
                 It started when I was 13. Watching my mother teach me, I realised something powerful.
                 Impacting a student&apos;s life is the greatest success one can achieve.
               </p>
@@ -97,7 +97,7 @@ const AboutSection = () => {
               <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3">
                 Why help you?
               </h3>
-              <p className="text-gray-600 text-sm sm:text-base lg:text-lg leading-relaxed">
+              <p className="text-gray-600 text-sm sm:text-base lg:text-lg leading-relaxed px-2 sm:px-0">
                 When I was graduating from school, I was constantly validating my career choice.
                 It took 3 trial degrees, to achieve what I truly loved. So here I am to avoid
                 trials and give you a clear direction, because no student should have to go
