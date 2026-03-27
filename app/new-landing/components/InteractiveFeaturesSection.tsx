@@ -269,9 +269,9 @@ const InteractiveFeaturesSection = () => {
       ),
     },
     applications: {
-      title: "Final representing documents",
+      title: "Know Your Eligibility",
       description:
-        "We build a portfolio of your real world projects, from small club activities to leadership position experiences to showcase your skills and secure admit at your dream university.",
+        "Knowing your eligibility is crucial. It’s time saving, it’s promising even before submitting applications to Universities.",
       content: (
         <div className="space-y-4">
           {/* Drag & Drop Upload Area */}
