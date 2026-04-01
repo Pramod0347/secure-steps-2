@@ -58,7 +58,7 @@ const PricingSection = () => {
   ];
 
   return (
-    <section className="py-12 sm:py-16 lg:py-24 bg-gradient-to-b from-gray-50 to-white">
+    <section className="brand-section-bg py-12 sm:py-16 lg:py-24 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Title */}
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 text-center mb-3 px-2">
@@ -71,14 +71,14 @@ const PricingSection = () => {
 
         {/* Trust Badge */}
         <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 mb-10 sm:mb-16 px-2">
-          <span className="text-gray-600 text-xs sm:text-sm">Trusted by 70k+ students</span>
+          <span className="text-gray-600 text-xs sm:text-sm">Trusted by 7k+ students</span>
           <div className="flex items-center gap-1">
             {[1, 2, 3, 4, 5].map((i) => (
               <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
             ))}
           </div>
           <span className="text-gray-600 text-sm">4.8/5</span>
-          <span className="text-gray-400 text-sm">5,467 Reviews</span>
+          <span className="text-gray-400 text-sm">54 Reviews</span>
         </div>
 
         {/* Pricing Cards */}

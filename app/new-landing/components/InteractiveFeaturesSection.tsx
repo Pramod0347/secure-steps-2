@@ -313,7 +313,7 @@ const InteractiveFeaturesSection = () => {
   const currentContent = tabContent[activeTab as keyof typeof tabContent];
 
   return (
-    <section className="pb-12 sm:pb-16 lg:pb-24 pt-4 sm:pt-6 lg:pt-10 bg-white">
+    <section className="brand-section-bg pb-12 sm:pb-16 lg:pb-24 pt-4 sm:pt-6 lg:pt-10 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Tabs */}
         <div className="relative z-10 -mb-px flex max-w-full gap-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:none] [-ms-overflow-style:none] sm:gap-2 [&::-webkit-scrollbar]:hidden">
