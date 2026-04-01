@@ -2,35 +2,41 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { animate, motion, useInView, useMotionValue } from "framer-motion";
 
 const HeroSection = () => {
-  const [studentCount, setStudentCount] = useState(1);
+  const [studentCount, setStudentCount] = useState(0);
+  const sectionRef = React.useRef<HTMLElement | null>(null);
+  const hasAnimatedRef = React.useRef(false);
+  const isInView = useInView(sectionRef, { amount: 0.35, once: true });
+  const countMotionValue = useMotionValue(0);
 
   useEffect(() => {
-    const start = 1;
-    const end = 847;
-    const duration = 1800;
-    const startTime = performance.now();
-    let frameId = 0;
+    if (!isInView || hasAnimatedRef.current) {
+      return;
+    }
 
-    const tick = (now: number) => {
-      const progress = Math.min((now - startTime) / duration, 1);
-      const easedProgress = 1 - Math.pow(1 - progress, 3);
-      const nextValue = Math.floor(start + (end - start) * easedProgress);
-      setStudentCount(nextValue);
+    hasAnimatedRef.current = true;
+    const unsubscribe = countMotionValue.on("change", (latest) => {
+      setStudentCount(Math.min(847, Math.floor(latest)));
+    });
 
-      if (progress < 1) {
-        frameId = requestAnimationFrame(tick);
-      }
+    const controls = animate(countMotionValue, 847, {
+      duration: 2.8,
+      ease: [0.12, 0.82, 0.2, 1],
+      onComplete: () => {
+        setStudentCount(847);
+      },
+    });
+
+    return () => {
+      unsubscribe();
+      controls.stop();
     };
-
-    frameId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frameId);
-  }, []);
+  }, [countMotionValue, isInView]);
 
   return (
-    <section className="relative min-h-[75vh] w-full overflow-hidden bg-pink-100 sm:min-h-[90vh]">
+    <section ref={sectionRef} className="relative min-h-[75vh] w-full overflow-hidden bg-pink-100 sm:min-h-[90vh]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.95),_rgba(252,231,243,0.78)_38%,_rgba(249,168,212,0.62)_100%)]" />
       <div className="absolute left-1/2 top-10 h-64 w-64 -translate-x-1/2 rounded-full bg-white/50 blur-3xl sm:h-80 sm:w-80" />
       <div className="absolute left-[12%] top-28 h-40 w-40 rounded-full bg-pink-200/45 blur-3xl" />
@@ -48,7 +54,7 @@ const HeroSection = () => {
         >
           <div className="inline-flex items-center gap-2 bg-white/50 backdrop-blur-sm border border-white/60 rounded-full px-5 py-2.5 shadow-sm">
             <span className="text-gray-800 text-sm font-medium">
-              Counselled {studentCount}+ Students
+              Counselled <span className="inline-block tabular-nums">{studentCount}+</span> Students
             </span>
           </div>
         </motion.div>

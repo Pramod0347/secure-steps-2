@@ -32,7 +32,7 @@ const founders = [
 
 const AboutSection = () => {
   return (
-    <section className="py-12 sm:py-16 lg:py-24">
+    <section className="brand-section-bg py-12 sm:py-16 lg:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Title */}
         <motion.div
@@ -75,14 +75,14 @@ const AboutSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.08 }}
               viewport={{ once: true }}
-              className="overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] bg-[#121212] text-white shadow-[0_32px_90px_-45px_rgba(0,0,0,0.55)]"
+              className="overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] bg-[linear-gradient(135deg,#f7efff_0%,#efddfb_42%,#f8dff0_100%)] text-slate-900 shadow-[0_32px_90px_-45px_rgba(156,132,196,0.26)]"
             >
               <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] items-stretch">
-                <div className="relative min-h-[380px] sm:min-h-[500px] lg:min-h-[560px] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_42%)]">
-                  <div className="absolute inset-x-6 top-4 h-16 rounded-full bg-white/5 blur-2xl" />
+                <div className="relative min-h-[380px] sm:min-h-[500px] lg:min-h-[560px] bg-[radial-gradient(circle_at_top,rgba(153,124,225,0.18),transparent_42%)]">
+                  <div className="absolute inset-x-6 top-4 h-16 rounded-full bg-white/35 blur-2xl" />
                   <div className="absolute inset-x-5 bottom-0 top-4 sm:inset-x-8 lg:top-6">
-                    <div className="relative h-full w-full overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#1f1f1f] via-[#151515] to-[#0f0f0f]">
-                      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-emerald-400/10 to-transparent" />
+                    <div className="relative h-full w-full overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#dcc9f4] via-[#cbafe8] to-[#bc96da]">
+                      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/35 to-transparent" />
                       <Image
                         src={founder.image}
                         alt={`${founder.name} - Co Founder`}
@@ -98,39 +98,39 @@ const AboutSection = () => {
                             aria-hidden="true"
                             className={founder.blurFillClassName}
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-[#121212]/55 to-transparent" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[#8b6aac] via-[#8b6aac]/45 to-transparent" />
                         </div>
                       )}
-                      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#121212] via-[#121212]/55 to-transparent" />
+                      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#8b6aac] via-[#8b6aac]/45 to-transparent" />
                     </div>
                   </div>
                 </div>
 
                 <div className="flex flex-col justify-end px-6 pb-8 pt-5 sm:px-10 sm:pb-10 sm:pt-7 lg:px-12 lg:pb-12">
-                  <p className="text-[1.75rem] font-semibold text-white sm:text-[2rem] lg:text-[2.15rem]">
+                  <p className="text-[1.75rem] font-semibold text-slate-900 sm:text-[2rem] lg:text-[2.15rem]">
                     {founder.name}
                   </p>
 
-                  <div className="mt-3 inline-flex w-fit items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-white/65">
+                  <div className="mt-3 inline-flex w-fit items-center rounded-full border border-white/45 bg-white/35 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-slate-700 backdrop-blur-sm">
                     Co Founder
                   </div>
 
-                  <p className="mt-6 max-w-xl text-[1.45rem] font-medium leading-[1.12] tracking-tight text-white sm:text-[1.7rem] lg:text-[2.15rem]">
+                  <p className="mt-6 max-w-xl text-[1.45rem] font-medium leading-[1.12] tracking-tight text-slate-900 sm:text-[1.7rem] lg:text-[2.15rem]">
                     {founder.headline}
                   </p>
 
-                  <p className="mt-5 max-w-lg text-[15px] leading-[1.75] text-white/78 sm:text-[0.98rem] lg:text-[1rem]">
+                  <p className="mt-5 max-w-lg text-[15px] leading-[1.75] text-slate-700 sm:text-[0.98rem] lg:text-[1rem]">
                     {founder.supporting}
                   </p>
 
-                  <div className="mt-8 rounded-[1.75rem] border border-white/8 bg-white/4 p-5 sm:p-6">
-                    <h3 className="text-[1.65rem] font-semibold leading-tight text-white sm:text-[1.8rem] lg:text-[1.95rem]">
+                  <div className="mt-8 rounded-[1.75rem] border border-white/45 bg-white/35 p-5 sm:p-6 backdrop-blur-sm">
+                    <h3 className="text-[1.65rem] font-semibold leading-tight text-slate-900 sm:text-[1.8rem] lg:text-[1.95rem]">
                       Why help{" "}
                       <span className="inline-block bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] bg-clip-text text-transparent font-bold">
                         {founder.accentWord}
                       </span>
                     </h3>
-                    <p className="mt-4 text-sm leading-[1.8] text-white/72 sm:text-[0.96rem] lg:text-[0.98rem]">
+                    <p className="mt-4 text-sm leading-[1.8] text-slate-700 sm:text-[0.96rem] lg:text-[0.98rem]">
                       {founder.detail}
                     </p>
                   </div>

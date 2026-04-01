@@ -120,7 +120,7 @@ const FeaturedCoursesSection = () => {
   const displayCourses = courses.length > 0 ? courses : fallbackCourses;
 
   return (
-    <section className="py-12 sm:py-16 lg:py-24 bg-gray-50">
+    <section className="brand-section-bg py-12 sm:py-16 lg:py-24 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Label */}
         <div className="text-center mb-4">

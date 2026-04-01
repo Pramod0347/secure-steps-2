@@ -27,7 +27,7 @@ const CompanyLogosSection = () => {
   return (
     <>
       {/* Universities Marquee Section */}
-      <section className="py-10 sm:py-16 border-y border-gray-100 bg-white overflow-hidden">
+      <section className="brand-section-bg py-10 sm:py-16 border-y border-gray-100 bg-transparent overflow-hidden">
         <div className="w-full">
           <div className="text-center mb-6 sm:mb-10 px-4">
             <span className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-full text-sm text-gray-700 shadow-sm">

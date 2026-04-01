@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
@@ -8,10 +8,12 @@ import { BRAND_ASSETS } from "@/app/lib/constants";
 import {
   Building,
   GraduationCap,
+  Grid2X2,
   Home,
   Link as LinkIcon,
   LogIn,
   LogOut,
+  X,
   UserPlus,
   Users,
 } from "lucide-react";
@@ -20,11 +22,13 @@ const Navbar: React.FC = () => {
   const pathname = usePathname();
   const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isActive = (path: string) => pathname === path;
 
   const handleLogout = async () => {
     await logout();
+    setIsMobileMenuOpen(false);
     router.push("/");
   };
 
@@ -39,6 +43,8 @@ const Navbar: React.FC = () => {
     { path: "/community", label: "Community", icon: Users },
     { path: "/lenders", label: "Lenders", icon: Building },
   ];
+  const mobilePrimaryItem = navItems[0];
+  const mobileMenuItems = navItems.slice(1);
 
   return (
     <nav className="fixed top-4 left-1/2 z-[9999999] w-[94%] max-w-[720px] -translate-x-1/2 md:w-max md:min-w-[700px] md:max-w-[760px]">
@@ -122,77 +128,128 @@ const Navbar: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-between gap-1 md:hidden">
-          <Link href="/" className="rounded-xl p-1 hover:bg-white/95 transition-colors">
+        <div className="flex items-center justify-between gap-2 md:hidden">
+          <Link href="/" className="relative shrink-0 rounded-xl p-1.5 transition-colors hover:bg-white/10">
+            <span className="pointer-events-none absolute inset-0 rounded-xl bg-white/18 backdrop-blur-md shadow-[0_8px_18px_rgba(15,23,42,0.08)]" />
             <Image
               src={BRAND_ASSETS.LOGO_URL}
               alt="Securesteps Logo"
               width={28}
               height={28}
-              className="h-7 w-7"
+              className="relative z-10 h-7 w-7 drop-shadow-[0_2px_10px_rgba(15,23,42,0.18)]"
             />
           </Link>
 
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const active = isActive(item.path);
+          <div className="ml-auto flex items-center gap-2">
+            <Link
+              href={mobilePrimaryItem.path}
+              className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-all ${
+                isActive(mobilePrimaryItem.path)
+                  ? "bg-white text-slate-950 ring-1 ring-fuchsia-200"
+                  : "text-slate-800 hover:bg-white/95"
+              }`}
+              aria-label={mobilePrimaryItem.label}
+              title={mobilePrimaryItem.label}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <mobilePrimaryItem.icon className="h-4 w-4 stroke-[2.2]" />
+            </Link>
 
-            return (
-              <Link
-                key={item.path}
-                href={item.path}
-                className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-all ${
-                  active ? "bg-white text-slate-950 ring-1 ring-fuchsia-200" : "text-slate-800 hover:bg-white/95"
-                }`}
-                aria-label={item.label}
-                title={item.label}
-              >
-                <Icon className="h-4 w-4 stroke-[2.2]" />
-              </Link>
-            );
-          })}
+            {!isAuthenticated && (
+              <>
+                <Link
+                  href="/quizform"
+                  className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-all ${
+                    pathname === "/quizform"
+                      ? "bg-white text-slate-950 ring-1 ring-fuchsia-200"
+                      : "text-slate-800 hover:bg-white/95"
+                  }`}
+                  aria-label="Signup"
+                  title="Signup"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <UserPlus className="h-4 w-4 stroke-[2.2]" />
+                </Link>
+                <Link
+                  href="/auth/signin"
+                  className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-all ${
+                    pathname === "/auth/signin"
+                      ? "bg-white text-slate-950 ring-1 ring-fuchsia-200"
+                      : "text-slate-800 hover:bg-white/95"
+                  }`}
+                  aria-label="Login"
+                  title="Login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <LogIn className="h-4 w-4 stroke-[2.2]" />
+                </Link>
+              </>
+            )}
 
-          {isAuthenticated ? (
-            <>
-              <Link
-                href={`/profile/${isAuthenticated}`}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-800 hover:bg-white/95"
-                aria-label="Profile"
-              >
-                <Users className="h-4 w-4 stroke-[2.2]" />
-              </Link>
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-800 hover:bg-white/95"
-                aria-label="Logout"
-              >
-                <LogOut className="h-4 w-4 stroke-[2.2]" />
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/quizform"
-                className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-all ${
-                  pathname === "/quizform" ? "bg-white text-slate-950 ring-1 ring-fuchsia-200" : "text-slate-800 hover:bg-white/95"
-                }`}
-                aria-label="Signup"
-                title="Signup"
-              >
-                <UserPlus className="h-4 w-4 stroke-[2.2]" />
-              </Link>
-              <Link
-                href="/auth/signin"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-800 hover:bg-white/95"
-                aria-label="Login"
-                title="Login"
-              >
-                <LogIn className="h-4 w-4 stroke-[2.2]" />
-              </Link>
-            </>
-          )}
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+              className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-all ${
+                isMobileMenuOpen
+                  ? "bg-white text-slate-950 ring-1 ring-fuchsia-200"
+                  : "text-slate-800 hover:bg-white/95"
+              }`}
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-4 w-4 stroke-[2.2]" />
+              ) : (
+                <Grid2X2 className="h-4 w-4 stroke-[2.2]" />
+              )}
+            </button>
+          </div>
         </div>
+
+        {isMobileMenuOpen && (
+          <div className="relative z-10 mt-3 space-y-2 md:hidden">
+            {mobileMenuItems.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.path);
+
+              return (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition-all ${
+                    active
+                      ? "bg-white text-slate-950 shadow-sm ring-1 ring-fuchsia-200"
+                      : "text-slate-800 hover:bg-white/95"
+                  }`}
+                >
+                  <Icon className="h-4 w-4 shrink-0 stroke-[2.2]" />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+
+            {isAuthenticated ? (
+              <>
+                <Link
+                  href={`/profile/${isAuthenticated}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-slate-800 hover:bg-white/95 transition-all"
+                >
+                  <Users className="h-4 w-4 shrink-0 stroke-[2.2]" />
+                  <span>Profile</span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-medium text-slate-800 hover:bg-white/95 transition-all"
+                >
+                  <LogOut className="h-4 w-4 shrink-0 stroke-[2.2]" />
+                  <span>Logout</span>
+                </button>
+              </>
+            ) : null}
+          </div>
+        )}
       </div>
     </nav>
   );

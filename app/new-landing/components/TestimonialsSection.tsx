@@ -183,7 +183,7 @@ const TestimonialsSection = () => {
   };
 
   return (
-    <section className="py-16 sm:py-20 lg:py-28 bg-gradient-to-b from-gray-100 to-gray-50 overflow-hidden">
+    <section className="brand-section-bg py-16 sm:py-20 lg:py-28 bg-transparent overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Label */}
         <div className="text-center mb-4">

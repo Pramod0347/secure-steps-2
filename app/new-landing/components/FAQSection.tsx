@@ -3,15 +3,16 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Compass, GraduationCap, MessageCircleQuestion } from "lucide-react";
 import FaqList from "@/app/components/Home/FAQ/FaqList";
 
 const FAQSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const promptIcons = [MessageCircleQuestion, Compass, GraduationCap];
 
   return (
-    <section className="py-12 sm:py-16 lg:py-24 bg-gradient-to-b from-white to-gray-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="brand-section-bg py-12 sm:py-16 lg:py-24 bg-transparent">
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Label */}
         <div className="text-center mb-4 sm:mb-6">
           <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 bg-gray-100 border border-gray-200 rounded-full text-xs sm:text-sm text-gray-600">
@@ -38,11 +39,11 @@ const FAQSection = () => {
 
           {/* Profile Avatars */}
           <div className="flex -space-x-3 mt-4 sm:mt-6">
-            {[1, 2, 3].map((i) => (
+            {promptIcons.map((Icon, i) => (
               <div
                 key={i}
                 className="w-10 sm:w-12 h-10 sm:h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 border-2 border-white flex items-center justify-center text-base sm:text-lg shadow-md">
-                🙂
+                <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" strokeWidth={2.2} />
               </div>
             ))}
           </div>

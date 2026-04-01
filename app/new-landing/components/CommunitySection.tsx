@@ -4,14 +4,14 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Bell, CheckCheck, Lock, MessageCircle, Users } from "lucide-react";
+import { Bell, CheckCheck, Lock, Users } from "lucide-react";
 
 const WHATSAPP_COMMUNITY_URL = "https://chat.whatsapp.com/LMR90Zvq4PMLvsTZZqCiGx";
 const SECURE_LOGO_URL = "https://pub-1ed7e98a27564218aec0343ef05fbd57.r2.dev/secure-logo-gradient.png";
 
 const CommunitySection = () => {
   return (
-    <section className="py-12 sm:py-16 lg:py-24 bg-gradient-to-b from-gray-50 to-white">
+    <section className="brand-section-bg py-12 sm:py-16 lg:py-24 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Label */}
         <div className="text-center mb-4 sm:mb-6">

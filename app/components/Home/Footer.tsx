@@ -84,7 +84,7 @@ const Footer = () => {
           {/* App routes */}
           <div className="grid grid-cols-2  gap-4 md:flex md:flex-row xl:grid-cols-4   md:gap-2 w-[100%] justify-between">
             <div className="   flex flex-col md:gap-4 gap-4  text-[14px] text-[#909090]">
-              <h1 className="  text-[#F5F5F1] text-[16px]  md:text-xl">Inside Prohouse</h1>
+              
            <Link href="/Terms&Conditions">
         <p className="cursor-pointer hover:text-blue-600 duration-200">
           Terms and Conditions
@@ -111,7 +111,6 @@ const Footer = () => {
       </Link>
             </div>
             <div className="   flex flex-col md:gap-4 gap-4 text-[14px] text-[#909090]">
-              <h1 className="  text-[#F5F5F1]  text-[16px]  md:text-xl">About</h1>
               <p>Our Story</p>
               <p>Contact with Us</p>
               <p>Blog</p>
