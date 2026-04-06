@@ -37,12 +37,11 @@ const HeroSection = () => {
 
   return (
     <section ref={sectionRef} className="relative min-h-[75vh] w-full overflow-hidden bg-pink-100 sm:min-h-[90vh]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.95),_rgba(252,231,243,0.78)_38%,_rgba(249,168,212,0.62)_100%)]" />
-      <div className="absolute left-1/2 top-10 h-64 w-64 -translate-x-1/2 rounded-full bg-white/50 blur-3xl sm:h-80 sm:w-80" />
-      <div className="absolute left-[12%] top-28 h-40 w-40 rounded-full bg-pink-200/45 blur-3xl" />
-      <div className="absolute right-[10%] top-24 h-48 w-48 rounded-full bg-rose-200/35 blur-3xl" />
-
-      <div className="absolute inset-0 bg-gradient-to-b from-pink-50/75 via-pink-100/65 to-pink-300/75" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.98),_rgba(252,231,243,0.66)_34%,_rgba(249,168,212,0.46)_68%,_rgba(241,207,248,0.28)_100%)]" />
+      <div className="absolute left-1/2 top-8 h-72 w-[28rem] -translate-x-1/2 rounded-full bg-white/55 blur-[120px] sm:h-96 sm:w-[34rem]" />
+      <div className="absolute left-[8%] top-24 h-64 w-64 rounded-full bg-pink-200/35 blur-[120px]" />
+      <div className="absolute right-[8%] top-20 h-72 w-72 rounded-full bg-rose-200/30 blur-[120px]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_42%,rgba(244,114,182,0.18)_0%,rgba(244,114,182,0.12)_18%,transparent_42%),radial-gradient(circle_at_80%_44%,rgba(147,197,253,0.22)_0%,rgba(196,181,253,0.12)_22%,transparent_46%),radial-gradient(circle_at_50%_42%,rgba(249,168,212,0.22)_0%,rgba(252,231,243,0.2)_26%,rgba(255,255,255,0.72)_58%,rgba(255,255,255,0.96)_100%)]" />
       
       <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 lg:pt-32">
         {/* Trust Badge */}
@@ -106,7 +105,7 @@ const HeroSection = () => {
       </div>
 
       {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white via-white/80 to-transparent" />
     </section>
   );
 };
