@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 
 const founders = [
@@ -30,9 +30,116 @@ const founders = [
   },
 ];
 
-const AboutSection = () => {
+const FounderScrollCard = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
+
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    isMobile ? [0.94, 1, 0.97] : [0.92, 1, 0.985]
+  );
+  const rotateX = useTransform(scrollYProgress, [0, 0.5, 1], [14, 0, -4]);
+  const translateY = useTransform(scrollYProgress, [0, 0.5, 1], [56, 0, -32]);
+
   return (
-    <section className="brand-section-bg py-12 sm:py-16 lg:py-24">
+    <div ref={containerRef} className="relative [perspective:1200px]">
+      <motion.div
+        style={{
+          rotateX,
+          scale,
+          y: translateY,
+          transformStyle: "preserve-3d",
+        }}
+      >
+        {children}
+      </motion.div>
+    </div>
+  );
+};
+
+const AboutSection = () => {
+  const profileCard = (founder: (typeof founders)[number], index: number) => (
+    <FounderScrollCard key={founder.name}>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: index * 0.08 }}
+        viewport={{ once: true, amount: 0.2 }}
+        className="overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#faf6ff_0%,#f0e4fd_34%,#f6e5f5_66%,#f9f1ff_100%)] text-slate-900 shadow-[0_32px_90px_-45px_rgba(156,132,196,0.22)] sm:rounded-[2.5rem]"
+      >
+        <div className="grid grid-cols-1 items-stretch lg:grid-cols-[0.92fr_1.08fr]">
+          <div className="relative min-h-[380px] p-5 sm:min-h-[500px] sm:p-6 lg:min-h-[560px] lg:p-8">
+            <div className="relative h-full w-full overflow-hidden rounded-[2rem] bg-white shadow-[0_18px_60px_-35px_rgba(119,87,179,0.18)]">
+              <div className="absolute inset-0 bg-white" />
+              <Image
+                src={founder.image}
+                alt={`${founder.name} - Co Founder`}
+                fill
+                className="object-contain object-center scale-[0.95] sm:scale-[1] lg:scale-[1.02]"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center px-6 py-10 text-center sm:px-10 sm:py-14 lg:px-12 lg:py-16 lg:text-left">
+            <div className="max-w-xl">
+              <p className="text-[1.75rem] font-semibold tracking-tight text-slate-900 sm:text-[2rem] lg:text-[2.15rem]">
+                {founder.name}
+              </p>
+
+              <div className="mt-3 inline-flex items-center rounded-full border border-white/45 bg-white/45 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-slate-700 backdrop-blur-sm">
+                Co Founder
+              </div>
+
+              <p className="mt-8 text-[1.5rem] font-medium leading-[1.15] tracking-tight text-slate-900 sm:text-[1.8rem] lg:text-[2.1rem]">
+                {founder.headline}
+              </p>
+
+              <p className="mt-5 text-[15px] leading-[1.85] text-slate-700 sm:text-[0.98rem] lg:text-[1rem]">
+                {founder.supporting}
+              </p>
+
+              <div className="mt-8 rounded-[1.75rem] border border-white/45 bg-white/40 p-5 text-left backdrop-blur-sm sm:p-6">
+                <h3 className="text-[1.5rem] font-semibold leading-tight text-slate-900 sm:text-[1.65rem] lg:text-[1.8rem]">
+                  Why help{" "}
+                  <span className="inline-block bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] bg-clip-text font-bold text-transparent">
+                    {founder.accentWord}
+                  </span>
+                </h3>
+                <p className="mt-4 text-sm leading-[1.8] text-slate-700 sm:text-[0.96rem] lg:text-[0.98rem]">
+                  {founder.detail}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </FounderScrollCard>
+  );
+
+  return (
+    <section className="brand-section-bg py-12 sm:py-16 lg:py-24" style={{ fontFamily: "var(--font-inter)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Title */}
         <motion.div
@@ -68,76 +175,7 @@ const AboutSection = () => {
         </motion.div>
 
         <div className="mx-auto max-w-6xl space-y-8">
-          {founders.map((founder, index) => (
-            <motion.div
-              key={founder.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.08 }}
-              viewport={{ once: true }}
-              className="overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] bg-[linear-gradient(135deg,#f7efff_0%,#efddfb_42%,#f8dff0_100%)] text-slate-900 shadow-[0_32px_90px_-45px_rgba(156,132,196,0.26)]"
-            >
-              <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] items-stretch">
-                <div className="relative min-h-[380px] sm:min-h-[500px] lg:min-h-[560px] bg-[radial-gradient(circle_at_top,rgba(153,124,225,0.18),transparent_42%)]">
-                  <div className="absolute inset-x-6 top-4 h-16 rounded-full bg-white/35 blur-2xl" />
-                  <div className="absolute inset-x-5 bottom-0 top-4 sm:inset-x-8 lg:top-6">
-                    <div className="relative h-full w-full overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#dcc9f4] via-[#cbafe8] to-[#bc96da]">
-                      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/35 to-transparent" />
-                      <Image
-                        src={founder.image}
-                        alt={`${founder.name} - Co Founder`}
-                        fill
-                        className={founder.imageClassName || "object-contain object-bottom scale-[1.08] lg:scale-[1.14]"}
-                      />
-                      {founder.blurFillClassName && (
-                        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 overflow-hidden">
-                          <Image
-                            src={founder.image}
-                            alt=""
-                            fill
-                            aria-hidden="true"
-                            className={founder.blurFillClassName}
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-[#8b6aac] via-[#8b6aac]/45 to-transparent" />
-                        </div>
-                      )}
-                      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#8b6aac] via-[#8b6aac]/45 to-transparent" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col justify-end px-6 pb-8 pt-5 sm:px-10 sm:pb-10 sm:pt-7 lg:px-12 lg:pb-12">
-                  <p className="text-[1.75rem] font-semibold text-slate-900 sm:text-[2rem] lg:text-[2.15rem]">
-                    {founder.name}
-                  </p>
-
-                  <div className="mt-3 inline-flex w-fit items-center rounded-full border border-white/45 bg-white/35 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-slate-700 backdrop-blur-sm">
-                    Co Founder
-                  </div>
-
-                  <p className="mt-6 max-w-xl text-[1.45rem] font-medium leading-[1.12] tracking-tight text-slate-900 sm:text-[1.7rem] lg:text-[2.15rem]">
-                    {founder.headline}
-                  </p>
-
-                  <p className="mt-5 max-w-lg text-[15px] leading-[1.75] text-slate-700 sm:text-[0.98rem] lg:text-[1rem]">
-                    {founder.supporting}
-                  </p>
-
-                  <div className="mt-8 rounded-[1.75rem] border border-white/45 bg-white/35 p-5 sm:p-6 backdrop-blur-sm">
-                    <h3 className="text-[1.65rem] font-semibold leading-tight text-slate-900 sm:text-[1.8rem] lg:text-[1.95rem]">
-                      Why help{" "}
-                      <span className="inline-block bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] bg-clip-text text-transparent font-bold">
-                        {founder.accentWord}
-                      </span>
-                    </h3>
-                    <p className="mt-4 text-sm leading-[1.8] text-slate-700 sm:text-[0.96rem] lg:text-[0.98rem]">
-                      {founder.detail}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+          {founders.map((founder, index) => profileCard(founder, index))}
         </div>
       </div>
     </section>
