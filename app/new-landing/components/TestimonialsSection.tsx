@@ -122,7 +122,7 @@ const TestimonialsSection = () => {
         zIndex: 20,
         opacity: 0.7,
         rotateY: 15,
-        filter: "blur(2px)",
+        filter: "blur(4px)",
       };
     } else if (adjustedDiff === 1) {
       // Right card
@@ -132,7 +132,7 @@ const TestimonialsSection = () => {
         zIndex: 20,
         opacity: 0.7,
         rotateY: -15,
-        filter: "blur(2px)",
+        filter: "blur(4px)",
       };
     } else if (adjustedDiff === -2) {
       // Far left card
@@ -142,7 +142,7 @@ const TestimonialsSection = () => {
         zIndex: 10,
         opacity: 0.4,
         rotateY: 25,
-        filter: "blur(4px)",
+        filter: "blur(8px)",
       };
     } else if (adjustedDiff === 2) {
       // Far right card
@@ -152,7 +152,7 @@ const TestimonialsSection = () => {
         zIndex: 10,
         opacity: 0.4,
         rotateY: -25,
-        filter: "blur(4px)",
+        filter: "blur(8px)",
       };
     } else {
       // Hidden cards
@@ -162,7 +162,7 @@ const TestimonialsSection = () => {
         zIndex: 0,
         opacity: 0,
         rotateY: adjustedDiff < 0 ? 30 : -30,
-        filter: "blur(6px)",
+        filter: "blur(14px)",
       };
     }
   };

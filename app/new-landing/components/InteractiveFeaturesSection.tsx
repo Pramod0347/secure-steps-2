@@ -2,11 +2,12 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Brain, FileText, Upload } from "lucide-react";
+import { ArrowRight, FileText, Upload } from "lucide-react";
 
 const InteractiveFeaturesSection = () => {
   const [activeTab, setActiveTab] = useState("icebreaker");
   const [activeGuidanceSubTab, setActiveGuidanceSubTab] = useState("future");
+  const takeTestUrl = "https://tally.so/r/5BL51Z";
 
   const tabs = [
     { id: "icebreaker", label: "Ice Breaker" },
@@ -21,58 +22,11 @@ const InteractiveFeaturesSection = () => {
     { id: "recommended", label: "Recommended Fields" },
   ];
 
-  // Strength Profile content for sub-tab
-  const StrengthProfileContent = () => (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="bg-white/85 backdrop-blur-sm rounded-xl px-5 py-3 border border-gray-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
-        <div className="flex items-center gap-2 text-gray-600 text-sm">
-          <Brain className="w-4 h-4 text-indigo-500" />
-          <span>Your Personality Assessment Results</span>
-        </div>
-      </div>
-
-      {/* Strength Tags */}
-      <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-6 border border-gray-200 shadow-[0_20px_50px_-30px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.95)]">
-        <p className="text-gray-500 text-xs mb-4 uppercase tracking-wider font-medium">Core Strengths</p>
-        <div className="flex flex-wrap gap-3">
-          <span className="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium">
-            Analytical
-          </span>
-          <span className="px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
-            Strategic
-          </span>
-          <span className="px-4 py-2 bg-cyan-100 text-cyan-700 rounded-full text-sm font-medium">
-            Curious
-          </span>
-        </div>
-        
-        <div className="mt-6 pt-4 border-t border-gray-100">
-          <p className="text-gray-500 text-xs mb-3 uppercase tracking-wider font-medium">Thinking Style</p>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-gray-700 text-sm">Logical Reasoning</span>
-              <div className="w-32 h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div className="w-[85%] h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-gray-700 text-sm">Problem Solving</span>
-              <div className="w-32 h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div className="w-[92%] h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-gray-700 text-sm">Creative Thinking</span>
-              <div className="w-32 h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div className="w-[78%] h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  const icebreakerVisuals = [
+    { label: "Goals", value: "What you want", accent: "from-indigo-500 to-indigo-300" },
+    { label: "Career vision", value: "Where you are headed", accent: "from-violet-500 to-fuchsia-300" },
+    { label: "Priorities", value: "What matters most", accent: "from-cyan-500 to-sky-300" },
+  ];
 
   // Recommended Fields content for sub-tab
   const RecommendedFieldsContent = () => (
@@ -131,10 +85,55 @@ const InteractiveFeaturesSection = () => {
     icebreaker: {
       title: "Interactive Findings",
       description:
-        "Our first approach helps you gain a clear understanding of where your interests truly lie, allowing you to make the most of your natural preferences and strengths.",
+        "This short assessment analyzes your goals, career vision, and priorities to generate your personalized Decision Bridge Report, helping you choose between what’s truly right for you.",
       content: (
-        <div className="space-y-4">
-          <StrengthProfileContent />
+        <div className="space-y-6">
+          <div className="flex flex-col items-start gap-3">
+            <div className="inline-flex items-center rounded-full border border-fuchsia-200 bg-fuchsia-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-700">
+              9 minute assessment
+            </div>
+            <p className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
+              A clear solution to your confusion in 9 mins
+            </p>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3">
+            {icebreakerVisuals.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-2xl border border-gray-200 bg-white/85 p-4 shadow-[0_18px_45px_-30px_rgba(15,23,42,0.25),inset_0_1px_0_rgba(255,255,255,0.92)] backdrop-blur-sm"
+              >
+                <div className={`h-2 w-12 rounded-full bg-gradient-to-r ${item.accent} mb-3`} />
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gray-400">
+                  {item.label}
+                </p>
+                <p className="mt-2 text-sm font-medium leading-snug text-gray-800">{item.value}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+            <div className="rounded-3xl border border-gray-200 bg-white/82 p-5 shadow-[0_22px_52px_-34px_rgba(15,23,42,0.22)] backdrop-blur-sm">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-gray-400">
+                What matters most?
+              </p>
+              <p className="mt-3 text-base leading-relaxed text-gray-700">
+                Your goals, your career vision, and your priorities.
+              </p>
+            </div>
+
+            <div className="flex lg:justify-end">
+              <a
+                href={takeTestUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-fuchsia-500 via-violet-500 to-indigo-500 px-6 py-3.5 text-sm font-semibold text-white shadow-[0_18px_40px_-18px_rgba(99,102,241,0.75)] transition-transform duration-200 hover:scale-[1.02] hover:shadow-[0_22px_48px_-18px_rgba(99,102,241,0.9)] sm:w-auto"
+              >
+                Take the test
+                <ArrowRight className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
         </div>
       ),
     },
@@ -261,7 +260,6 @@ const InteractiveFeaturesSection = () => {
                 </div>
               )}
 
-              {activeGuidanceSubTab === "strength" && <StrengthProfileContent />}
               {activeGuidanceSubTab === "recommended" && <RecommendedFieldsContent />}
             </motion.div>
           </AnimatePresence>
