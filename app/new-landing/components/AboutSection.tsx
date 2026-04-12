@@ -14,6 +14,7 @@ const founders = [
     detail:
       "When I was graduating from school, I was constantly validating my career choice. It took 3 trial degrees to achieve what I truly loved. So here I am to avoid trials and give you a clear direction, because no student should have to go through what I went through.",
     accentWord: "you?",
+    imageClassName: "object-contain object-center scale-[1.02] sm:scale-[1.06] lg:scale-[1.1]",
   },
   {
     name: "Sandeep",
@@ -25,8 +26,7 @@ const founders = [
     detail:
       "Secure Steps exists to help students think beyond the obvious, choose with confidence, and move toward globally competitive opportunities with the right perspective from the start.",
     accentWord: "globally.",
-    imageClassName: "origin-top object-contain object-top scale-[1.16] lg:scale-[1.22]",
-    blurFillClassName: "origin-bottom object-contain object-bottom scale-[1.28] lg:scale-[1.34] blur-md opacity-45",
+    imageClassName: "origin-top object-contain object-top scale-[1.08] sm:scale-[1.12] lg:scale-[1.18]",
   },
 ];
 
@@ -60,7 +60,8 @@ const FounderScrollCard = ({
     [0, 0.5, 1],
     isMobile ? [0.94, 1, 0.97] : [0.92, 1, 0.985]
   );
-  const rotateX = useTransform(scrollYProgress, [0, 0.5, 1], [14, 0, -4]);
+  // Keep the entrance tilt, but let the card settle flat while it is in view.
+  const rotateX = useTransform(scrollYProgress, [0, 0.18, 1], [14, 0, 0]);
   const translateY = useTransform(scrollYProgress, [0, 0.5, 1], [56, 0, -32]);
 
   return (
@@ -93,12 +94,42 @@ const AboutSection = () => {
           <div className="relative min-h-[380px] p-5 sm:min-h-[500px] sm:p-6 lg:min-h-[560px] lg:p-8">
             <div className="relative h-full w-full overflow-hidden rounded-[2rem] bg-white shadow-[0_18px_60px_-35px_rgba(119,87,179,0.18)]">
               <div className="absolute inset-0 bg-white" />
-              <Image
-                src={founder.image}
-                alt={`${founder.name} - Co Founder`}
-                fill
-                className="object-contain object-center scale-[0.95] sm:scale-[1] lg:scale-[1.02]"
-              />
+              <div className="absolute inset-0">
+                <Image
+                  src={founder.image}
+                  alt=""
+                  fill
+                  aria-hidden="true"
+                  className={
+                    founder.imageClassName ??
+                    "object-contain object-center scale-[1.02] sm:scale-[1.06] lg:scale-[1.1]"
+                  }
+                  style={{
+                    filter: "blur(18px)",
+                    WebkitMaskImage:
+                      "linear-gradient(to bottom, transparent 0%, transparent 58%, black 100%)",
+                    maskImage:
+                      "linear-gradient(to bottom, transparent 0%, transparent 58%, black 100%)",
+                  }}
+                />
+              </div>
+              <div className="absolute inset-0">
+                <Image
+                  src={founder.image}
+                  alt={`${founder.name} - Co Founder`}
+                  fill
+                  className={
+                    founder.imageClassName ??
+                    "object-contain object-center scale-[1.02] sm:scale-[1.06] lg:scale-[1.1]"
+                  }
+                  style={{
+                    WebkitMaskImage:
+                      "linear-gradient(to bottom, black 0%, black 74%, transparent 100%)",
+                    maskImage:
+                      "linear-gradient(to bottom, black 0%, black 74%, transparent 100%)",
+                  }}
+                />
+              </div>
             </div>
           </div>
 
