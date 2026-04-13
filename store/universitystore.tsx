@@ -783,12 +783,18 @@ export const useUniversityStore = create<UniversityState>()(
       {
         name: "university-store",
         storage: createJSONStorage(() => {
-          if (typeof window === "undefined") {
+          const createMemoryStorage = () => {
+            const memoryStorage = new Map<string, string>()
+
             return {
-              getItem: (_key: string) => null,
-              setItem: (_key: string, _value: string) => {},
-              removeItem: (_key: string) => {},
+              getItem: (key: string) => memoryStorage.get(key) || null,
+              setItem: (key: string, value: string) => memoryStorage.set(key, value),
+              removeItem: (key: string) => memoryStorage.delete(key),
             }
+          }
+
+          if (typeof window === "undefined") {
+            return createMemoryStorage()
           }
 
           try {

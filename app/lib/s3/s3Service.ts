@@ -1,25 +1,25 @@
-import { GetObjectCommand, S3 } from "@aws-sdk/client-s3";
+import { GetObjectCommand, PutObjectCommand, DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-const s3 = new S3({
-  region: process.env.AWS_REGION,
+const s3 = new S3Client({
+  region: process.env.AWS_S3_REGION,
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   },
 });
 
-const bucketName = process.env.S3_BUCKET_NAME!;
+const bucketName = process.env.AWS_S3_BUCKET_NAME!;
 
-export const uploadFile = async (file: File, key: string): Promise<string> => {
+export const uploadFile = async (fileBuffer: ArrayBuffer, key: string): Promise<string> => {
   try {
     const uploadParams = {
       Bucket: bucketName,
       Key: key,
-      Body: file,
+      Body: Buffer.from(fileBuffer),
     };
-    await s3.putObject(uploadParams);
-    return `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+    await s3.send(new PutObjectCommand(uploadParams));
+    return `https://${bucketName}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/${key}`;
   } catch (error) {
     console.error("Error uploading file in s3:", error);
     throw new Error("File upload failed");
@@ -39,7 +39,7 @@ export const getFileUrl = async (key: string): Promise<string> => {
 export const deleteFile = async (key: string): Promise<void> => {
   try {
     const deleteParams = { Bucket: bucketName, Key: key };
-    await s3.deleteObject(deleteParams);
+    await s3.send(new DeleteObjectCommand(deleteParams));
   } catch (error) {
     console.error("Error deleting file:", error);
     throw new Error("File deletion failed");

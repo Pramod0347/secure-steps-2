@@ -106,9 +106,11 @@ model University {
   careerOutcomes CareerOutcome[]
   faqs           Faq[]
   applications   UniversityApplications[]
+  applicationTracking ApplicationTracking[]
   loans          Loan[]
   users          User[]
   courses        Course[]
+  universitySelections UniversitySelection[]
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -848,6 +850,13 @@ model User {
     accommodationReviews AccommodationReview[] // Only for students reviewing accommodations
     likedAccommodations  LikedAccommodations[]
 
+    // Profile System Relations
+    userProfile          UserProfile?
+    mentorshipRequests   MentorshipRequest[]   @relation("MentorshipRequestMentor")
+    counselingSessions   CounselorSession[]    @relation("CounselorSessionCounselor")
+    userConnections      UserConnection[]      @relation("UserConnectionConnectedUser")
+    userEBooks           UserEBook[]
+
     lastLogin DateTime?
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
@@ -1118,6 +1127,489 @@ enum PricingPlanType {
     BASIC
     PREMIUM
     ENTERPRISE
-TY_ALERT
-    LENDERS
+}
+
+// ============================================
+// USER PROFILE SYSTEM - NEW MODELS
+// ============================================
+
+// Main user profile container
+model UserProfile {
+    id            String   @id @default(cuid())
+    userId        String   @unique
+    user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    
+    // Profile completion tracking
+    completionPercentage Int    @default(0)
+    lastUpdatedSection   String?
+    profileStatus        ProfileStatus @default(INCOMPLETE)
+    
+    // Selected package route
+    selectedPackage      PackageRoute?
+    selectedCountry      String?
+    
+    // Relations to other profile sections
+    onboardingInfo       OnboardingInfo?
+    universities         UniversitySelection[]
+    documents            UserDocument[]
+    applications         ApplicationTracking[]
+    portfolio            PortfolioItem[]
+    journeyMilestones    JourneyMilestone[]
+    visaChecklists       VisaChecklist[]
+    eBooks               UserEBook[]
+    counselorSessions    CounselorSession[]
+    careerProfile        CareerProfile?
+    
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
+    @@index([profileStatus])
+}
+
+// 1. ONBOARDING
+model OnboardingInfo {
+    id              String        @id @default(cuid())
+    userProfileId   String        @unique
+    userProfile     UserProfile   @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+    
+    // Package selection
+    selectedPackage PackageRoute?
+    selectedCountry String?
+    
+    // Personal info filled in onboarding
+    educationLevel  EducationLevel?
+    targetIntake    String?
+    ieltsScore      Float?
+    
+    // Profile info
+    interests       String[]
+    
+    completedAt     DateTime?
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+
+    @@index([userProfileId])
+}
+
+// 2. UNIVERSITIES
+model UniversitySelection {
+    id              String        @id @default(cuid())
+    userProfileId   String
+    userProfile     UserProfile   @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+    
+    universityId    String
+    university      University    @relation(fields: [universityId], references: [id])
+    
+    // Selection status
+    status          UniversityStatus @default(SHORTLISTED)
+    
+    // Dates
+    appliedAt       DateTime?
+    savedAt         DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+
+    @@unique([userProfileId, universityId])
+    @@index([userProfileId])
+}
+
+// 3. DOCUMENTS
+model UserDocument {
+    id              String        @id @default(cuid())
+    userProfileId   String
+    userProfile     UserProfile   @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+    
+    // Document metadata
+    name            String
+    originalName    String
+    fileType        String
+    fileSize        Int
+    category        DocumentCategory
+    
+    // S3 storage
+    s3Key           String
+    s3Url           String
+    
+    // Document status
+    status          DocumentStatus @default(UPLOADED)
+    notes           String?
+    
+    // Versioning
+    version         Int           @default(1)
+    previousVersionId String?
+    
+    uploadedAt      DateTime      @default(now())
+    expiresAt       DateTime?
+    updatedAt       DateTime      @updatedAt
+
+    @@index([userProfileId])
+    @@index([category])
+    @@index([status])
+}
+
+// 4. APPLICATION TRACKING
+model ApplicationTracking {
+    id              String        @id @default(cuid())
+    userProfileId   String
+    userProfile     UserProfile   @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+    
+    universityId    String?
+    university      University?   @relation(fields: [universityId], references: [id])
+    
+    // Application status and progress
+    status          ApplicationTrackingStatus @default(NOT_STARTED)
+    progressPercentage Int       @default(0)
+    
+    // Milestones
+    milestones      ApplicationMilestone[]
+    
+    // Timeline
+    applicationDeadline DateTime?
+    submittedAt         DateTime?
+    decisionReceivedAt  DateTime?
+    
+    // Application details
+    notes           String?
+    
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+
+    @@index([userProfileId])
+    @@index([status])
+}
+
+model ApplicationMilestone {
+    id                      String   @id @default(cuid())
+    applicationTrackingId   String
+    applicationTracking     ApplicationTracking @relation(fields: [applicationTrackingId], references: [id], onDelete: Cascade)
+    
+    title           String
+    description     String?
+    completed       Boolean       @default(false)
+    completedAt     DateTime?
+    order           Int
+    
+    createdAt       DateTime      @default(now())
+
+    @@index([applicationTrackingId])
+}
+
+// 5. PORTFOLIO
+model PortfolioItem {
+    id              String        @id @default(cuid())
+    userProfileId   String
+    userProfile     UserProfile   @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+    
+    title           String
+    description     String?
+    category        String?
+    
+    // Media
+    imageUrl        String?
+    attachmentUrl   String?
+    
+    // Metadata
+    order           Int
+    isPublic        Boolean       @default(false)
+    
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+
+    @@index([userProfileId])
+}
+
+// 6. JOURNEY ROADMAP
+model JourneyMilestone {
+    id              String        @id @default(cuid())
+    userProfileId   String
+    userProfile     UserProfile   @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+    
+    // Milestone
+    title           String
+    description     String?
+    status          MilestoneStatus @default(PENDING)
+    targetDate      DateTime?
+    completedDate   DateTime?
+    
+    // Timeline
+    order           Int
+    
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+
+    @@index([userProfileId])
+    @@index([status])
+}
+
+// 7. VISA & FINANCE
+model VisaChecklist {
+    id              String        @id @default(cuid())
+    userProfileId   String
+    userProfile     UserProfile   @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+    
+    // Country details
+    country         String
+    
+    // Checklist items
+    items           VisaChecklistItem[]
+    
+    // Finance tracking
+    estimatedCost   Float?
+    currency        String?
+    
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+
+    @@unique([userProfileId, country])
+    @@index([userProfileId])
+}
+
+model VisaChecklistItem {
+    id                  String   @id @default(cuid())
+    visaChecklistId     String
+    visaChecklist       VisaChecklist @relation(fields: [visaChecklistId], references: [id], onDelete: Cascade)
+    
+    // Item
+    title               String
+    description         String?
+    completed           Boolean      @default(false)
+    completedAt         DateTime?
+    order               Int
+    
+    createdAt           DateTime     @default(now())
+
+    @@index([visaChecklistId])
+}
+
+// 8. E-BOOKS
+model EBook {
+    id              String        @id @default(cuid())
+    title           String
+    description     String?
+    category        String?
+    
+    // File storage
+    s3Url           String
+    fileSize        Int
+    
+    // Metadata
+    author          String?
+    publishedDate   DateTime?
+    isFeatured      Boolean       @default(false)
+    
+    // User interactions
+    usersAccess     UserEBook[]
+    
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+
+    @@index([category])
+}
+
+model UserEBook {
+    id              String   @id @default(cuid())
+    userId          String
+    user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    
+    userProfileId   String
+    userProfile     UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+    
+    ebookId         String
+    ebook           EBook    @relation(fields: [ebookId], references: [id], onDelete: Cascade)
+    
+    // User interactions
+    isBookmarked    Boolean      @default(false)
+    isDownloaded    Boolean      @default(false)
+    downloadedAt    DateTime?
+    
+    accessedAt      DateTime     @default(now())
+    updatedAt       DateTime     @updatedAt
+
+    @@unique([userProfileId, ebookId])
+    @@index([userProfileId])
+}
+
+// 9. FIRE MODE
+model CareerProfile {
+    id              String        @id @default(cuid())
+    userProfileId   String        @unique
+    userProfile     UserProfile   @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+    
+    // Career info
+    targetRole      String?
+    targetSalary    Float?
+    currency        String?
+    yearsOfExperience Int?
+    
+    // Skills and interests
+    skills          String[]
+    industries      String[]
+    
+    // Mentorship
+    mentorshipRequests MentorshipRequest[]
+    connections     UserConnection[]
+    
+    // Job postings saved
+    savedJobs       SavedJobPosting[]
+    
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+
+    @@index([userProfileId])
+}
+
+model MentorshipRequest {
+    id              String        @id @default(cuid())
+    careerProfileId String
+    careerProfile   CareerProfile @relation(fields: [careerProfileId], references: [id], onDelete: Cascade)
+    
+    mentorId        String
+    mentor          User          @relation("MentorshipRequestMentor", fields: [mentorId], references: [id])
+    
+    status          MentorshipStatus @default(PENDING)
+    message         String?
+    requestedAt     DateTime      @default(now())
+    respondedAt     DateTime?
+    
+    @@index([careerProfileId])
+}
+
+model UserConnection {
+    id              String        @id @default(cuid())
+    careerProfileId String
+    careerProfile   CareerProfile @relation(fields: [careerProfileId], references: [id], onDelete: Cascade)
+    
+    connectedUserId String
+    connectedUser   User          @relation("UserConnectionConnectedUser", fields: [connectedUserId], references: [id])
+    
+    connectionType  String?
+    connectedAt     DateTime      @default(now())
+    
+    @@unique([careerProfileId, connectedUserId])
+    @@index([careerProfileId])
+}
+
+model SavedJobPosting {
+    id              String        @id @default(cuid())
+    careerProfileId String
+    careerProfile   CareerProfile @relation(fields: [careerProfileId], references: [id], onDelete: Cascade)
+    
+    // Job details
+    title           String
+    company         String
+    location        String
+    link            String?
+    
+    savedAt         DateTime      @default(now())
+    
+    @@index([careerProfileId])
+}
+
+// COUNSELOR SESSIONS
+model CounselorSession {
+    id              String        @id @default(cuid())
+    userProfileId   String
+    userProfile     UserProfile   @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+    
+    counselorId     String
+    counselor       User          @relation("CounselorSessionCounselor", fields: [counselorId], references: [id])
+    
+    // Session details
+    topic           String
+    notes           String?
+    recommendedActions String?
+    
+    // Status
+    status          SessionStatus @default(SCHEDULED)
+    
+    // Dates
+    scheduledAt     DateTime
+    completedAt     DateTime?
+    
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+
+    @@index([userProfileId])
+    @@index([counselorId])
+}
+
+// ============================================
+// NEW ENUMS FOR PROFILE SYSTEM
+// ============================================
+
+enum ProfileStatus {
+    INCOMPLETE
+    IN_PROGRESS
+    COMPLETED
+    UNDER_REVIEW
+}
+
+enum PackageRoute {
+    UK
+    USA
+    DUBAI
+}
+
+enum EducationLevel {
+    HIGH_SCHOOL
+    BACHELOR
+    MASTER
+    PHD
+}
+
+enum UniversityStatus {
+    SHORTLISTED
+    APPLIED
+    WAITLISTED
+    REJECTED
+    ACCEPTED
+}
+
+enum DocumentCategory {
+    ACADEMIC
+    PERSONAL
+    FINANCIAL
+    VISA
+    PORTFOLIO
+    OTHER
+}
+
+enum DocumentStatus {
+    UPLOADED
+    VERIFIED
+    REJECTED
+    EXPIRED
+}
+
+enum ApplicationTrackingStatus {
+    NOT_STARTED
+    SHORTLISTING
+    APPLYING
+    SUBMITTED
+    REVIEWED
+    INTERVIEWED
+    DECISION_PENDING
+    ACCEPTED
+    REJECTED
+    WAITLISTED
+}
+
+enum MilestoneStatus {
+    PENDING
+    IN_PROGRESS
+    COMPLETED
+}
+
+enum MentorshipStatus {
+    PENDING
+    ACCEPTED
+    REJECTED
+    COMPLETED
+}
+
+enum SessionStatus {
+    SCHEDULED
+    COMPLETED
+    CANCELLED
+    RESCHEDULED
 }

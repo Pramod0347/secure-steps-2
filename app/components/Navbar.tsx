@@ -88,7 +88,7 @@ const Navbar: React.FC = () => {
             {isAuthenticated ? (
               <>
                 <Link
-                  href={`/profile/${isAuthenticated}`}
+                  href="/profile"
                   className="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-800 hover:bg-white/95"
                   aria-label="Profile"
                 >
@@ -231,7 +231,7 @@ const Navbar: React.FC = () => {
             {isAuthenticated ? (
               <>
                 <Link
-                  href={`/profile/${isAuthenticated}`}
+                  href="/profile"
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-slate-800 hover:bg-white/95 transition-all"
                 >
