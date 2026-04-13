@@ -218,7 +218,7 @@ export default function Courses({ university }: CoursesProps) {
           key={page}
           onClick={() => setCurrentPage(page)}
           className={`w-8 h-8 rounded-full flex items-center justify-center ${
-            currentPage === page ? "bg-[#DA202E] text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+            currentPage === page ? "bg-[#997CE1] text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
           }`}
         >
           {page}
@@ -235,7 +235,7 @@ export default function Courses({ university }: CoursesProps) {
         key={1}
         onClick={() => setCurrentPage(1)}
         className={`w-8 h-8 rounded-full flex items-center justify-center ${
-          currentPage === 1 ? "bg-[#DA202E] text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+          currentPage === 1 ? "bg-[#997CE1] text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
         }`}
       >
         1
@@ -272,7 +272,7 @@ export default function Courses({ university }: CoursesProps) {
           key={i}
           onClick={() => setCurrentPage(i)}
           className={`w-8 h-8 rounded-full flex items-center justify-center ${
-            currentPage === i ? "bg-[#DA202E] text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+            currentPage === i ? "bg-[#997CE1] text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
           }`}
         >
           {i}
@@ -296,7 +296,7 @@ export default function Courses({ university }: CoursesProps) {
           key={totalPages}
           onClick={() => setCurrentPage(totalPages)}
           className={`w-8 h-8 rounded-full flex items-center justify-center ${
-            currentPage === totalPages ? "bg-[#DA202E] text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+            currentPage === totalPages ? "bg-[#997CE1] text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
           }`}
         >
           {totalPages}
@@ -336,7 +336,7 @@ export default function Courses({ university }: CoursesProps) {
                 setCurrentPage(1) // Reset to first page on search change
               }}
               className={`pl-10 pr-4 py-2 border rounded-full w-full focus:outline-none focus:ring-2 ${
-                showSearch ? "focus:ring-[#DA202E] border-gray-300" : "focus:ring-black"
+                showSearch ? "focus:ring-[#997CE1] border-gray-300" : "focus:ring-black"
               }`}
             />
             {searchQuery && (
@@ -360,7 +360,7 @@ export default function Courses({ university }: CoursesProps) {
                 setCurrentPage(1) // Reset to first page on filter change
               }}
               className={`pl-10 pr-4 py-2 border rounded-full appearance-none w-full focus:outline-none focus:ring-2 ${
-                showSearch ? "focus:ring-[#DA202E] border-gray-300" : "focus:ring-black"
+                showSearch ? "focus:ring-[#997CE1] border-gray-300" : "focus:ring-black"
               }`}
             >
               <option value="">All Degree Types</option>

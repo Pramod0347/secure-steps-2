@@ -132,7 +132,7 @@ export default function CourseSelectionModal({
       <DialogContent className="max-w-4xl w-full h-auto max-h-[80vh] my-8 overflow-x-hidden">
         <DialogHeader className="mb-2">
           <DialogTitle className="text-lg font-bold flex items-center">
-            <Bookmark className="mr-2 h-4 w-4 text-[#DA202E]" />
+            <Bookmark className="mr-2 h-4 w-4 text-[#997CE1]" />
             Select a Course to Wishlist
           </DialogTitle>
         </DialogHeader>
@@ -165,9 +165,9 @@ export default function CourseSelectionModal({
                       <RadioGroupItem 
                         value={course.id} 
                         id={course.id} 
-                        className="mt-1 border-[#DA202E] text-[#DA202E]"
+                        className="mt-1 border-[#997CE1] text-[#997CE1]"
                         style={{ 
-                          '--tw-ring-color': '#DA202E',
+                          '--tw-ring-color': '#997CE1',
                           '--tw-ring-opacity': 1
                         } as React.CSSProperties}
                       />

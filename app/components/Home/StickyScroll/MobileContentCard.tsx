@@ -37,8 +37,8 @@ export default function MobileContentCard({
     >
       <div
         className={`rounded-lg p-3 ${variant === "blue"
-          ? "bg-gradient-to-b from-[#5D4A9C] to-[#DA202E]"
-          : "bg-gradient-to-b from-[#DA202E] to-[#5D4A9C]"
+          ? "bg-gradient-to-b from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6]"
+          : "bg-gradient-to-b from-[#FA7BD6] via-[#E2B9E3] to-[#997CE1]"
           }`}
       >
         <div className="flex justify-between text-white">

@@ -3,37 +3,41 @@
 import React from "react";
 import { motion } from "framer-motion";
 
+
 const CourseTopicsSection = () => {
   const topics = [
-    "Web Development",
-    "JavaScript",
-    "Framer",
-    "Web Design",
-    "Webflow",
-    "CSS",
-    "UI/UX Design",
-    "Angular",
-    "React",
+    "Anxious",
+    "Peer Pressure",
+    "Clueless",
+    "Confused",
+    "Awareness",
+    "Lack of Direction",
+    "Overthinking",
+    "Skills unexplored",
+    "Fear of wrong choices",
+    "Low confidence",
+    "Self doubt",
   ];
 
   return (
-    <section className="py-12 sm:py-16 lg:py-24">
+    <section className="brand-section-bg py-12 sm:py-16 lg:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Label */}
         <div className="text-center mb-4 sm:mb-6">
           <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 bg-gray-100 border border-gray-200 rounded-full text-xs sm:text-sm text-gray-600">
-            Featured Topics
+            Most Common Student Struggles
           </span>
         </div>
 
         {/* Section Title */}
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 text-center mb-4 sm:mb-6 px-2">
-          Courses Topics
+          Figuring out what’s next
         </h2>
 
-        <p className="text-gray-600 text-center max-w-2xl mx-auto mb-10 sm:mb-16 text-sm sm:text-base px-2">
-          Explore the key topics covered in our courses, designed to equip you
-          with the skills needed for real-world success.
+        <p className="text-gray-500 text-center max-w-2xl mx-auto mb-8 sm:mb-10 text-sm sm:text-base lg:text-lg px-2 leading-relaxed">
+          It&apos;s completely normal to feel this way.
+          <br />
+          These emotions don&apos;t define your future.
         </p>
 
         {/* Topics Grid */}

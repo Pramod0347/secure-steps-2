@@ -783,17 +783,20 @@ export const useUniversityStore = create<UniversityState>()(
       {
         name: "university-store",
         storage: createJSONStorage(() => {
-          // Check if we're on the client side
-          if (typeof window === "undefined") {
-            // Server-side: use memory storage
-            const memoryStorage = new Map()
+          const createMemoryStorage = () => {
+            const memoryStorage = new Map<string, string>()
+
             return {
               getItem: (key: string) => memoryStorage.get(key) || null,
               setItem: (key: string, value: string) => memoryStorage.set(key, value),
               removeItem: (key: string) => memoryStorage.delete(key),
             }
           }
-          
+
+          if (typeof window === "undefined") {
+            return createMemoryStorage()
+          }
+
           try {
             return {
               getItem: (key: string) => {

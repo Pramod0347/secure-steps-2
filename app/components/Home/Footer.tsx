@@ -1,10 +1,11 @@
 'use client'
 import React from "react";
 import footer from "@/app/assets/footerBanner.png";
-import logo from "@/app/assets/logo.png";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+
+const FOOTER_LOGO_URL = "https://pub-1ed7e98a27564218aec0343ef05fbd57.r2.dev/secure_logo_white.png";
 
 const Footer = () => {
   const pathname = usePathname();
@@ -23,7 +24,13 @@ const Footer = () => {
         <div className=" flex flex-col md:flex-row my-10   w-full gap-7 md:gap-5     items-start">
           <div className=" flex flex-row  items-center w-full md:flex-col justify-between md:gap-4 md:items-start">
             {/* logo */}
-            <Image src={logo} className="w-[100px] h-[22px]  md:w-[175px] md:h-[40px]" alt="" />
+            <Image
+              src={FOOTER_LOGO_URL}
+              className="w-[150px] h-[40px]  md:w-[200px] md:h-[50px]"
+              alt="Secure Steps"
+              width={200}
+              height={50}
+            />
 
             {/* Small screen Arrow */}
             <button className=" bg-[#303030] w-[41px] h-[41px]  rounded-full px-3 py-3 md:hidden block">
@@ -77,7 +84,7 @@ const Footer = () => {
           {/* App routes */}
           <div className="grid grid-cols-2  gap-4 md:flex md:flex-row xl:grid-cols-4   md:gap-2 w-[100%] justify-between">
             <div className="   flex flex-col md:gap-4 gap-4  text-[14px] text-[#909090]">
-              <h1 className="  text-[#F5F5F1] text-[16px]  md:text-xl">Inside Prohouse</h1>
+              
            <Link href="/Terms&Conditions">
         <p className="cursor-pointer hover:text-blue-600 duration-200">
           Terms and Conditions
@@ -104,7 +111,6 @@ const Footer = () => {
       </Link>
             </div>
             <div className="   flex flex-col md:gap-4 gap-4 text-[14px] text-[#909090]">
-              <h1 className="  text-[#F5F5F1]  text-[16px]  md:text-xl">About</h1>
               <p>Our Story</p>
               <p>Contact with Us</p>
               <p>Blog</p>

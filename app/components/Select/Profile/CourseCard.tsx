@@ -65,7 +65,7 @@ export default function CourseCard({ course, isWishlisted, onToggleWishlist }: C
           className="absolute top-2 right-2 md:top-3 md:right-3 p-1.5 md:p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-md z-10 hover:bg-white transition-colors"
           aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
-          <Heart size={14} className={`md:w-4 md:h-4 ${isWishlisted ? "fill-[#DA202E] text-[#DA202E]" : "text-gray-500"}`} />
+          <Heart size={14} className={`md:w-4 md:h-4 ${isWishlisted ? "fill-[#997CE1] text-[#997CE1]" : "text-gray-500"}`} />
         </button>
 
         {/* Duration badge */}
@@ -108,7 +108,7 @@ export default function CourseCard({ course, isWishlisted, onToggleWishlist }: C
 
         {/* Price */}
         <div className="pt-2 md:pt-3 mt-auto border-t border-gray-100">
-          <p className="text-[#DA202E] font-bold text-sm md:text-base lg:text-lg">
+          <p className="text-[#997CE1] font-bold text-sm md:text-base lg:text-lg">
             {formatFees(course.fees)}
           </p>
         </div>

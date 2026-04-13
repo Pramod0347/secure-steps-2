@@ -3,37 +3,16 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Compass, GraduationCap, MessageCircleQuestion } from "lucide-react";
+import FaqList from "@/app/components/Home/FAQ/FaqList";
 
 const FAQSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const faqs = [
-    {
-      question: "What is Course Site?",
-      answer:
-        "Course Site is a comprehensive online learning platform offering practical, project-based courses in web development and design. We provide high-quality content that's easy to understand and apply.",
-    },
-    {
-      question: "Do you have refund policy?",
-      answer:
-        "Our Purchases happen through Whop. Whop has its own refund policy, which you can find on their website. We recommend reviewing their policy before making a purchase.",
-    },
-    {
-      question: "Is the community supportive?",
-      answer:
-        "Yes! Our community is incredibly supportive. You'll connect with like-minded learners, get help from instructors, and share your progress with others on the same journey.",
-    },
-    {
-      question: "Are there live classes or just recorded content?",
-      answer:
-        "We primarily offer recorded content that you can access anytime. However, we also host live Q&A sessions and workshops for our premium members.",
-    },
-  ];
+  const promptIcons = [MessageCircleQuestion, Compass, GraduationCap];
 
   return (
-    <section className="py-12 sm:py-16 lg:py-24 bg-gradient-to-b from-white to-gray-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="brand-section-bg py-12 sm:py-16 lg:py-24 bg-transparent">
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Label */}
         <div className="text-center mb-4 sm:mb-6">
           <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 bg-gray-100 border border-gray-200 rounded-full text-xs sm:text-sm text-gray-600">
@@ -60,11 +39,11 @@ const FAQSection = () => {
 
           {/* Profile Avatars */}
           <div className="flex -space-x-3 mt-4 sm:mt-6">
-            {[1, 2, 3].map((i) => (
+            {promptIcons.map((Icon, i) => (
               <div
                 key={i}
                 className="w-10 sm:w-12 h-10 sm:h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 border-2 border-white flex items-center justify-center text-base sm:text-lg shadow-md">
-                🙂
+                <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" strokeWidth={2.2} />
               </div>
             ))}
           </div>
@@ -82,9 +61,9 @@ const FAQSection = () => {
 
         {/* FAQ Accordion */}
         <div className="space-y-4">
-          {faqs.map((faq, index) => (
+          {FaqList.map((faq, index) => (
             <motion.div
-              key={faq.question}
+              key={faq.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}

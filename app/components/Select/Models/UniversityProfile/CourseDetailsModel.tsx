@@ -120,7 +120,7 @@ export default function CourseDetailsModal({
         <div className="p-6 border-b">
           <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
             <div>
-              <h2 className="text-xl md:text-2xl font-bold text-[#B81D24]">{course.name}</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-[#997CE1]">{course.name}</h2>
               <p className="text-gray-600 mt-1">{universityName}</p>
             </div>
             <div className="flex gap-2">
@@ -128,7 +128,7 @@ export default function CourseDetailsModal({
                 onClick={handleWishlistToggle}
                 disabled={isProcessing}
                 className={`p-2 rounded-full flex items-center gap-1 ${
-                  isWishlisted ? "bg-[#DA202E] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  isWishlisted ? "bg-[#997CE1] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
                 {isProcessing ? (
@@ -160,7 +160,7 @@ export default function CourseDetailsModal({
               </button>
             </div>
           </div>
-          <p className="text-lg font-semibold text-[#B81D24] mt-2">${course.fees}</p>
+          <p className="text-lg font-semibold text-[#997CE1] mt-2">${course.fees}</p>
         </div>
 
         {/* Course details */}
@@ -214,7 +214,7 @@ export default function CourseDetailsModal({
                 href={course.websiteLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-[#DA202E] hover:underline mt-4"
+                className="inline-flex items-center gap-1 text-[#997CE1] hover:underline mt-4"
               >
                 <ExternalLink size={16} />
                 Visit course website
@@ -233,7 +233,7 @@ export default function CourseDetailsModal({
           </button>
           <button
             onClick={handleApply}
-            className="px-6 py-2 bg-[#DA202E] text-white rounded-full hover:bg-[#b81d24] w-full sm:w-auto"
+            className="px-6 py-2 bg-[#997CE1] text-white rounded-full hover:bg-[#997CE1]/90 w-full sm:w-auto"
           >
             Apply Now
           </button>

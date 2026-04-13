@@ -120,7 +120,7 @@ const TopArticles = () => {
                 <p className="flex text-[10px] md:text-[14px] items-center">{item.location}</p>
                 <div className="md:flex gap-2 hidden -ml-2 scale-95">
                   <div className="flex whitespace-nowrap gap-1 items-center justify-center">
-                    <div className="rounded-full px-2 py-2 bg-[#B81D24] w-fit">
+                    <div className="rounded-full px-2 py-2 bg-[#997CE1] w-fit">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="20px"
@@ -156,7 +156,7 @@ const TopArticles = () => {
 
                 <div className="flex md:hidden gap-2 -ml-2 scale-95">
                   <div className="flex whitespace-nowrap gap-1 items-center justify-center">
-                    <div className="rounded-full px-2 py-2 bg-[#B81D24] w-fit">
+                    <div className="rounded-full px-2 py-2 bg-[#997CE1] w-fit">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="8px"

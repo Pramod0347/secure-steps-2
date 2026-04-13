@@ -4,21 +4,31 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { useAuth } from "../context/AuthContext";
-import Avatar from "./Avatar";
-import logo from "../assets/logo.png";
-import MenuIcon from "@/app/assets/menu-icon.svg";
-import { UserPlus, UserRound, X } from "lucide-react";
+import { BRAND_ASSETS } from "@/app/lib/constants";
+import {
+  Building,
+  GraduationCap,
+  Grid2X2,
+  Home,
+  Link as LinkIcon,
+  LogIn,
+  LogOut,
+  X,
+  UserPlus,
+  Users,
+} from "lucide-react";
 
 const Navbar: React.FC = () => {
   const pathname = usePathname();
   const { isAuthenticated, logout } = useAuth();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isActive = (path: string) => pathname === path;
 
   const handleLogout = async () => {
     await logout();
+    setIsMobileMenuOpen(false);
     router.push("/");
   };
 
@@ -27,158 +37,219 @@ const Navbar: React.FC = () => {
   }
 
   const navItems = [
-    { path: "/select", label: "Select" },
-    { path: "/stay", label: "Stay" },
-    { path: "/connect", label: "Connect" },
-    { path: "/community", label: "Community" },
-    { path: "/lenders", label: "Lenders" },
+    { path: "/select", label: "Select", icon: GraduationCap },
+    { path: "/stay", label: "Stay", icon: Home },
+    { path: "/connect", label: "Connect", icon: LinkIcon },
+    { path: "/community", label: "Community", icon: Users },
+    { path: "/lenders", label: "Lenders", icon: Building },
   ];
+  const mobilePrimaryItem = navItems[0];
+  const mobileMenuItems = navItems.slice(1);
 
   return (
-    <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 w-[85%] md:w-auto !z-[9999999] rounded-xl bg-[#00000094]/20 bg-opacity-70 md:px-[29px] px-4 py-[15px] text-white shadow-lg backdrop-blur-lg">
-      <div className="container mx-auto flex items-center justify-between gap-6 space-x-2 text-[16px] font-medium ">
-        <div className="inter w-full flex items-center md:justify-center justify-between gap-4 overflow-hidden">
-          <Link href="/">
-            <Image src={logo} alt="Logo" className="h-[29px] w-[127px] " />
+    <nav className="fixed top-4 left-1/2 z-[9999999] w-[94%] max-w-[720px] -translate-x-1/2 md:w-max md:min-w-[700px] md:max-w-[760px]">
+      <div className="relative overflow-hidden rounded-[26px] border border-white/80 bg-white/70 px-3 py-2 shadow-[0_20px_44px_-22px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.98)] ring-1 ring-black/5 backdrop-blur-xl md:px-4 md:py-2.5">
+        <span className="pointer-events-none absolute inset-x-2 top-1 h-[55%] rounded-t-[22px] bg-gradient-to-b from-white to-transparent" />
+        <span className="pointer-events-none absolute -right-16 top-0 hidden h-28 w-44 rotate-12 bg-white/45 blur-2xl md:block" />
+        <div className="relative z-10 hidden items-center justify-between gap-2.5 md:flex">
+          <Link href="/" className="shrink-0 rounded-xl p-1 hover:bg-white/80 transition-colors">
+            <Image
+              src={BRAND_ASSETS.LOGO_URL}
+              alt="Securesteps Logo"
+              width={30}
+              height={30}
+              className="h-[30px] w-[30px]"
+            />
           </Link>
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              href={item.path}
-              className={`${
-                isActive(item.path) ? "text-[#E50914]" : "text-white"
-              } hover:text-[#E50914] hidden md:block  md:text-[14px] 2xl:text-[16px]`}
-            >
-              {item.label}
-            </Link>
-          ))}
 
-          <div className="md:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="relative w-8 h-8 flex items-center justify-center"
-            >
-              <div
-                className={`transition-opacity duration-300 absolute ${
-                  mobileMenuOpen ? "opacity-0" : "opacity-100"
-                }`}
-              >
-                <Image
-                  src={MenuIcon}
-                  alt="Menu"
-                  className="cursor-pointer w-8"
-                />
-              </div>
-              <div
-                className={`transition-opacity duration-300 absolute ${
-                  mobileMenuOpen ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                <X className="w-8 h-8" />
-              </div>
-            </button>
+          <div className="flex items-center gap-4">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.path);
+
+              return (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[16px] font-medium transition-all ${
+                    active
+                      ? "bg-white text-slate-950 shadow-sm ring-1 ring-fuchsia-200"
+                      : "text-slate-800 hover:bg-white/95"
+                  }`}
+                >
+                  {active && <Icon className="h-3.5 w-3.5 stroke-[2.2]" />}
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
           </div>
-        </div>
 
-        {isAuthenticated ? (
-          <div className="hidden md:block">
-            <Avatar />
-          </div>
-        ) : (
-          <>
-            {/* Signup Button */}
-            <Link href="/quizform" className="hidden md:block">
-              <button className="bt-c inter w-28 rounded-xl px-1 py-1 md:text-[14px] 2xl:text-[16px]">
-                Signup
-              </button>
-            </Link>
-
-            {/* Login Button with Icon */}
-            <Link href="/auth/signin" className="hidden md:flex items-center">
-              <button
-                className="
-      flex items-center gap-2
-      px-4 py-2
-      rounded-full
-      text-white
-      font-medium
-      md:text-[14px] 2xl:text-[16px]
-      transition-all duration-300
-
-      bg-gradient-to-r 
-      from-[#C51B26]   /* red from your image */
-      to-[#3F2B96]     /* purple from your image */
-      hover:opacity-90
-    "
-              >
-                <UserPlus className="w-5 h-5 text-white" />
-              </button>
-            </Link>
-          </>
-        )}
-      </div>
-
-      {/* Mobile Menu */}
-      <div
-        className={`md:hidden fixed left-0 right-0 top-[4.5rem] transition-all duration-300 ease-in-out transform ${
-          mobileMenuOpen
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 -translate-y-full pointer-events-none"
-        }`}
-      >
-        <div className="bg-black/95 backdrop-blur-lg rounded-xl p-4 mx-4 shadow-lg border border-gray-800">
-          <div className="space-y-2">
-            {navItems.map((item) => (
-              <Link
-                key={item.path}
-                href={item.path}
-                className={`${
-                  isActive(item.path) ? "text-[#E50914]" : "text-white"
-                } hover:text-[#E50914] block py-2 px-4 rounded-lg hover:bg-white/10 transition-colors duration-200`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.label}
-              </Link>
-            ))}
+          <div className="flex items-center gap-4">
             {isAuthenticated ? (
               <>
                 <Link
-                  href={`/profile/${isAuthenticated}`}
-                  className="text-white block py-2 px-4 rounded-lg hover:bg-white/10 transition-colors duration-200"
-                  onClick={() => setMobileMenuOpen(false)}
+                  href="/profile"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-800 hover:bg-white/95"
+                  aria-label="Profile"
                 >
-                  Profile
+                  <Users className="h-4 w-4 stroke-[2.2]" />
                 </Link>
                 <button
-                  onClick={() => {
-                    handleLogout();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="text-white block py-2 px-4 w-full text-left rounded-lg hover:bg-white/10 transition-colors duration-200"
+                  type="button"
+                  onClick={handleLogout}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-800 hover:bg-white/95"
+                  aria-label="Logout"
                 >
-                  Logout
+                  <LogOut className="h-4 w-4 stroke-[2.2]" />
                 </button>
               </>
             ) : (
               <>
                 <Link
                   href="/quizform"
-                  className="block text-center text-white py-2 px-4 rounded-lg bg-[#E50914] hover:bg-[#E50914]/80 transition-colors duration-200"
-                  onClick={() => setMobileMenuOpen(false)}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-all ${
+                    pathname === "/quizform"
+                      ? "bg-white text-slate-950 shadow-sm ring-1 ring-fuchsia-200"
+                      : "text-slate-800 hover:bg-white/95"
+                  }`}
                 >
-                  Signup
+                  <UserPlus className="h-4 w-4 stroke-[2.2]" />
+                  {pathname === "/quizform" && <span>Signup</span>}
                 </Link>
                 <Link
                   href="/auth/signin"
-                  className="block text-center text-white py-2 px-4 rounded-lg bg-[#E50914] hover:bg-[#E50914]/80 transition-colors duration-200"
-                  onClick={() => setMobileMenuOpen(false)}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-800 hover:bg-white/95"
+                  aria-label="Login"
                 >
-                  login
+                  <LogIn className="h-4 w-4 stroke-[2.2]" />
                 </Link>
               </>
             )}
           </div>
         </div>
+
+        <div className="flex items-center justify-between gap-2 md:hidden">
+          <Link href="/" className="relative shrink-0 rounded-xl p-1.5 transition-colors hover:bg-white/10">
+            <span className="pointer-events-none absolute inset-0 rounded-xl bg-white/18 backdrop-blur-md shadow-[0_8px_18px_rgba(15,23,42,0.08)]" />
+            <Image
+              src={BRAND_ASSETS.LOGO_URL}
+              alt="Securesteps Logo"
+              width={28}
+              height={28}
+              className="relative z-10 h-7 w-7 drop-shadow-[0_2px_10px_rgba(15,23,42,0.18)]"
+            />
+          </Link>
+
+          <div className="ml-auto flex items-center gap-2">
+            <Link
+              href={mobilePrimaryItem.path}
+              className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-all ${
+                isActive(mobilePrimaryItem.path)
+                  ? "bg-white text-slate-950 ring-1 ring-fuchsia-200"
+                  : "text-slate-800 hover:bg-white/95"
+              }`}
+              aria-label={mobilePrimaryItem.label}
+              title={mobilePrimaryItem.label}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <mobilePrimaryItem.icon className="h-4 w-4 stroke-[2.2]" />
+            </Link>
+
+            {!isAuthenticated && (
+              <>
+                <Link
+                  href="/quizform"
+                  className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-all ${
+                    pathname === "/quizform"
+                      ? "bg-white text-slate-950 ring-1 ring-fuchsia-200"
+                      : "text-slate-800 hover:bg-white/95"
+                  }`}
+                  aria-label="Signup"
+                  title="Signup"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <UserPlus className="h-4 w-4 stroke-[2.2]" />
+                </Link>
+                <Link
+                  href="/auth/signin"
+                  className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-all ${
+                    pathname === "/auth/signin"
+                      ? "bg-white text-slate-950 ring-1 ring-fuchsia-200"
+                      : "text-slate-800 hover:bg-white/95"
+                  }`}
+                  aria-label="Login"
+                  title="Login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <LogIn className="h-4 w-4 stroke-[2.2]" />
+                </Link>
+              </>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+              className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-all ${
+                isMobileMenuOpen
+                  ? "bg-white text-slate-950 ring-1 ring-fuchsia-200"
+                  : "text-slate-800 hover:bg-white/95"
+              }`}
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-4 w-4 stroke-[2.2]" />
+              ) : (
+                <Grid2X2 className="h-4 w-4 stroke-[2.2]" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {isMobileMenuOpen && (
+          <div className="relative z-10 mt-3 space-y-2 md:hidden">
+            {mobileMenuItems.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.path);
+
+              return (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition-all ${
+                    active
+                      ? "bg-white text-slate-950 shadow-sm ring-1 ring-fuchsia-200"
+                      : "text-slate-800 hover:bg-white/95"
+                  }`}
+                >
+                  <Icon className="h-4 w-4 shrink-0 stroke-[2.2]" />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+
+            {isAuthenticated ? (
+              <>
+                <Link
+                  href="/profile"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-slate-800 hover:bg-white/95 transition-all"
+                >
+                  <Users className="h-4 w-4 shrink-0 stroke-[2.2]" />
+                  <span>Profile</span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-medium text-slate-800 hover:bg-white/95 transition-all"
+                >
+                  <LogOut className="h-4 w-4 shrink-0 stroke-[2.2]" />
+                  <span>Logout</span>
+                </button>
+              </>
+            ) : null}
+          </div>
+        )}
       </div>
     </nav>
   );

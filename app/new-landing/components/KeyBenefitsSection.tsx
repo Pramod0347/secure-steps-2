@@ -17,48 +17,48 @@ const KeyBenefitsSection = () => {
       icon: <Briefcase className="w-6 h-6" />,
       title: "Built by Professionals",
       description:
-        "Get the best Experience knowing that our Courses are built by Professionals.",
+        "Guaranteed best experience, as all your roadmaps and career trajectories are only suggested by industry professionals.",
       gradient: "from-purple-500 to-pink-500",
     },
     {
       icon: <Award className="w-6 h-6" />,
-      title: "Completion Certificate",
+      title: "6 Months Knowledge Transfer",
       description:
-        "Receive a Completion Award from our Team to enhance your motivation.",
+        "We don\u2019t just talk to you once and make an application \u2014 it\u2019s a continuous period of knowledge, insights on your future, and helping you acquire multiple skills.",
       gradient: "from-blue-500 to-cyan-500",
     },
     {
       icon: <MessageCircle className="w-6 h-6" />,
       title: "Instant Chat Help",
       description:
-        "Have questions? Reach out for a quick chat—here for you 24/7.",
+        "Have questions? Reach out for a quick chat, typical reply within 10\u201315 mins.",
       gradient: "from-green-500 to-emerald-500",
     },
     {
       icon: <Crown className="w-6 h-6" />,
-      title: "Lifetime Membership",
+      title: "A Lifetime Membership",
       description:
-        "With Just One Payment, you'll get Permanent Access to the Course.",
+        "Once a member, always a member of Secure. Reach out to us for any questions on the next phase of your life and get access to unlimited resources on our platform.",
       gradient: "from-yellow-500 to-orange-500",
     },
     {
       icon: <Users className="w-6 h-6" />,
-      title: "Access to Community",
+      title: "Better Together Community",
       description:
-        "Join Our Private Community to Connect with Like-Minded Individuals.",
+        "One problem, multiple perspectives, quicker solution \u2014 join our broadcast channel to receive continuous updates on student life. There are like-minded individuals you can connect with.",
       gradient: "from-pink-500 to-rose-500",
     },
     {
       icon: <Download className="w-6 h-6" />,
-      title: "Download for Offline Use",
+      title: "Completion Certificate",
       description:
-        "Our courses can be downloaded, so you can watch them anytime, anywhere.",
+        "Receive a verified completion certificate from our team to boost your profile and enhance your motivation.",
       gradient: "from-indigo-500 to-purple-500",
     },
   ];
 
   return (
-    <section className="py-12 sm:py-16 lg:py-24">
+    <section className="brand-section-bg py-12 sm:py-16 lg:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Label */}
         <div className="text-center mb-4 sm:mb-6">
@@ -69,12 +69,12 @@ const KeyBenefitsSection = () => {
 
         {/* Section Title */}
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 text-center mb-4 sm:mb-6 px-2">
-          Key Benefits of Courses
+          Key Benefits of Secure&apos;s What&apos;s Next
         </h2>
 
-        <p className="text-gray-600 text-center max-w-2xl mx-auto mb-10 sm:mb-16 text-sm sm:text-base px-2">
-          Explore the incredible advantages of enrolling in our courses and
-          enhancing your skills for the ultimate career success.
+        <p className="text-gray-600 text-center max-w-3xl mx-auto mb-10 sm:mb-16 text-sm sm:text-base px-2">
+          Explore the incredible advantages of enrolling in our packages and see how enhancing
+          your skills with different perspectives can lead to ultimate career success.
         </p>
 
         {/* Benefits Grid */}
@@ -86,12 +86,12 @@ const KeyBenefitsSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="group"
+              className="group h-full"
             >
-              <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-white border border-gray-200 p-5 sm:p-8 hover:border-gray-300 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-white border border-gray-200 p-5 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
                 {/* Background Gradient */}
                 <div
-                  className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${benefit.gradient} opacity-5 blur-3xl group-hover:opacity-10 transition-opacity`}
+                  className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${benefit.gradient} opacity-10 blur-3xl transition-opacity`}
                 />
 
                 {/* Icon */}
@@ -107,7 +107,7 @@ const KeyBenefitsSection = () => {
                 </h3>
 
                 {/* Description */}
-                <p className="text-gray-600">{benefit.description}</p>
+                <p className="text-gray-600 text-sm sm:text-base flex-1">{benefit.description}</p>
               </div>
             </motion.div>
           ))}

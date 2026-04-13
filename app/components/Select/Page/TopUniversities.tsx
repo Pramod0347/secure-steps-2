@@ -288,7 +288,7 @@ const TopUniversities: React.FC<TopUniversitiesProps> = ({
           <span>Top Universities</span>
         </h1> */}
         <div className="h-full flex-col gap-4 flex items-center">
-          <h1 className="md:text-5xl 2xl:text-[90px] text-3xl 2xl:leading-[87px] md:leading-[70px] leading-[43px] text-black text-center bg-gradient-to-r from-[#DA202E] to-[#3B367D] bg-clip-text text-transparent font-bold">
+          <h1 className="md:text-5xl 2xl:text-[90px] text-3xl 2xl:leading-[87px] md:leading-[70px] leading-[43px] text-primary text-center bg-clip-text font-bold">
             Let&apos;s Find Your Dream Universities
           </h1>
         </div>
@@ -307,7 +307,7 @@ const TopUniversities: React.FC<TopUniversitiesProps> = ({
           {isAuthenticated && (
             <div
               onClick={handleWiseListClick}
-              className="px-3 sm:px-4 lg:px-6 py-2 text-sm lg:text-base bg-[#DA202E] text-white rounded-lg hover:bg-opacity-90 transition-all shadow-md hover:shadow-lg flex items-center gap-2 cursor-pointer"
+              className="px-3 sm:px-4 lg:px-6 py-2 text-sm lg:text-base bg-[#997CE1] text-white rounded-lg hover:bg-opacity-90 transition-all shadow-md hover:shadow-lg flex items-center gap-2 cursor-pointer"
             >
               <Heart className="w-5 h-5" />
               <span className="hidden sm:inline">My WiseList</span>

@@ -328,7 +328,7 @@ export default function QuizPage() {
                   state.answer === option ? "border-[#BE243C]" : "border-gray-300"
                 }`}
               >
-                {state.answer === option && <div className="w-3 h-3 rounded-full bg-[#BE243C]" />}
+                {state.answer === option && <div className="w-3 h-3 rounded-full bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6]" />}
               </div>
               <span className="flex-grow">{option}</span>
             </button>
@@ -447,7 +447,7 @@ export default function QuizPage() {
                     ? !state.email || !state.phoneNumber || !state.password
                     : !state.answer)
                 }
-                className="md:px-4 md:py-2 py-1 px-2 w-full md:w-auto bg-[#BE243C] text-white rounded-full font-medium hover:bg-[#A61F35] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="md:px-4 md:py-2 py-1 px-2 w-full md:w-auto bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] text-white rounded-full font-medium hover:opacity-90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next
               </button>
@@ -465,7 +465,7 @@ export default function QuizPage() {
               <button
                 type="submit"
                 disabled={state.isTransitioning || !state.answer || selectionDelay}
-                className="w-full px-6 py-2 bg-[#BE243C] text-white rounded-full font-medium hover:bg-[#A61F35] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-6 py-2 bg-gradient-to-r from-[#997CE1] via-[#E2B9E3] to-[#FA7BD6] text-white rounded-full font-medium hover:opacity-90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Verify OTP
               </button>

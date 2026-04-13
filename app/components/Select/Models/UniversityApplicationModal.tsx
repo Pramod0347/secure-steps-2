@@ -325,7 +325,7 @@ const UniversityApplicationModal = ({
                         type="button"
                         onClick={handleSubmit}
                         disabled={loading}
-                        className={`px-4 py-2 rounded-[6px] bg-[#DA202E] text-white hover:bg-opacity-90 transition-colors ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        className={`px-4 py-2 rounded-[6px] bg-[#997CE1] text-white hover:bg-opacity-90 transition-colors ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                         {loading ? 'Submitting...' : 'Submit Application'}
                     </button>

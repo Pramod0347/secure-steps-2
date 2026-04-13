@@ -304,7 +304,7 @@ export function CourseEditModal({ isOpen, onClose, course, onSave, onImageUpload
           <Button type="button" onClick={onClose} variant="outline">
             Cancel
           </Button>
-          <Button onClick={handleSubmit} disabled={isSubmitting} className="bg-[#DA202E] hover:bg-[#DA202E]/90">
+          <Button onClick={handleSubmit} disabled={isSubmitting} className="bg-[#997CE1] hover:bg-[#997CE1]/90">
             {isSubmitting ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -321,4 +321,3 @@ export function CourseEditModal({ isOpen, onClose, course, onSave, onImageUpload
     </Modal>
   )
 }
-
