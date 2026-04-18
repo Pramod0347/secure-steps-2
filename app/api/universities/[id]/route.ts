@@ -3,17 +3,14 @@ import { prisma } from "@/app/lib/prisma"
 import { UniversitySchema } from "@/app/lib/types/universities"
 import { z } from "zod"
 import { generateUniversitySlug } from "@/app/utils/generateSlug"
+import { revalidateTag, unstable_cache } from "next/cache"
 
-export async function GET(req: Request, { params }: { params: { id: string } }): Promise<NextResponse> {
-  try {
-    // Access id correctly by awaiting params
-    const id = params.id
+const UNIVERSITIES_CACHE_TAG = "universities"
+const SEVEN_DAYS_IN_SECONDS = 60 * 60 * 24 * 7
 
-    if (!id) {
-      return NextResponse.json({ error: "University ID is required" }, { status: 400 })
-    }
-
-    const university = await prisma.university.findUnique({
+const getUniversityByIdCached = unstable_cache(
+  async (id: string) => {
+    return prisma.university.findUnique({
       where: { id: String(id) },
       include: {
         courses: true,
@@ -29,7 +26,22 @@ export async function GET(req: Request, { params }: { params: { id: string } }):
           },
         },
       },
-    });
+    })
+  },
+  ["university-by-id"],
+  { revalidate: SEVEN_DAYS_IN_SECONDS, tags: [UNIVERSITIES_CACHE_TAG] },
+)
+
+export async function GET(req: Request, { params }: { params: { id: string } }): Promise<NextResponse> {
+  try {
+    // Access id correctly by awaiting params
+    const id = params.id
+
+    if (!id) {
+      return NextResponse.json({ error: "University ID is required" }, { status: 400 })
+    }
+
+    const university = await getUniversityByIdCached(String(id))
 
 
     if (!university) {
@@ -492,6 +504,7 @@ if (body.careerOutcomeData !== undefined) {
       return updatedUniversity;
     });
 
+    revalidateTag(UNIVERSITIES_CACHE_TAG)
     return NextResponse.json(result);
 
   } catch (error) {
@@ -629,6 +642,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
       where: { id },
     });
 
+    revalidateTag(UNIVERSITIES_CACHE_TAG)
     return NextResponse.json({ message: "University deleted successfully" })
   } catch (error) {
     console.error("[DELETE_UNIVERSITY_ERROR]", error)

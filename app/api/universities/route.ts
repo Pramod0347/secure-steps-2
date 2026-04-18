@@ -5,12 +5,147 @@ import { UniversitySchema } from "@/app/lib/types/universities"
 import { z } from "zod"
 import type { Prisma } from "@prisma/client"
 import { generateUniversitySlug } from "@/app/utils/generateSlug"
+import { revalidateTag, unstable_cache } from "next/cache"
 
 // Define types for pagination
 export interface PaginationParams {
   skip: number
   take: number
 }
+
+const UNIVERSITIES_CACHE_TAG = "universities"
+const SEVEN_DAYS_IN_SECONDS = 60 * 60 * 24 * 7
+
+const fullIncludeClause = {
+  courses: true,
+  applications: true,
+  loans: true,
+  users: true,
+  careerOutcomes: {
+    include: {
+      salaryChartData: true,
+      employmentRateMeter: true,
+      courseTimelineData: true,
+    },
+  },
+  faqs: true,
+}
+
+const lightweightSelectClause = {
+  id: true,
+  name: true,
+  slug: true,
+  banner: true,
+  location: true,
+  country: true,
+  createdAt: true,
+  courses: {
+    select: {
+      id: true,
+      name: true,
+      fees: true,
+    },
+  },
+}
+
+// Optimized select for paginated listing endpoints.
+// Includes everything needed by listing cards, compare modal, and wishlist course picker
+// without loading heavy relations like users/loans/applications/career outcomes.
+const paginatedSelectClause = {
+  id: true,
+  name: true,
+  slug: true,
+  banner: true,
+  imageUrls: true,
+  location: true,
+  country: true,
+  established: true,
+  createdAt: true,
+  courses: {
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      fees: true,
+    },
+  },
+}
+
+const getUniversitiesBySearchCached = unstable_cache(
+  async (id?: string, name?: string, location?: string, slug?: string) => {
+    const whereClause: Prisma.UniversityWhereInput = {
+      ...(id && { id }),
+      ...(name && { name: { contains: name, mode: "insensitive" } }),
+      ...(location && { location: { contains: location, mode: "insensitive" } }),
+      ...(slug && { slug }),
+    }
+
+    return prisma.university.findMany({
+      where: whereClause,
+      include: fullIncludeClause,
+    })
+  },
+  ["universities-by-search"],
+  { revalidate: SEVEN_DAYS_IN_SECONDS, tags: [UNIVERSITIES_CACHE_TAG] },
+)
+
+const getUniversitiesPageCached = unstable_cache(
+  async (
+    query: string,
+    page: number,
+    limit: number,
+    countryFilter?: string,
+    isLightweight?: boolean,
+    includeHeavyRelations?: boolean,
+  ) => {
+    const skip = (page - 1) * limit
+    const whereClause: Prisma.UniversityWhereInput = {}
+
+    if (query) {
+      whereClause.OR = [
+        { name: { contains: query, mode: "insensitive" } },
+        { location: { contains: query, mode: "insensitive" } },
+        { country: { contains: query, mode: "insensitive" } },
+        { slug: { contains: query, mode: "insensitive" } },
+      ]
+    }
+
+    if (countryFilter) {
+      whereClause.country = { contains: countryFilter, mode: "insensitive" }
+    }
+
+    const [universities, total] = await Promise.all([
+      isLightweight
+        ? prisma.university.findMany({
+            where: whereClause,
+            select: lightweightSelectClause,
+            skip,
+            take: limit,
+            orderBy: { createdAt: "desc" },
+          })
+        : includeHeavyRelations
+          ? prisma.university.findMany({
+              where: whereClause,
+              include: fullIncludeClause,
+              skip,
+              take: limit,
+              orderBy: { createdAt: "desc" },
+            })
+          : prisma.university.findMany({
+              where: whereClause,
+              select: paginatedSelectClause,
+              skip,
+              take: limit,
+              orderBy: { createdAt: "desc" },
+            }),
+      prisma.university.count({ where: whereClause }),
+    ])
+
+    return { universities, total }
+  },
+  ["universities-pagination"],
+  { revalidate: SEVEN_DAYS_IN_SECONDS, tags: [UNIVERSITIES_CACHE_TAG] },
+)
 
 export async function GET(req: Request): Promise<NextResponse> {
   try {
@@ -29,56 +164,18 @@ export async function GET(req: Request): Promise<NextResponse> {
 
     // Check if lightweight mode is requested (for listing pages - faster response)
     const isLightweight = url.searchParams.get("lightweight") === "true";
-
-    // FULL INCLUDE - for single university detail pages
-    const fullIncludeClause = {
-      courses: true,
-      applications: true,
-      loans: true,
-      users: true,
-      careerOutcomes: {
-        include: {
-          salaryChartData: true,
-          employmentRateMeter: true,
-          courseTimelineData: true,
-        },
-      },
-      faqs: true,
-    };
-
-    // LIGHTWEIGHT SELECT - for listing pages (only fields needed for cards)
-    // This dramatically reduces data transfer and DB query time
-    const lightweightSelectClause = {
-      id: true,
-      name: true,
-      slug: true,
-      banner: true,
-      location: true,
-      country: true,
-      createdAt: true,
-      courses: {
-        select: {
-          id: true,
-          name: true,
-          fees: true,
-        },
-      },
-    };
+    // Opt-in for legacy heavy include on paginated endpoints.
+    // Default stays optimized for speed.
+    const includeHeavyRelations = url.searchParams.get("includeHeavyRelations") === "true";
 
     // Handle specific search parameters (single university lookup - always full data)
     if (Object.values(searchParams).some(Boolean)) {
-      const whereClause: Prisma.UniversityWhereInput = {
-        ...(searchParams.id && { id: searchParams.id }),
-        ...(searchParams.name && { name: { contains: searchParams.name, mode: "insensitive" } }),
-        ...(searchParams.location && { location: { contains: searchParams.location, mode: "insensitive" } }),
-        ...(searchParams.slug && { slug: searchParams.slug }),
-      };
-
-
-      const universities = await prisma.university.findMany({
-        where: whereClause,
-        include: fullIncludeClause, // Always use full include for single lookups
-      });
+      const universities = await getUniversitiesBySearchCached(
+        searchParams.id,
+        searchParams.name,
+        searchParams.location,
+        searchParams.slug,
+      )
 
 
       if (universities.length === 0) {
@@ -109,45 +206,14 @@ export async function GET(req: Request): Promise<NextResponse> {
       });
 
 
-      const skip = (page - 1) * limit;
-      
-      // Build where clause with query search and country filter
-      let whereClause: Prisma.UniversityWhereInput = {};
-      
-      // Add text search if query provided
-      if (query) {
-        whereClause.OR = [
-          { name: { contains: query, mode: "insensitive" } },
-          { location: { contains: query, mode: "insensitive" } },
-          { country: { contains: query, mode: "insensitive" } },
-          { slug: { contains: query, mode: "insensitive" } },
-        ];
-      }
-      
-      // Add country filter if provided
-      if (countryFilter) {
-        whereClause.country = { contains: countryFilter, mode: "insensitive" };
-      }
-
-
-      const [universities, total] = await Promise.all([
-        isLightweight 
-          ? prisma.university.findMany({
-              where: whereClause,
-              select: lightweightSelectClause, // Use select for lightweight (faster)
-              skip,
-              take: limit,
-              orderBy: { createdAt: "desc" },
-            })
-          : prisma.university.findMany({
-              where: whereClause,
-              include: fullIncludeClause, // Use include for full data
-              skip,
-              take: limit,
-              orderBy: { createdAt: "desc" },
-            }),
-        prisma.university.count({ where: whereClause }),
-      ]);
+      const { universities, total } = await getUniversitiesPageCached(
+        query,
+        page,
+        limit,
+        countryFilter,
+        isLightweight,
+        includeHeavyRelations,
+      )
 
       const pages = Math.ceil(total / limit) || 1; // At least 1 page even if empty
 
@@ -415,6 +481,7 @@ export async function POST(req: Request): Promise<NextResponse> {
     })
 
 
+    revalidateTag(UNIVERSITIES_CACHE_TAG)
     return NextResponse.json(university, { status: 201 })
   } catch (error) {
     console.error("[POST_UNIVERSITY_ERROR]", error)
@@ -635,6 +702,7 @@ export async function PUT(req: Request): Promise<NextResponse> {
         },
       });
 
+      revalidateTag(UNIVERSITIES_CACHE_TAG)
       return NextResponse.json(updatedUniversity);
     } catch (dbError) {
       console.error("Database operation error:", dbError);
@@ -763,6 +831,7 @@ export async function DELETE(req: Request): Promise<NextResponse> {
       }
     )
 
+    revalidateTag(UNIVERSITIES_CACHE_TAG)
     return NextResponse.json({ message: "University deleted successfully" })
   } catch (error) {
     console.error("[DELETE_UNIVERSITY_ERROR]", error)

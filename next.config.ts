@@ -1,6 +1,9 @@
 const nextConfig = {
   reactStrictMode: true,
   trailingSlash: false,
+  experimental: {
+    proxyClientMaxBodySize: "25mb",
+  },
   images: {
     // domains: ['images.unsplash.com',"akia34amcw3tygg3uboe.s3.amazonaws.com","himalayan-utopia.s3.us-east-1.amazonaws.com","annamalaiuniversity.ac.in","placehold.co","collegedunia.com","img.icons8.com","balasanthosh.tech","plus.unsplash.com","unsplash.com","www.google.com","news.mit.edu","upload.wikimedia.org","via.placeholder.com","example.com"],
     remotePatterns: [
