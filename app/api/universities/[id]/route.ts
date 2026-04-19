@@ -504,7 +504,7 @@ if (body.careerOutcomeData !== undefined) {
       return updatedUniversity;
     });
 
-    revalidateTag(UNIVERSITIES_CACHE_TAG)
+    revalidateTag(UNIVERSITIES_CACHE_TAG, "max")
     return NextResponse.json(result);
 
   } catch (error) {
@@ -642,7 +642,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
       where: { id },
     });
 
-    revalidateTag(UNIVERSITIES_CACHE_TAG)
+    revalidateTag(UNIVERSITIES_CACHE_TAG, "max")
     return NextResponse.json({ message: "University deleted successfully" })
   } catch (error) {
     console.error("[DELETE_UNIVERSITY_ERROR]", error)

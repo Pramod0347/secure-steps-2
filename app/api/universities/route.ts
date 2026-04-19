@@ -481,7 +481,7 @@ export async function POST(req: Request): Promise<NextResponse> {
     })
 
 
-    revalidateTag(UNIVERSITIES_CACHE_TAG)
+    revalidateTag(UNIVERSITIES_CACHE_TAG, "max")
     return NextResponse.json(university, { status: 201 })
   } catch (error) {
     console.error("[POST_UNIVERSITY_ERROR]", error)
@@ -702,7 +702,7 @@ export async function PUT(req: Request): Promise<NextResponse> {
         },
       });
 
-      revalidateTag(UNIVERSITIES_CACHE_TAG)
+      revalidateTag(UNIVERSITIES_CACHE_TAG, "max")
       return NextResponse.json(updatedUniversity);
     } catch (dbError) {
       console.error("Database operation error:", dbError);
@@ -831,7 +831,7 @@ export async function DELETE(req: Request): Promise<NextResponse> {
       }
     )
 
-    revalidateTag(UNIVERSITIES_CACHE_TAG)
+    revalidateTag(UNIVERSITIES_CACHE_TAG, "max")
     return NextResponse.json({ message: "University deleted successfully" })
   } catch (error) {
     console.error("[DELETE_UNIVERSITY_ERROR]", error)

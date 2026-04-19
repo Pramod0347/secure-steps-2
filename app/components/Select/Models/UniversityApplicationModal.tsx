@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { ChevronDown, X } from 'lucide-react';
+import { trackGoogleAdsConversion } from '@/app/lib/analytics/googleAds';
 
 export interface Course {
     id: string;
@@ -144,6 +145,7 @@ const UniversityApplicationModal = ({
             }
 
             toast.success("Application submitted successfully");
+            trackGoogleAdsConversion();
             onClose();
         } catch (err) {
             toast.error(err instanceof Error ? err.message : "Something went wrong");
