@@ -3,6 +3,7 @@
 // import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Home/Footer";
@@ -11,6 +12,7 @@ import AuthWrapper from "@/app/context/AuthWrapper";
 // import { SessionProvider } from 'next-auth/react'
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from "sonner";
+import { GOOGLE_ADS_ID } from "@/app/lib/analytics/googleAds";
 
 // Inter font for the entire app
 const inter = Inter({
@@ -67,6 +69,20 @@ export default function RootLayout({
         ></script>
       </head>
       <body className={`antialiased min-h-screen flex flex-col overflow-x-hidden ${inter.className}`}>
+          <Script
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
+            strategy="afterInteractive"
+          />
+          <Script id="google-ads-config" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              window.gtag = gtag;
+              gtag('js', new Date());
+              gtag('config', '${GOOGLE_ADS_ID}');
+            `}
+          </Script>
 
           <AuthProvider>
             <AuthWrapper>

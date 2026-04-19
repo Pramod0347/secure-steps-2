@@ -100,10 +100,19 @@ export default function BlogManager() {
         body: formData,
       })
 
-      const result = await response.json()
+      const responseText = await response.text()
+      let result: { error?: string } = {}
+      if (responseText) {
+        try {
+          result = JSON.parse(responseText)
+        } catch {
+          // Non-JSON responses can happen for infra-level upload limits.
+          result = { error: responseText }
+        }
+      }
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to upload blog")
+        throw new Error(result.error || `Failed to upload blog (HTTP ${response.status})`)
       }
 
       showNotification("success", "Blog uploaded successfully")

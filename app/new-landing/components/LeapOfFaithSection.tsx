@@ -81,7 +81,7 @@ const StatCard = ({
       className="flex flex-col items-center"
     >
       <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full border-2 border-gray-200 flex items-center justify-center mb-2 hover:border-gray-400 transition-colors">
-        <span className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+        <span className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-gray-900">
           <AnimatedCounter
             value={stat.value}
             suffix={stat.suffix}

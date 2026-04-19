@@ -24,9 +24,22 @@ const UPLOAD_CONFIG = {
     "image/bmp",
     "image/tiff",
   ],
-  allowedPdfType: "application/pdf",
+  allowedPdfTypes: [
+    "application/pdf",
+    "application/x-pdf",
+    "application/acrobat",
+    "applications/vnd.pdf",
+    "text/pdf",
+    "application/octet-stream",
+  ],
   maxPdfSizeInMB: 20, // Slightly larger limit for PDFs
 };
+
+function isPdfFile(file: File) {
+  const mimeType = file.type?.toLowerCase() || "";
+  const hasPdfExtension = file.name.toLowerCase().endsWith(".pdf");
+  return UPLOAD_CONFIG.allowedPdfTypes.includes(mimeType) || hasPdfExtension;
+}
 
 function validateFile(file: File, fileType: string) {
   if (!file) {
@@ -47,7 +60,7 @@ function validateFile(file: File, fileType: string) {
       throw new Error(`Image size should be less than ${UPLOAD_CONFIG.maxSizeInMB}MB`)
     }
   } else if (fileType === "pdf") {
-    if (file.type !== UPLOAD_CONFIG.allowedPdfType) {
+    if (!isPdfFile(file)) {
       throw new Error("Please upload a valid PDF file")
     }
     
@@ -61,6 +74,15 @@ function validateFile(file: File, fileType: string) {
 
 export async function POST(req: NextRequest) {
   try {
+    const endpoint = process.env.CLOUDFLARE_END_POINT;
+    const accessKey = process.env.CLOUDFLARE_ACCESS_KEY;
+    const secretKey = process.env.CLOUDFLARE_SECRET_KEY;
+    const publicUrl = process.env.CLOUDFLARE_PUBLIC_URL;
+
+    if (!endpoint || !accessKey || !secretKey || !publicUrl) {
+      throw new Error("Cloudflare R2 is not configured. Missing one or more CLOUDFLARE_* env variables.")
+    }
+
     const formData = await req.formData()
     const file = formData.get("file") as File
     const fileType = formData.get("type") as string // Expected to be either "image" or "pdf"
@@ -81,7 +103,7 @@ export async function POST(req: NextRequest) {
     await r2Client.send(command)
     
     // Use the r2.dev public URL that's already active
-    const fileUrl = `${process.env.CLOUDFLARE_PUBLIC_URL}/${fileName}`
+    const fileUrl = `${publicUrl}/${encodeURIComponent(fileName).replace(/%2F/g, "/")}`
     
     
     return NextResponse.json({ 
@@ -94,7 +116,8 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Error uploading to Cloudflare R2:", error)
     if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      const status = error.message.startsWith("Please") || error.message.startsWith("Unsupported") ? 400 : 500
+      return NextResponse.json({ error: error.message }, { status })
     }
     return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 })
   }
