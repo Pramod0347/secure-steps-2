@@ -44,7 +44,8 @@ const initialState: QuizState = {
 
 export default function QuizPage() {
   const router = useRouter()
-  const { login } = useAuth()
+  const { login, isAuthenticated, isInitialized } = useAuth()
+  const [submitError, setSubmitError] = useState("")
   const [state, setState] = useState<QuizState>(() => {
     if (typeof window !== "undefined") {
       try {
@@ -60,6 +61,12 @@ export default function QuizPage() {
   const [isBlurred, setIsBlurred] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [selectionDelay, setSelectionDelay] = useState(false)
+
+  useEffect(() => {
+    if (isInitialized && isAuthenticated) {
+      router.replace("/profile")
+    }
+  }, [isAuthenticated, isInitialized, router])
 
   useEffect(() => {
     if (state.stage < 0 || state.stage >= AuthQuestion.length) {
@@ -87,6 +94,7 @@ export default function QuizPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSubmitError("")
 
     const currentQuestion = AuthQuestion[state.stage]
     if (!currentQuestion) {
@@ -162,7 +170,9 @@ export default function QuizPage() {
             registrationData,
           }))
         } else {
-          toast.error(data.message || "Registration failed")
+          if (data.errorCode === "EMAIL_SEND_FAILED") {
+            throw new Error("We couldn't send the OTP email right now. Please check your email address and try again in a moment.")
+          }
           throw new Error(data.message || "Registration failed")
         }
       } else if (state.stage === AuthQuestion.length - 1) {
@@ -202,13 +212,14 @@ export default function QuizPage() {
       }
     } catch (error) {
       console.error("Operation failed", error)
-      toast.error(error instanceof Error ? error.message : "Operation failed. Please try again.")
+      const message = error instanceof Error ? error.message : "Operation failed. Please try again."
+      setSubmitError(message)
+      toast.error(message)
     } finally {
       setIsBlurred(false)
       setIsTransitioning(false)
       setState((prev) => ({ ...prev, isTransitioning: false }))
       setSelectionDelay(false)
-      toast.dismiss()
     }
   }
 
@@ -461,6 +472,11 @@ export default function QuizPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6 pb-8 md:pb-16">
             {renderQuestion()}
+            {submitError && (
+              <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                {submitError}
+              </p>
+            )}
             {state.stage === AuthQuestion.length - 1 && (
               <button
                 type="submit"

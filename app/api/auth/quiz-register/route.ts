@@ -117,7 +117,31 @@ export async function POST(req: NextRequest) {
             console.log("Temporary OTP created successfully. Sending verification email...");
 
             try {
-                await sendVerificationEmail(result.email, result.otpCode);
+                const emailSent = await sendVerificationEmail(result.email, result.otpCode);
+
+                if (!emailSent) {
+                    console.error("Verification email was not sent (sendVerificationEmail returned false)");
+
+                    // Invalidate the generated OTP if mail delivery failed
+                    await prisma.oTP.updateMany({
+                        where: {
+                            userId: "temp_" + result.tempRegistrationToken,
+                            otpCode: result.otpCode,
+                            verified: false,
+                            invalidated: false,
+                        },
+                        data: {
+                            invalidated: true,
+                        },
+                    });
+
+                    return NextResponse.json({
+                        success: false,
+                        message: "Failed to send verification email. Please try again.",
+                        errorCode: "EMAIL_SEND_FAILED"
+                    }, { status: 500 });
+                }
+
                 console.log("Verification email sent successfully");
             } catch (emailError) {
                 console.error("Failed to send verification email:", emailError);
