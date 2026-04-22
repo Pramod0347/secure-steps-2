@@ -107,8 +107,9 @@ const HeroSection = () => {
 
           <Link
             href="tel:+917093568336"
-            className="hidden sm:inline-flex w-full sm:w-auto items-center justify-center text-center px-7 py-3.5 bg-rose-100/80 backdrop-blur-md text-gray-900 font-medium rounded-full border border-white/90 hover:bg-rose-200/80 transition-all duration-300 hover:scale-105 shadow-[0_0_15px_rgba(255,255,255,0.5)] hover:shadow-[0_0_20px_rgba(255,255,255,0.7)]"
+            className="inline-flex w-full sm:w-auto items-center justify-center text-center px-7 py-3.5 bg-rose-100/80 backdrop-blur-md text-gray-900 font-medium rounded-full border border-white/90 hover:bg-rose-200/80 transition-all duration-300 hover:scale-105 shadow-[0_0_15px_rgba(255,255,255,0.5)] hover:shadow-[0_0_20px_rgba(255,255,255,0.7)]"
           >
+            <Phone size={16} className="mr-2" />
             Contact Us
           </Link>
         </motion.div>
@@ -116,15 +117,6 @@ const HeroSection = () => {
 
       {/* Bottom fade */}
       <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white via-white/80 to-transparent" />
-
-      <Link
-        href="tel:+917093568336"
-        aria-label="Contact us"
-        className="sm:hidden absolute bottom-6 right-4 z-20 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-300/60 transition-transform duration-300 hover:scale-105"
-      >
-        <Phone size={20} />
-        <span>Contact Us</span>
-      </Link>
     </section>
   );
 };
