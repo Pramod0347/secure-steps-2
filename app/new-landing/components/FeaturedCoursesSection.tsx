@@ -19,6 +19,8 @@ interface Course {
     name: string;
     slug?: string;
     logoUrl?: string;
+    banner?: string;
+    imageUrls?: string[];
   };
 }
 
@@ -147,83 +149,98 @@ const FeaturedCoursesSection = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-            {displayCourses.slice(0, 6).map((course, index) => (
-              <motion.div
-                key={course.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <Link 
-                  href={`/select/${course.university.slug || course.university.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`}
-                  className="block group"
+            {displayCourses.slice(0, 6).map((course, index) => {
+              // Prefer richer university images; fall back to logo, then gradient-only background.
+              const universityImage =
+                course.university.banner ||
+                course.university.imageUrls?.[0] ||
+                course.university.logoUrl ||
+                "";
+
+              return (
+                <motion.div
+                  key={course.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}
                 >
-                  <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-white border border-gray-200 hover:border-gray-300 hover:shadow-xl transition-all duration-500 hover:-translate-y-1 sm:hover:-translate-y-2 h-full">
-                    {/* Course Banner */}
-                    <div
-                      className={`h-32 sm:h-40 bg-gradient-to-br ${gradients[index % gradients.length]} relative overflow-hidden`}
-                    >
-                      <div className="absolute inset-0 bg-black/10" />
-                      {/* University badge */}
-                      <div className="absolute top-4 left-4 right-4">
-                        <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/95 backdrop-blur-sm rounded-full text-gray-900 text-xs font-medium shadow-sm">
-                          <div className="w-5 h-5 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-[10px] font-bold">
-                            {course.university.name.charAt(0)}
-                          </div>
-                          {course.university.name}
-                        </span>
+                  <Link
+                    href={`/select/${course.university.slug || course.university.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`}
+                    className="block group"
+                  >
+                    <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-white border border-gray-200 hover:border-gray-300 hover:shadow-xl transition-all duration-500 hover:-translate-y-1 sm:hover:-translate-y-2 h-full">
+                      {/* Course Banner */}
+                      <div
+                        className={`h-32 sm:h-40 bg-gradient-to-br ${gradients[index % gradients.length]} relative overflow-hidden`}
+                      >
+                        {universityImage && (
+                          <div
+                            className="absolute inset-0 bg-cover bg-center"
+                            style={{ backgroundImage: `url(${universityImage})` }}
+                          />
+                        )}
+                        <div className="absolute inset-0 bg-black/20" />
+                        {/* University badge */}
+                        <div className="absolute top-4 left-4 right-4">
+                          <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/95 backdrop-blur-sm rounded-full text-gray-900 text-xs font-medium shadow-sm">
+                            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-[10px] font-bold">
+                              {course.university.name.charAt(0)}
+                            </div>
+                            {course.university.name}
+                          </span>
+                        </div>
+                        {/* Degree type badge */}
+                        <div className="absolute bottom-4 right-4">
+                          <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-gray-900 text-xs font-medium">
+                            {course.degreeType || "PG Degree"}
+                          </span>
+                        </div>
                       </div>
-                      {/* Degree type badge */}
-                      <div className="absolute bottom-4 right-4">
-                        <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-gray-900 text-xs font-medium">
-                          {course.degreeType || "PG Degree"}
-                        </span>
+
+                      {/* Course Content */}
+                      <div className="p-4 sm:p-6">
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors line-clamp-2">
+                          {course.name}
+                        </h3>
+
+                        {course.description && (
+                          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                            {course.description}
+                          </p>
+                        )}
+
+                        {/* Course Details */}
+                        <div className="flex flex-wrap items-center gap-3 mb-4">
+                          {course.duration && (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium">
+                              <Clock className="w-3 h-3" />
+                              {course.duration}
+                            </span>
+                          )}
+                          {course.fees && (
+                            <span className="px-2.5 py-1 bg-green-50 text-green-700 rounded-full text-xs font-medium">
+                              {course.fees}
+                            </span>
+                          )}
+                          {course.ieltsScore && (
+                            <span className="px-2.5 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-medium">
+                              IELTS: {course.ieltsScore}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* CTA */}
+                        <div className="flex items-center text-purple-600 text-sm font-medium group-hover:text-purple-700">
+                          View University
+                          <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
+                        </div>
                       </div>
                     </div>
-
-                    {/* Course Content */}
-                    <div className="p-4 sm:p-6">
-                      <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors line-clamp-2">
-                        {course.name}
-                      </h3>
-
-                      {course.description && (
-                        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                          {course.description}
-                        </p>
-                      )}
-
-                      {/* Course Details */}
-                      <div className="flex flex-wrap items-center gap-3 mb-4">
-                        {course.duration && (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium">
-                            <Clock className="w-3 h-3" />
-                            {course.duration}
-                          </span>
-                        )}
-                        {course.fees && (
-                          <span className="px-2.5 py-1 bg-green-50 text-green-700 rounded-full text-xs font-medium">
-                            {course.fees}
-                          </span>
-                        )}
-                        {course.ieltsScore && (
-                          <span className="px-2.5 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-medium">
-                            IELTS: {course.ieltsScore}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* CTA */}
-                      <div className="flex items-center text-purple-600 text-sm font-medium group-hover:text-purple-700">
-                        View University
-                        <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
+                  </Link>
+                </motion.div>
+              );
+            })}
           </div>
         )}
 

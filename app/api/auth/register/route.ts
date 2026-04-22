@@ -98,7 +98,20 @@ export async function POST(req: NextRequest) {
       return { userId: user.id, email: user.email, otpCode: otpCode };
     });
 
-    await sendVerificationEmail(result.email, result.otpCode);
+    const emailSent = await sendVerificationEmail(result.email, result.otpCode);
+
+    if (!emailSent) {
+      // Avoid creating a stuck account when OTP email delivery fails.
+      await prisma.user.delete({
+        where: { id: result.userId },
+      });
+
+      return NextResponse.json({
+        success: false,
+        message: "We couldn't send the verification email. Please try again.",
+        errorCode: "EMAIL_SEND_FAILED",
+      }, { status: 500 });
+    }
 
     return NextResponse.json({
       success: true,

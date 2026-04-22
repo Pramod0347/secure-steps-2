@@ -214,7 +214,10 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUpComplete }) => {
                 toast.success("OTP sent to your email.");
                 onSignUpComplete(data.data.userId);
             } else {
-                throw new Error(data.message);
+                if (data.errorCode === "EMAIL_SEND_FAILED") {
+                    throw new Error("We couldn't send the OTP email right now. Please check your email address and try again in a moment.");
+                }
+                throw new Error(data.message || "Registration failed. Please try again.");
             }
         } catch (err) {
             const error = err as Error;
@@ -449,4 +452,3 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUpComplete }) => {
 };
 
 export default SignUpForm;
-

@@ -32,6 +32,8 @@ export async function GET() {
             name: true,
             slug: true,
             logoUrl: true,
+            banner: true,
+            imageUrls: true,
           },
         },
       },

@@ -2,7 +2,6 @@
 
 // import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Navbar from "./components/Navbar";
@@ -13,13 +12,20 @@ import AuthWrapper from "@/app/context/AuthWrapper";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from "sonner";
 import { GOOGLE_ADS_ID } from "@/app/lib/analytics/googleAds";
+import { BRAND_ASSETS } from "@/app/lib/constants";
 
-// Inter font for the entire app
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+// Local Inter font to avoid runtime dependency on Google Fonts
+const inter = localFont({
+  src: [
+    {
+      path: "./assets/Inter.ttf",
+      weight: "100 900",
+      style: "normal",
+    },
+  ],
   variable: "--font-inter",
   display: "swap",
+  fallback: ["system-ui", "arial"],
 });
 
 // this is comment//
@@ -62,6 +68,8 @@ export default function RootLayout({
       className={`${inter.variable} ${geistSans.variable} ${geistMono.variable}`}
     >
       <head>
+        <link rel="icon" href={BRAND_ASSETS.LOGO_URL} type="image/png" />
+        <link rel="apple-touch-icon" href={BRAND_ASSETS.LOGO_URL} />
         {/* Add global head tags like meta tags, styles, and Google script */}
         <script
           async
