@@ -67,6 +67,12 @@ const FAQSchema = z.object({
   answer: z.string(),
 });
 
+const StudentReviewSchema = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  review: z.string(),
+});
+
 // Updated UniversitySchema
 export const UniversitySchema = z.object({
   id: z.string().optional(),
@@ -83,6 +89,7 @@ export const UniversitySchema = z.object({
   imageUrls: z.array(z.string()),
   facilities: z.array(z.string()),
   youtubeLink: z.string().nullable().optional(),
+  studentReviews: z.array(StudentReviewSchema).optional(),
   careerOutcomes: z.array(CareerOutcomeSchema).optional(),
   faqs: z.array(FAQSchema).optional(),
   courses: z.array(CourseSchema).optional(),
@@ -148,3 +155,4 @@ export type CareerOutcome = z.infer<typeof CareerOutcomeSchema>;
 export type SalaryChartData = z.infer<typeof SalaryChartDataSchema>;
 export type EmploymentRateMeterData = z.infer<typeof EmploymentRateMeterDataSchema>;
 export type CourseTimelineData = z.infer<typeof CourseTimelineDataSchema>;
+export type StudentReview = z.infer<typeof StudentReviewSchema>;

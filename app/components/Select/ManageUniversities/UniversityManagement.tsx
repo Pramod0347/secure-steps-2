@@ -39,6 +39,7 @@ export interface UniversityInterface {
   logoUrl: string | null
   imageUrls: string[]
   facilities: string[]
+  studentReviews?: { id?: string; name: string; review: string }[]
   courses: CourseInterface[]
   faqs?: FAQ[]
   careerOutcomes?: CareerOutcome[]

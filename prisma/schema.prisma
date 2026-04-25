@@ -114,6 +114,7 @@ model University {
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  studentReviews   Json?    
 }
 
 model Course {

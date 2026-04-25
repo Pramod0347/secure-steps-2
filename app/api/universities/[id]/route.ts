@@ -8,6 +8,24 @@ import { revalidateTag, unstable_cache } from "next/cache"
 const UNIVERSITIES_CACHE_TAG = "universities"
 const SEVEN_DAYS_IN_SECONDS = 60 * 60 * 24 * 7
 
+const sanitizeStudentReviewsForJson = (reviews: unknown) => {
+  if (!Array.isArray(reviews)) return undefined
+  return reviews
+    .filter((item) => typeof item === "object" && item !== null)
+    .map((item) => {
+      const reviewItem = item as { id?: unknown; name?: unknown; review?: unknown }
+      const base = {
+        name: typeof reviewItem.name === "string" ? reviewItem.name.trim() : "",
+        review: typeof reviewItem.review === "string" ? reviewItem.review.trim() : "",
+      }
+      if (!base.name || !base.review) return null
+      return typeof reviewItem.id === "string" && reviewItem.id.trim()
+        ? { ...base, id: reviewItem.id.trim() }
+        : base
+    })
+    .filter(Boolean)
+}
+
 const getUniversityByIdCached = unstable_cache(
   async (id: string) => {
     return prisma.university.findUnique({
@@ -205,6 +223,9 @@ export async function PUT(req: Request, { params }: { params: { id: string } }):
     if (validatedData.logoUrl !== undefined) updateData.logoUrl = validatedData.logoUrl;
     if (validatedData.imageUrls !== undefined) updateData.imageUrls = validatedData.imageUrls;
     if (validatedData.facilities !== undefined) updateData.facilities = validatedData.facilities;
+    if (validatedData.studentReviews !== undefined) {
+      updateData.studentReviews = sanitizeStudentReviewsForJson(validatedData.studentReviews);
+    }
     if (validatedData.youtubeLink !== undefined) updateData.youtubeLink = validatedData.youtubeLink;
 
     if (slug !== existingUniversity.slug) {

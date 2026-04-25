@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NewSecuresteps
 
-## Getting Started
+NewSecuresteps is a Next.js (App Router) platform with multiple product areas:
+- Student onboarding and authentication
+- University discovery/application workflows (`select`)
+- Accommodation workflows (`stay`)
+- Networking/social modules (`connect`)
+- Community and lender modules
+- Profile management and document/journey tracking
 
-First, run the development server:
+## Tech Stack
+- Next.js + React + TypeScript
+- Tailwind CSS
+- Prisma
+- Zustand
+- NextAuth-style auth/session flows with custom API routes
+- Upstash Redis (rate limiting)
+- AWS S3 integrations for uploads
 
+## Database
+- Primary database: PostgreSQL
+- ORM: Prisma (`prisma/schema.prisma`, `app/lib/prisma.ts`)
+- Connection env: `DATABASE_URL`
+- Edge/accelerated Prisma client: `app/lib/prisma-edge.ts` (Prisma Accelerate extension)
+
+## Other Data Stores
+- Redis (Upstash) for API/auth rate limiting (`app/lib/rate-limit.ts`, `app/lib/middleware/rate-limit.ts`)
+
+## Setup
+1. Install dependencies:
+```bash
+npm install
+```
+2. Configure environment variables:
+- Copy values from `env-template.txt`
+- Put local secrets in `.env.local` (and/or `.env` as needed)
+
+3. Run development server:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
+- `npm run dev` -> start dev server
+- `npm run build` -> generate Prisma client and build app
+- `npm run start` -> run production server
+- `npm run lint` -> run ESLint
+- `npm run backup:db` -> run `backup-db.js`
+- `npm run restore:db` -> run `restore-db.js`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Map
+Use [`AGENTS.md`](./AGENTS.md) for a full feature-to-path map, including:
+- all frontend routes
+- all API endpoints
+- feature module folders
+- shared libs, store, hooks, and infra paths
+- scripts/docs/build artifacts
 
-## Learn More
+## Important Paths
+- App root layout: `app/layout.tsx`
+- Home page: `app/page.tsx`
+- API routes: `app/api/**/route.ts`
+- Prisma schema: `prisma/schema.prisma`
+- Prisma client setup: `app/lib/prisma.ts`, `app/lib/prisma-edge.ts`
+- Global app store: `store/universitystore.tsx`
+- Shared app libs: `app/lib/*`
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Notes
+- Keep generated outputs (`.next`, `src/generated/prisma-client`, `tsconfig.tsbuildinfo`) out of manual edits.
+- DB backup/restore scripts are operational tools and should be run intentionally.

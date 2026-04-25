@@ -86,8 +86,7 @@ export function CourseEditModal({ isOpen, onClose, course, onSave, onImageUpload
   }, [course])
 
   const handleSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault()
+    async () => {
       setIsSubmitting(true)
       try {
         await onSave(editedCourse)
@@ -161,7 +160,7 @@ export function CourseEditModal({ isOpen, onClose, course, onSave, onImageUpload
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={course ? "Edit Course" : "Add Course"}>
-      <form onSubmit={(e) => e.preventDefault()} className="space-y-2">
+      <div className="space-y-2">
         <ImageUpload
           value={null}
           onChange={handleImageChange}
@@ -317,7 +316,7 @@ export function CourseEditModal({ isOpen, onClose, course, onSave, onImageUpload
             )}
           </Button>
         </div>
-      </form>
+      </div>
     </Modal>
   )
 }

@@ -16,6 +16,24 @@ export interface PaginationParams {
 const UNIVERSITIES_CACHE_TAG = "universities"
 const SEVEN_DAYS_IN_SECONDS = 60 * 60 * 24 * 7
 
+const sanitizeStudentReviewsForJson = (reviews: unknown) => {
+  if (!Array.isArray(reviews)) return undefined
+  return reviews
+    .filter((item) => typeof item === "object" && item !== null)
+    .map((item) => {
+      const reviewItem = item as { id?: unknown; name?: unknown; review?: unknown }
+      const base = {
+        name: typeof reviewItem.name === "string" ? reviewItem.name.trim() : "",
+        review: typeof reviewItem.review === "string" ? reviewItem.review.trim() : "",
+      }
+      if (!base.name || !base.review) return null
+      return typeof reviewItem.id === "string" && reviewItem.id.trim()
+        ? { ...base, id: reviewItem.id.trim() }
+        : base
+    })
+    .filter(Boolean)
+}
+
 const fullIncludeClause = {
   courses: true,
   applications: true,
@@ -57,6 +75,7 @@ const paginatedSelectClause = {
   slug: true,
   banner: true,
   imageUrls: true,
+  studentReviews: true,
   location: true,
   country: true,
   established: true,
@@ -341,6 +360,7 @@ export async function POST(req: Request): Promise<NextResponse> {
           logoUrl: validatedData.logoUrl,
           imageUrls: validatedData.imageUrls,
           facilities: validatedData.facilities,
+          studentReviews: sanitizeStudentReviewsForJson(validatedData.studentReviews),
           youtubeLink: validatedData.youtubeLink,
           slug: finalSlug,
           courses: {
@@ -619,6 +639,9 @@ export async function PUT(req: Request): Promise<NextResponse> {
         ...(validatedData.logoUrl !== undefined && { logoUrl: validatedData.logoUrl }),
         ...(validatedData.imageUrls !== undefined && { imageUrls: validatedData.imageUrls }),
         ...(validatedData.facilities !== undefined && { facilities: validatedData.facilities }),
+        ...(validatedData.studentReviews !== undefined && {
+          studentReviews: sanitizeStudentReviewsForJson(validatedData.studentReviews),
+        }),
         
         // CRITICAL FIX: Force include youtubeLink if it exists in the original request body
         ...(hasYoutubeLinkField && { youtubeLink: body.youtubeLink }),

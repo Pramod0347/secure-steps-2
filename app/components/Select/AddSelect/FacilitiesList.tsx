@@ -7,22 +7,23 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
 interface FacilitiesListProps {
-  facilities: string[]
+  facilities?: string[]
   onChange: (facilities: string[]) => void
 }
 
 export function FacilitiesList({ facilities, onChange }: FacilitiesListProps) {
+  const safeFacilities = Array.isArray(facilities) ? facilities : []
   const [newFacility, setNewFacility] = useState("")
 
   const addFacility = () => {
     if (newFacility.trim()) {
-      onChange([...facilities, newFacility.trim()])
+      onChange([...safeFacilities, newFacility.trim()])
       setNewFacility("")
     }
   }
 
   const removeFacility = (index: number) => {
-    onChange(facilities.filter((_, i) => i !== index))
+    onChange(safeFacilities.filter((_, i) => i !== index))
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -52,7 +53,7 @@ export function FacilitiesList({ facilities, onChange }: FacilitiesListProps) {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {facilities.map((facility, index) => (
+        {safeFacilities.map((facility, index) => (
           <div key={index} className="flex items-center gap-2 bg-gray-200 px-3 py-1.5 rounded-lg text-sm">
             <span className="line-clamp-1">{facility}</span>
             <button
@@ -68,4 +69,3 @@ export function FacilitiesList({ facilities, onChange }: FacilitiesListProps) {
     </div>
   )
 }
-
