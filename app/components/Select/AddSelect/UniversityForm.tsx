@@ -8,6 +8,7 @@ import { CourseForm, type Course } from "./CourseForm"
 import { CourseCard } from "./CourseCard"
 import { FAQForm, type FAQ } from "./FAQForm"
 import { CareerOutcomesForm, CareerOutcome } from "./CareerOutcomesForm"
+import { StudentReviewsForm, type StudentReview } from "./StudentReviewsForm"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Loader2, Plus, Save } from "lucide-react"
@@ -26,11 +27,23 @@ interface University {
   logoUrl: string | null
   imageUrls: string[]
   facilities: string[]
+  studentReviews: StudentReview[]
   courses: Course[]
   faqs: FAQ[]
   careerOutcomes: CareerOutcome[]
   youtubeLink?: string
 }
+
+const sanitizeStudentReviews = (reviews: StudentReview[] = []) =>
+  reviews
+    .filter((item) => item?.name?.trim() && item?.review?.trim())
+    .map((item) => {
+      const base = {
+        name: item.name.trim(),
+        review: item.review.trim(),
+      }
+      return item.id ? { ...base, id: String(item.id) } : base
+    })
 
 const FORM_STORAGE_KEY = "universityFormData"
 
@@ -45,6 +58,7 @@ const initialUniversityState: University = {
   logoUrl: null,
   imageUrls: [],
   facilities: [],
+  studentReviews: [],
   courses: [],
   faqs: [],
   careerOutcomes: [],
@@ -64,7 +78,11 @@ export function UniversityForm() {
     if (storedData) {
       const parsedData = JSON.parse(storedData)
       setUniversities(parsedData.universities || [])
-      setCurrentUniversity(parsedData.currentUniversity || initialUniversityState)
+      setCurrentUniversity({
+        ...initialUniversityState,
+        ...(parsedData.currentUniversity || {}),
+        studentReviews: parsedData.currentUniversity?.studentReviews || [],
+      })
       setHasAnyCourses(parsedData.currentUniversity?.courses?.length > 0 || false)
     }
   }, [])
@@ -191,6 +209,7 @@ export function UniversityForm() {
         logoUrl: currentUniversity.logoUrl || undefined, // Convert null to undefined
         imageUrls: currentUniversity.imageUrls || [],
         facilities: currentUniversity.facilities || [],
+        studentReviews: sanitizeStudentReviews(currentUniversity.studentReviews),
         courses: cleanedCourses,
         // Only include youtubeLink if it has a value
         ...(currentUniversity.youtubeLink && currentUniversity.youtubeLink.trim() 
@@ -280,6 +299,13 @@ export function UniversityForm() {
     }))
   }
 
+  const handleStudentReviewsChange = (studentReviews: StudentReview[]) => {
+    setCurrentUniversity((prev) => ({
+      ...prev,
+      studentReviews,
+    }))
+  }
+
   const handleCareerIconUpload = async (file: File): Promise<string> => {
     return await handleImageUpload(file, "career-icon")
   }
@@ -355,6 +381,7 @@ export function UniversityForm() {
         logoUrl: currentUniversity.logoUrl || undefined, // Convert null to undefined
         imageUrls: currentUniversity.imageUrls || [],
         facilities: currentUniversity.facilities || [],
+        studentReviews: sanitizeStudentReviews(currentUniversity.studentReviews),
         courses: cleanedCourses,
         // Only include youtubeLink if it has a value
         ...(currentUniversity.youtubeLink && currentUniversity.youtubeLink.trim() 
@@ -615,6 +642,12 @@ export function UniversityForm() {
           />
         </div>
 
+        <StudentReviewsForm
+          reviews={currentUniversity.studentReviews}
+          onChange={handleStudentReviewsChange}
+          disabled={isSubmitting}
+        />
+
         {/* Courses Section */}
         <div className="space-y-6">
           <div className="border-b pb-4">
@@ -688,6 +721,7 @@ export function UniversityForm() {
               <div className="flex gap-4 text-sm text-gray-500 mt-2">
                 <span>Courses: {university.courses?.length || 0}</span>
                 <span>FAQs: {university.faqs?.length || 0}</span>
+                <span>Reviews: {university.studentReviews?.length || 0}</span>
                 <span>Career Outcomes: {university?.careerOutcomes?.length} || 0</span>
               </div>
             </div>

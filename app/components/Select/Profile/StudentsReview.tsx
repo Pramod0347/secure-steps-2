@@ -7,27 +7,44 @@ import Image from "next/image"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import type { UniversityInterface } from "@/store/universitystore"
 
-// Sample student review data
-const studentReviews = [
+type StudentReviewItem = {
+  id: string
+  name: string
+  review: string
+}
+
+const defaultStudentReviews: StudentReviewItem[] = [
   {
-    id: 1,
+    id: "1",
     name: "Alex Johnson",
     review:
       "The university provided me with exceptional learning opportunities and helped me grow both academically and personally.",
   },
   {
-    id: 2,
+    id: "2",
     name: "Sarah Williams",
     review: "I found the professors to be incredibly knowledgeable and supportive throughout my academic journey.",
   },
   {
-    id: 3,
+    id: "3",
     name: "Michael Chen",
     review: "The campus facilities and resources available to students are outstanding. I had a wonderful experience.",
   },
 ]
 
 export default function StudentReviewCarousel({ university }: { university: UniversityInterface }) {
+  const dbReviews: StudentReviewItem[] = Array.isArray(university?.studentReviews)
+    ? university.studentReviews
+        .filter((item) => item?.name?.trim() && item?.review?.trim())
+        .map((item, index) => ({
+          id: item.id ? String(item.id) : `review-${index}`,
+          name: item.name,
+          review: item.review,
+        }))
+    : []
+
+  const reviews: StudentReviewItem[] = dbReviews.length > 0 ? dbReviews : defaultStudentReviews
+
   const [currentIndex, setCurrentIndex] = useState(0)
   const [touchStart, setTouchStart] = useState<number | null>(null)
   const [touchEnd, setTouchEnd] = useState<number | null>(null)
@@ -38,7 +55,7 @@ export default function StudentReviewCarousel({ university }: { university: Univ
   const nextReview = () => {
     if (isAnimating) return
     setIsAnimating(true)
-    setCurrentIndex((prevIndex) => (prevIndex === studentReviews.length - 1 ? 0 : prevIndex + 1))
+    setCurrentIndex((prevIndex) => (prevIndex === reviews.length - 1 ? 0 : prevIndex + 1))
     setTimeout(() => setIsAnimating(false), 500) // Match the transition duration
   }
 
@@ -46,7 +63,7 @@ export default function StudentReviewCarousel({ university }: { university: Univ
   const prevReview = () => {
     if (isAnimating) return
     setIsAnimating(true)
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? studentReviews.length - 1 : prevIndex - 1))
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? reviews.length - 1 : prevIndex - 1))
     setTimeout(() => setIsAnimating(false), 500) // Match the transition duration
   }
 
@@ -109,7 +126,7 @@ export default function StudentReviewCarousel({ university }: { university: Univ
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          {studentReviews.map((review, index) => (
+          {reviews.map((review, index) => (
             <div key={review.id} className="w-full flex-shrink-0">
               <div
                 className="flex flex-col md:flex-row items-center p-4 md:p-8 border border-gray-700 rounded-lg relative"
@@ -159,7 +176,7 @@ export default function StudentReviewCarousel({ university }: { university: Univ
 
         {/* Navigation dots */}
         <div className="absolute bottom-2 md:bottom-4 left-0 right-0 flex justify-center gap-1 md:gap-2">
-          {studentReviews.map((_, index) => (
+          {reviews.map((_, index) => (
             <button
               key={index}
               className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full ${index === currentIndex ? "bg-white" : "bg-gray-500"}`}

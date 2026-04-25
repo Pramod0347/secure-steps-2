@@ -16,6 +16,7 @@ import { isEqual } from "lodash"
 import { CourseEditModal } from "../Models/CourseEditModal"
 import CareerOutcomesForm, { CareerOutcomeData } from "../AddSelect/CareerOutcomesForm"
 import { FAQ, FAQForm } from "../AddSelect/FAQForm"
+import { StudentReview, StudentReviewsForm } from "../AddSelect/StudentReviewsForm"
 
 
 interface EditUniversityFormProps {
@@ -23,6 +24,17 @@ interface EditUniversityFormProps {
   onUniversityUpdated?: () => void
   setIsEditFormDirty: (isDirty: boolean) => void
 }
+
+const sanitizeStudentReviews = (reviews: StudentReview[] = []) =>
+  reviews
+    .filter((item) => item?.name?.trim() && item?.review?.trim())
+    .map((item) => {
+      const base = {
+        name: item.name.trim(),
+        review: item.review.trim(),
+      }
+      return item.id ? { ...base, id: String(item.id) } : base
+    })
 
 const FORM_STORAGE_KEY = "editUniversityFormData"
 
@@ -213,6 +225,15 @@ export function EditUniversityForm({ university, onUniversityUpdated, setIsEditF
       ...universityData,
       established: universityData.established,
       careerOutcomeData, // New single career outcome data structure
+      studentReviews: Array.isArray((universityData as any).studentReviews)
+        ? (universityData as any).studentReviews
+            .filter((item: StudentReview) => item?.name && item?.review)
+            .map((item: StudentReview) => ({
+              id: item.id ? String(item.id) : undefined,
+              name: item.name,
+              review: item.review,
+            }))
+        : [],
       faqs: Array.isArray(universityData.faqs) && universityData.faqs.length > 0
         ? universityData.faqs.map((faq: any) => ({
             ...faq,
@@ -289,6 +310,15 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
         const processedData = {
           ...parsedData,
           careerOutcomeData: careerOutcomeData || null,
+          studentReviews: Array.isArray(parsedData.studentReviews)
+            ? parsedData.studentReviews
+                .filter((item: StudentReview) => item?.name && item?.review)
+                .map((item: StudentReview) => ({
+                  id: item.id ? String(item.id) : undefined,
+                  name: item.name,
+                  review: item.review,
+                }))
+            : [],
           faqs: Array.isArray(parsedData.faqs) && parsedData.faqs.length > 0
             ? parsedData.faqs.map((faq: any) => ({
                 ...faq,
@@ -542,6 +572,18 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
               updatedData.faqs = currentFaqs
             }
             break
+
+          case "studentReviews":
+            const currentStudentReviews = sanitizeStudentReviews(currentUniversity.studentReviews || [])
+            const originalStudentReviews = sanitizeStudentReviews(university.studentReviews || [])
+
+            if (
+              currentStudentReviews.length !== originalStudentReviews.length ||
+              !isEqual(currentStudentReviews, originalStudentReviews)
+            ) {
+              updatedData.studentReviews = currentStudentReviews
+            }
+            break
   
           case "imageUrls":
           case "facilities":
@@ -587,12 +629,40 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
       })
   
   
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.message || "Failed to update university")
+      const rawResponse = await response.text()
+      const contentType = response.headers.get("content-type") || ""
+      const isJsonResponse = contentType.includes("application/json")
+      let parsedResponse: any = null
+      if (rawResponse) {
+        try {
+          parsedResponse = JSON.parse(rawResponse)
+        } catch {
+          parsedResponse = { raw: rawResponse }
+        }
       }
-  
-      const updatedUniversity = await response.json()
+
+      if (!response.ok) {
+        const apiMessage =
+          parsedResponse?.message ||
+          parsedResponse?.error ||
+          (typeof parsedResponse?.raw === "string" ? parsedResponse.raw.slice(0, 200) : null)
+        const apiDetails =
+          typeof parsedResponse?.details === "string"
+            ? parsedResponse.details
+            : parsedResponse?.details
+              ? JSON.stringify(parsedResponse.details)
+              : ""
+        const fullMessage = [apiMessage || `Failed to update university (HTTP ${response.status})`, apiDetails]
+          .filter(Boolean)
+          .join(" | ")
+        throw new Error(fullMessage)
+      }
+
+      if (!isJsonResponse) {
+        const snippet =
+          typeof parsedResponse?.raw === "string" ? parsedResponse.raw.slice(0, 200) : "Non-JSON response from server"
+        throw new Error(`Unexpected server response: ${snippet}`)
+      }
   
       toast.success("University updated successfully!")
   
@@ -719,6 +789,19 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
     setCurrentUniversity((prev: any) => ({
       ...prev,
       faqs: fagsWithStringIds,
+    }))
+  }
+
+  const handleStudentReviewsChange = (studentReviews: StudentReview[]) => {
+    const normalized = studentReviews.map((item) => ({
+      id: item.id ? String(item.id) : undefined,
+      name: item.name,
+      review: item.review,
+    }))
+
+    setCurrentUniversity((prev: any) => ({
+      ...prev,
+      studentReviews: normalized,
     }))
   }
 
@@ -941,6 +1024,12 @@ const handleCareerOutcomeDataChange = useCallback((careerOutcomeData: CareerOutc
             disabled={isSubmitting}
           />
         </div>
+
+        <StudentReviewsForm
+          reviews={currentUniversity.studentReviews || []}
+          onChange={handleStudentReviewsChange}
+          disabled={isSubmitting}
+        />
 
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Courses</h3>
