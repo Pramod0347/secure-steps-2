@@ -14,7 +14,6 @@ import {
   LogIn,
   LogOut,
   X,
-  UserPlus,
   Users,
 } from "lucide-react";
 
@@ -85,45 +84,38 @@ const Navbar: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-4">
+            <Link
+              href={isAuthenticated ? "/profile" : "/auth/signup"}
+              className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-all ${
+                isActive("/profile") || isActive("/auth/signup")
+                  ? "bg-white text-slate-950 shadow-sm ring-1 ring-fuchsia-200"
+                  : "text-slate-800 hover:bg-white/95"
+              }`}
+              aria-label={isAuthenticated ? "Profile" : "Sign up"}
+            >
+              <Users className="h-4 w-4 stroke-[2.2]" />
+            </Link>
             {isAuthenticated ? (
-              <>
-                <Link
-                  href="/profile"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-800 hover:bg-white/95"
-                  aria-label="Profile"
-                >
-                  <Users className="h-4 w-4 stroke-[2.2]" />
-                </Link>
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-800 hover:bg-white/95"
-                  aria-label="Logout"
-                >
-                  <LogOut className="h-4 w-4 stroke-[2.2]" />
-                </button>
-              </>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-800 hover:bg-white/95"
+                aria-label="Logout"
+              >
+                <LogOut className="h-4 w-4 stroke-[2.2]" />
+              </button>
             ) : (
-              <>
-                <Link
-                  href="/quizform"
-                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-all ${
-                    pathname === "/quizform"
-                      ? "bg-white text-slate-950 shadow-sm ring-1 ring-fuchsia-200"
-                      : "text-slate-800 hover:bg-white/95"
-                  }`}
-                >
-                  <UserPlus className="h-4 w-4 stroke-[2.2]" />
-                  {pathname === "/quizform" && <span>Signup</span>}
-                </Link>
-                <Link
-                  href="/auth/signin"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-800 hover:bg-white/95"
-                  aria-label="Login"
-                >
-                  <LogIn className="h-4 w-4 stroke-[2.2]" />
-                </Link>
-              </>
+              <Link
+                href="/auth/signin"
+                className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-all ${
+                  isActive("/auth/signin")
+                    ? "bg-white text-slate-950 shadow-sm ring-1 ring-fuchsia-200"
+                    : "text-slate-800 hover:bg-white/95"
+                }`}
+                aria-label="Login"
+              >
+                <LogIn className="h-4 w-4 stroke-[2.2]" />
+              </Link>
             )}
           </div>
         </div>
@@ -155,35 +147,33 @@ const Navbar: React.FC = () => {
               <mobilePrimaryItem.icon className="h-4 w-4 stroke-[2.2]" />
             </Link>
 
+            <Link
+              href={isAuthenticated ? "/profile" : "/auth/signup"}
+              className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-all ${
+                isActive("/profile") || isActive("/auth/signup")
+                  ? "bg-white text-slate-950 ring-1 ring-fuchsia-200"
+                  : "text-slate-800 hover:bg-white/95"
+              }`}
+              aria-label={isAuthenticated ? "Profile" : "Sign up"}
+              title={isAuthenticated ? "Profile" : "Sign up"}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <Users className="h-4 w-4 stroke-[2.2]" />
+            </Link>
             {!isAuthenticated && (
-              <>
-                <Link
-                  href="/quizform"
-                  className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-all ${
-                    pathname === "/quizform"
-                      ? "bg-white text-slate-950 ring-1 ring-fuchsia-200"
-                      : "text-slate-800 hover:bg-white/95"
-                  }`}
-                  aria-label="Signup"
-                  title="Signup"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <UserPlus className="h-4 w-4 stroke-[2.2]" />
-                </Link>
-                <Link
-                  href="/auth/signin"
-                  className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-all ${
-                    pathname === "/auth/signin"
-                      ? "bg-white text-slate-950 ring-1 ring-fuchsia-200"
-                      : "text-slate-800 hover:bg-white/95"
-                  }`}
-                  aria-label="Login"
-                  title="Login"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <LogIn className="h-4 w-4 stroke-[2.2]" />
-                </Link>
-              </>
+              <Link
+                href="/auth/signin"
+                className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-all ${
+                  isActive("/auth/signin")
+                    ? "bg-white text-slate-950 ring-1 ring-fuchsia-200"
+                    : "text-slate-800 hover:bg-white/95"
+                }`}
+                aria-label="Login"
+                title="Login"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <LogIn className="h-4 w-4 stroke-[2.2]" />
+              </Link>
             )}
 
             <button
@@ -229,24 +219,14 @@ const Navbar: React.FC = () => {
             })}
 
             {isAuthenticated ? (
-              <>
-                <Link
-                  href="/profile"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-slate-800 hover:bg-white/95 transition-all"
-                >
-                  <Users className="h-4 w-4 shrink-0 stroke-[2.2]" />
-                  <span>Profile</span>
-                </Link>
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-medium text-slate-800 hover:bg-white/95 transition-all"
-                >
-                  <LogOut className="h-4 w-4 shrink-0 stroke-[2.2]" />
-                  <span>Logout</span>
-                </button>
-              </>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-medium text-slate-800 hover:bg-white/95 transition-all"
+              >
+                <LogOut className="h-4 w-4 shrink-0 stroke-[2.2]" />
+                <span>Logout</span>
+              </button>
             ) : null}
           </div>
         )}
