@@ -21,18 +21,13 @@ JWT_SECRET="your-super-secret-jwt-key-here-change-this-to-something-secure"
 NEXTAUTH_URL="http://localhost:3000"
 
 # ===========================================
-# EMAIL CONFIGURATION (SMTP)
+# EMAIL CONFIGURATION (RESEND)
 # ===========================================
-# Email service configuration
-# For Gmail: smtp.gmail.com
-# For Outlook: smtp-mail.outlook.com
-# For custom SMTP: your-smtp-server.com
-EMAIL_HOST="smtp.gmail.com"
-EMAIL_PORT="587"
-EMAIL_SECURE="false"
-EMAIL_USER="your-email@gmail.com"
-EMAIL_PASS="your-app-password"
-EMAIL_FROM="your-email@gmail.com"
+# Create key from: https://resend.com/api-keys
+RESEND_API_KEY="re_xxxxxxxxxxxxxxxxxxxxx"
+# Verified sender/domain in Resend dashboard.
+# For quick testing, you can use onboarding@resend.dev
+EMAIL_FROM="onboarding@resend.dev"
 
 # ===========================================
 # GOOGLE OAUTH CONFIGURATION

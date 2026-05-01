@@ -59,7 +59,7 @@ export class EmailTemplates {
   static welcomeEmail(email: string, username: string): EmailContentType {
     const template = {
       to: email,
-      subject: "Welcome to Our Platform!",
+      subject: "Welcome to Secure Steps",
       html: `
         <!DOCTYPE html>
         <html lang="en">
@@ -99,12 +99,15 @@ export class EmailTemplates {
             <div class="container">
               <h1>Welcome, ${username}!</h1>
               <div class="welcome-content">
-                <p>We're thrilled to have you join our community. Get ready to explore amazing features and connect with others!</p>
-                <p>Your journey starts now. Click the button below to get started:</p>
-                <a href="https://securestepsltd.co.uk/" class="cta-button">Start Exploring</a>
+                <p>Welcome to Secure Steps. This platform is built to help you find the best universities across the globe, with guidance at every step of your journey.</p>
+                <p>Explore the platform and get started:</p>
+                <a href="https://www.securesteps.co.in/" class="cta-button">Visit Secure Steps</a>
               </div>
               <p style="font-size: 0.9em;">
-                If you have any questions, please don't hesitate to contact our support team.
+                Need help? Contact us at <a href="tel:+917093568336" style="color: #ffffff; font-weight: 600; text-decoration: underline;">+91 7093568336</a>
+              </p>
+              <p style="font-size: 0.9em;">
+                Website: <a href="https://www.securesteps.co.in/" style="color: #ffffff; font-weight: 600; text-decoration: underline;">https://www.securesteps.co.in/</a>
               </p>
             </div>
           </body>
@@ -300,4 +303,3 @@ export class EmailTemplates {
   }
   
 }
-

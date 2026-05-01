@@ -1,91 +1,88 @@
-// sendEmail.ts
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { EmailContentType } from "./types";
-import {EmailTemplates} from "./emailTemplate";
-import { createTransporter } from "./emailTransporter";
+import { EmailTemplates } from "./emailTemplate";
 
-export const sendEmail = async (
-  transporter: nodemailer.Transporter,
-  emailContent: EmailContentType
-): Promise<boolean> => {
-  const emailFrom = process.env.EMAIL_FROM;
-  
-  if (!emailFrom) {
-    console.error("EMAIL_FROM environment variable is not set");
-    return false;
+const resendApiKey = process.env.RESEND_API_KEY;
+const emailFrom = process.env.EMAIL_FROM || "onboarding@resend.dev";
+
+const getResendClient = (): Resend => {
+  if (!resendApiKey) {
+    throw new Error("RESEND_API_KEY environment variable is not set");
   }
+  return new Resend(resendApiKey);
+};
 
+export const sendEmail = async (emailContent: EmailContentType): Promise<boolean> => {
   try {
-    const result = await transporter.sendMail({
+    const resend = getResendClient();
+    const result = await resend.emails.send({
       from: emailFrom,
-      ...emailContent
+      to: emailContent.to,
+      subject: emailContent.subject,
+      html: emailContent.html,
     });
+
+    if (result?.error) {
+      console.error("Resend returned error:", result.error);
+      return false;
+    }
 
     return true;
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error("Error sending email via Resend:", error);
     return false;
   }
 };
 
-// OTP verfication
-export const sendVerificationEmail = async (email: string, otp:string): Promise<boolean> => {
+export const sendVerificationEmail = async (email: string, otp: string): Promise<boolean> => {
   try {
-    const transporter = createTransporter();
     const emailContent = EmailTemplates.verificationOTP(email, otp);
-    return await sendEmail(transporter, emailContent);
+    return await sendEmail(emailContent);
   } catch (error) {
     console.error("Error in sendVerificationEmail:", error);
     return false;
   }
 };
 
-// Welcome Email
 export const sendWelcomeEmail = async (email: string, username: string): Promise<boolean> => {
   try {
-    const transporter = createTransporter();
     const emailContent = EmailTemplates.welcomeEmail(email, username);
-    return await sendEmail(transporter, emailContent);
+    return await sendEmail(emailContent);
   } catch (error) {
     console.error("Error in sendWelcomeEmail:", error);
     return false;
   }
 };
 
-// Password Reset Email
 export const sendPasswordResetEmail = async (email: string, resetLink: string): Promise<boolean> => {
   try {
-    const transporter = createTransporter();
     const emailContent = EmailTemplates.passwordReset(email, resetLink);
-    return await sendEmail(transporter, emailContent);
+    return await sendEmail(emailContent);
   } catch (error) {
     console.error("Error in sendPasswordResetEmail:", error);
     return false;
   }
 };
 
-// Transaction Confirmation Email
 export const sendTransactionConfirmationEmail = async (
-  email: string, 
+  email: string,
   details: {
-    transactionId: string, 
-    amount: number, 
+    transactionId: string,
+    amount: number,
     date: string
   }
 ): Promise<boolean> => {
   try {
-    const transporter = createTransporter();
     const emailContent = EmailTemplates.transactionConfirmation(email, details);
-    return await sendEmail(transporter, emailContent);
+    return await sendEmail(emailContent);
   } catch (error) {
     console.error("Error in sendTransactionConfirmationEmail:", error);
     return false;
   }
 };
 
-// General Message Email
 export const sendGeneralMessageEmail = async (
-  email: string, 
+  email: string,
   messageDetails: {
     subject: string,
     heading: string,
@@ -95,9 +92,8 @@ export const sendGeneralMessageEmail = async (
   }
 ): Promise<boolean> => {
   try {
-    const transporter = createTransporter();
     const emailContent = EmailTemplates.generalMessage(email, messageDetails);
-    return await sendEmail(transporter, emailContent);
+    return await sendEmail(emailContent);
   } catch (error) {
     console.error("Error in sendGeneralMessageEmail:", error);
     return false;
