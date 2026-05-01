@@ -317,10 +317,11 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUpComplete }) => {
                     <select
                         name="role"
                         onChange={handleChange}
+                        defaultValue=""
                         className="w-full text-[#737373] text-xs md:text-base h-10 md:h-12 rounded-[6px] placeholder:text-[#737373] bg-transparent border border-[#737373] outline-none my-2 px-4"
                         required
                     >
-                        <option value="" disabled selected>User Type</option>
+                        <option value="" disabled>User Type</option>
                         <option value="STUDENT">Student</option>
                         <option value="LANDLORD">Landlord</option>
                     </select>
