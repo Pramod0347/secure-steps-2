@@ -254,13 +254,13 @@ const Page = () => {
           </motion.h1>
         </motion.div>
 
-        {/* <motion.h3
+        <motion.h3
           className="text-[#737373] text-xs md:text-[12px] 2xl:text-base font-normal mb-6 text-center"
           variants={itemVariants}
         >
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the
-        </motion.h3> */}
+          Enter your email and password to sign in and continue to your
+          dashboard.
+        </motion.h3>
 
         <form onSubmit={handleSubmit}>
           {/* Email field with icon */}
