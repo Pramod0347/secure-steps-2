@@ -103,13 +103,13 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUpComplete }) => {
                     setUsernameAvailability({
                         isAvailable: data.available,
                         isChecking: false,
-                        message: data.available ? 'Available' : 'Already taken'
+                        message: data.available ? 'Available' : data.message || 'Already taken'
                     });
                 } else {
                     setEmailAvailability({
                         isAvailable: data.available,
                         isChecking: false,
-                        message: data.available ? 'Available' : 'Already taken'
+                        message: data.available ? 'Available' : data.message || 'Already taken'
                     });
                 }
             } catch (error) {
@@ -230,13 +230,13 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUpComplete }) => {
 
     const renderAvailabilityFeedback = (state: AvailabilityState): React.ReactNode => {
         if (state.isChecking) {
-            return <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xs text-gray-500">Checking...</span>;
+            return <p className="mt-1 text-xs text-gray-500">Checking...</p>;
         }
         if (state.message) {
             return (
-                <span className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-xs ${state.isAvailable ? 'text-green-500' : 'text-red-500'}`}>
+                <p className={`mt-1 text-xs ${state.isAvailable ? 'text-green-600' : 'text-red-500'}`} aria-live="polite">
                     {state.message}
-                </span>
+                </p>
             );
         }
         return null;
@@ -260,8 +260,8 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUpComplete }) => {
                 {...fadeInUp}
                 transition={{ delay: 0.1 }}
             >
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the
+                Create a free account to access personalized guidance and
+                start your application journey with expert support.
             </motion.h3>
             <form onSubmit={handleSubmit}>
                 <motion.div className="text-xs md:mt-0 mt-2 md:text-base gap-2 md:gap-4 flex" {...fadeInUp} transition={{ delay: 0.2 }}>
@@ -283,7 +283,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUpComplete }) => {
                     />
                 </motion.div>
 
-                <motion.div className="relative" {...fadeInUp} transition={{ delay: 0.3 }}>
+                <motion.div className="mb-3" {...fadeInUp} transition={{ delay: 0.3 }}>
                     <input
                         type="text"
                         name="username"
@@ -298,7 +298,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSignUpComplete }) => {
                     {renderAvailabilityFeedback(usernameAvailability)}
                 </motion.div>
 
-                <motion.div className="relative" {...fadeInUp} transition={{ delay: 0.4 }}>
+                <motion.div className="mb-3" {...fadeInUp} transition={{ delay: 0.4 }}>
                     <input
                         type="email"
                         name="email"
