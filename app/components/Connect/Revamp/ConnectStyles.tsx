@@ -6,7 +6,7 @@ export default function ConnectStyles() {
         :global(html) { scroll-behavior: smooth; }
         :global(body) { background: #fafaf9; color: #0a0a0a; font-family: Inter, system-ui, -apple-system, sans-serif; }
         .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-        .hero { padding: 80px 0 60px; text-align: center; background: #fff; }
+        .hero { padding: 120px 0 60px; text-align: center; background: #fff; }
         .eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; background: #f7efff; border-radius: 999px; font-size: 12px; font-weight: 600; color: #7a5fb8; margin-bottom: 24px; }
         .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: #ff3ea0; box-shadow: 0 0 0 3px rgba(255, 62, 160, 0.2); }
         h1 { font-size: clamp(38px, 5.5vw, 64px); font-weight: 800; line-height: 1.05; letter-spacing: -0.035em; max-width: 820px; margin: 0 auto 20px; }
