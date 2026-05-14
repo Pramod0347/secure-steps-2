@@ -19,7 +19,7 @@ export default function AlumniCardItem({ card }: { card: AlumniCard }) {
       <div className="alumni-title">{card.title}</div>
       <div className="alumni-sub">{card.subtitle}</div>
       <span className="alumni-tag-strip">⭐ {card.rating} · {card.sessions} sessions</span>
-      <Link href={`/connect/alumni/${card.id}`} className="alumni-bottom-cta">📞 View profile</Link>
+      <Link href={`/connect/alumni/${card.id}`} className="alumni-bottom-cta">View profile</Link>
     </div>
   );
 }

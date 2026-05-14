@@ -17,12 +17,15 @@ export default async function AlumniProfilePage({ params }: PageProps) {
   const model = buildAlumniProfileModel(profile);
 
   return (
-    <main className="min-h-screen bg-[#F4F2EE] text-[#0A0A0A]">
-      <ProfileNav />
-
-      <div className="mx-auto grid w-full max-w-[1100px] grid-cols-1 gap-6 px-6 py-7 lg:grid-cols-[340px_1fr]">
-        <IdentityCard model={model} />
-        <ProfileContent model={model} />
+    <main className="min-h-screen bg-[#F4F2EE] text-[#0A0A0A] pt-28 md:pt-32">
+      <div className="mx-auto w-full max-w-[1200px] px-4 py-8 sm:px-6 lg:px-8">
+        <div className="rounded-[32px] border border-white/80 bg-white/70 p-6 shadow-[0_24px_80px_-40px_rgba(15,23,42,0.25)] backdrop-blur-xl">
+          <ProfileNav />
+          <div className="mt-6 grid w-full gap-6 lg:grid-cols-[340px_1fr]">
+            <IdentityCard model={model} />
+            <ProfileContent model={model} />
+          </div>
+        </div>
       </div>
     </main>
   );
