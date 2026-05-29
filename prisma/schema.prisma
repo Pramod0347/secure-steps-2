@@ -1151,6 +1151,7 @@ model UserProfile {
     
     // Relations to other profile sections
     onboardingInfo       OnboardingInfo?
+    onboardingAnswers    OnboardingAnswer[]
     universities         UniversitySelection[]
     documents            UserDocument[]
     applications         ApplicationTracking[]
@@ -1191,6 +1192,29 @@ model OnboardingInfo {
     updatedAt       DateTime      @updatedAt
 
     @@index([userProfileId])
+}
+
+// Flexible onboarding responses by education level and question key
+model OnboardingAnswer {
+    id              String        @id @default(cuid())
+    userProfileId   String
+    userProfile     UserProfile   @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+
+    educationLevel  EducationLevel
+    questionKey     String
+    answerType      OnboardingAnswerType
+
+    answerText      String?
+    answerNumber    Float?
+    answerBoolean   Boolean?
+    answerJson      Json?
+
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+
+    @@unique([userProfileId, educationLevel, questionKey])
+    @@index([userProfileId])
+    @@index([educationLevel])
 }
 
 // 2. UNIVERSITIES
@@ -1599,6 +1623,15 @@ enum MilestoneStatus {
     PENDING
     IN_PROGRESS
     COMPLETED
+}
+
+enum OnboardingAnswerType {
+    TEXT
+    SINGLE_SELECT
+    MULTI_SELECT
+    NUMBER
+    BOOLEAN
+    JSON
 }
 
 enum MentorshipStatus {

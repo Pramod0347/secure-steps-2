@@ -83,6 +83,16 @@ const AdminLayout = ({ children, currentRoute }: AdminLayoutProps) => {
                 { id: 'subroute2', label: 'Subroute2' },
                 { id: 'subroute3', label: 'Subroute3' }
             ]
+        },
+        {
+            id: 'users',
+            label: 'Users',
+            icon: User,
+            subroutes: [
+                { id: 'subroute1', label: 'Subroute1' },
+                { id: 'subroute2', label: 'Subroute2' },
+                { id: 'subroute3', label: 'Subroute3' }
+            ]
         }
     ];
 
@@ -222,6 +232,7 @@ const AdminLayout = ({ children, currentRoute }: AdminLayoutProps) => {
                                 <a href="/admin/connect" className="hover:text-red-500 transition">Connect</a>
                                 <a href="/admin/community" className="hover:text-red-500 transition">Community</a>
                                 <a href="/admin/lenders" className="hover:text-red-500 transition">Lenders</a>
+                                <a href="/admin/users" className="hover:text-red-500 transition">Users</a>
                             </div>
                         </motion.div>
                     )}
