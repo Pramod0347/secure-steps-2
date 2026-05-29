@@ -1,86 +1,35 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
-import { Calculator, Globe } from 'lucide-react'
-
-type Country = 'usa' | 'uk' | 'canada'
-
-interface VisaRequirement {
-  icon: string
-  label: string
-  highlight?: boolean
-}
-
-interface CountryData {
-  name: string
-  flag: string
-  visaFee: string
-  requirements: VisaRequirement[]
-}
-
-const countryData: Record<Country, CountryData> = {
-  usa: {
-    name: 'United States',
-    flag: '🇺🇸',
-    visaFee: '$160',
-    requirements: [
-      { icon: '📋', label: 'F-1 Student Visa Application' },
-      { icon: '💳', label: 'SEVIS Fee Payment ($350)' },
-      { icon: '📄', label: 'Financial Documentation' },
-      { icon: '📝', label: 'I-20 Form from University' },
-      { icon: '🗓️', label: 'Visa Interview Appointment' },
-      { icon: '🎓', label: 'English Proficiency Proof' },
-    ],
-  },
-  uk: {
-    name: 'United Kingdom',
-    flag: '🇬🇧',
-    visaFee: '£363',
-    requirements: [
-      { icon: '📋', label: 'Student Visa Application' },
-      { icon: '💳', label: 'Immigration Health Surcharge' },
-      { icon: '📄', label: 'Financial Documentation' },
-      { icon: '📝', label: 'CAS from University' },
-      { icon: '🗓️', label: 'Biometric Appointment' },
-      { icon: '🎓', label: 'English Proficiency (IELTS/TOEFL)' },
-    ],
-  },
-  canada: {
-    name: 'Canada',
-    flag: '🇨🇦',
-    visaFee: 'CAD $150',
-    requirements: [
-      { icon: '📋', label: 'Study Permit Application' },
-      { icon: '💳', label: 'Biometrics Fee (CAD $85)' },
-      { icon: '📄', label: 'Proof of Funds' },
-      { icon: '📝', label: 'Letter of Acceptance' },
-      { icon: '🗓️', label: 'Medical Examination' },
-      { icon: '🎓', label: 'English/French Proficiency' },
-    ],
-  },
-}
+import React, { useMemo, useState } from 'react'
+import { Calculator, FileCheck2, Globe, ListChecks } from 'lucide-react'
+import {
+  Country,
+  EuropeCountry,
+  countrySelector,
+  europeFrameworkData,
+  europeSelector,
+  visaFrameworkData,
+} from './config/visa-framework'
 
 export default function VisaFinance() {
   const [selectedCountry, setSelectedCountry] = useState<Country>('usa')
-  
-  // EMI Calculator State
+  const [selectedEuropeCountry, setSelectedEuropeCountry] = useState<EuropeCountry>('germany')
+
   const [loanAmount, setLoanAmount] = useState(73706)
   const [interestRate, setInterestRate] = useState(8)
   const [loanTenure, setLoanTenure] = useState(10)
 
-  // Calculate EMI
   const monthlyEMI = useMemo(() => {
     const principal = loanAmount
     const rate = interestRate / 100 / 12
     const months = loanTenure * 12
-    
+
     if (rate === 0) return Math.round(principal / months)
-    
+
     const emi = (principal * rate * Math.pow(1 + rate, months)) / (Math.pow(1 + rate, months) - 1)
     return Math.round(emi)
   }, [loanAmount, interestRate, loanTenure])
 
-  // Cost Estimator Data
   const costItems = [
     { label: 'Tuition Fees', amount: '$45,000/year' },
     { label: 'Living Expenses', amount: '$20,000/year' },
@@ -90,100 +39,134 @@ export default function VisaFinance() {
 
   const totalCost = 70000
 
-  const countries: { value: Country; name: string; flag: string }[] = [
-    { value: 'usa', name: 'United States', flag: '🇺🇸' },
-    { value: 'uk', name: 'United Kingdom', flag: '🇬🇧' },
-    { value: 'canada', name: 'Canada', flag: '🇨🇦' },
-  ]
-
-  const currentCountry = countryData[selectedCountry]
+  const isEurope = selectedCountry === 'europe'
+  const currentFramework = isEurope ? europeFrameworkData[selectedEuropeCountry] : visaFrameworkData[selectedCountry]
 
   return (
-    <section className="p-8 bg-white dark:bg-black min-h-screen">
-      {/* Header */}
+    <section className="min-h-screen bg-white p-8 dark:bg-black">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Visa & Financial Planning
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Navigate visa requirements and plan your finances
-        </p>
+        <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">Visa & Financial Planning</h1>
+        <p className="text-gray-600 dark:text-gray-400">Navigate visa requirements and plan your finances</p>
       </div>
 
-      {/* Country Selection */}
-      <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 mb-6">
-        <div className="flex flex-wrap gap-4 justify-center">
-          {countries.map((country) => (
+      <div className="mb-6 rounded-2xl bg-gray-50 p-6 dark:bg-gray-900">
+        <div className="flex flex-wrap justify-center gap-4">
+          {countrySelector.map((country) => (
             <button
               key={country.value}
               onClick={() => setSelectedCountry(country.value)}
-              className={`flex flex-col items-center gap-2 p-4 rounded-xl transition-all min-w-[120px] ${
+              className={`min-w-[120px] rounded-xl p-4 transition-all ${
                 selectedCountry === country.value
-                  ? 'bg-white dark:bg-gray-800 shadow-md ring-2 ring-black dark:ring-white'
+                  ? 'bg-white shadow-md ring-2 ring-black dark:bg-gray-800 dark:ring-white'
                   : 'hover:bg-white/50 dark:hover:bg-gray-800/50'
               }`}
             >
-              <span className="text-5xl">{country.flag}</span>
-              <span className={`text-sm font-medium ${
-                selectedCountry === country.value 
-                  ? 'text-gray-900 dark:text-white' 
-                  : 'text-gray-600 dark:text-gray-400'
-              }`}>
-                {country.name}
-              </span>
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-5xl">{country.flag}</span>
+                <span
+                  className={`text-sm font-medium ${
+                    selectedCountry === country.value
+                      ? 'text-gray-900 dark:text-white'
+                      : 'text-gray-600 dark:text-gray-400'
+                  }`}
+                >
+                  {country.name}
+                </span>
+              </div>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Visa Requirements */}
-      <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            Visa Requirements - {currentCountry.name}
-          </h2>
-        </div>
-        
-        <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
-          Visa Application Fee: <span className="font-semibold text-gray-900 dark:text-white">{currentCountry.visaFee}</span>
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {currentCountry.requirements.map((req, index) => (
-            <div key={index} className="flex items-center gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
-                <span className="text-sm">{req.icon}</span>
-              </div>
-              <span className="text-sm text-gray-700 dark:text-gray-300">{req.label}</span>
+      <div className="mb-8 rounded-2xl bg-gray-50 p-6 dark:bg-gray-900">
+        {isEurope && (
+          <div className="mb-5">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-400">
+              Europe Subsections
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {europeSelector.map((country) => (
+                <button
+                  key={country.value}
+                  onClick={() => setSelectedEuropeCountry(country.value)}
+                  className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-all ${
+                    selectedEuropeCountry === country.value
+                      ? 'bg-black text-white dark:bg-white dark:text-black'
+                      : 'bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  {country.name}
+                </button>
+              ))}
             </div>
-          ))}
+          </div>
+        )}
+
+        <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">{currentFramework.name} Visa Framework</h2>
+          <span className="inline-flex w-fit rounded-full bg-black px-3 py-1 text-xs font-semibold text-white dark:bg-white dark:text-black">
+            {currentFramework.visaFee}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+            <div className="mb-4 flex items-center gap-2">
+              <ListChecks className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Application Process</h3>
+            </div>
+            <div className="space-y-3">
+              {currentFramework.process.map((step, index) => (
+                <div key={step} className="flex gap-3">
+                  <span className="mt-0.5 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-gray-900 text-xs font-semibold text-white dark:bg-white dark:text-black">
+                    {index + 1}
+                  </span>
+                  <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">{step}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+            <div className="mb-4 flex items-center gap-2">
+              <FileCheck2 className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Documents Checklist</h3>
+            </div>
+            <div className="space-y-4">
+              {currentFramework.checklist.map((group) => (
+                <div key={group.title} className="rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-900 dark:text-white">
+                    {group.title}
+                  </p>
+                  <ul className="space-y-1">
+                    {group.items.map((item) => (
+                      <li key={item} className="flex gap-2 text-sm text-gray-700 dark:text-gray-300">
+                        <span className="mt-[2px] text-green-600 dark:text-green-400">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Financial Planning Tools Header */}
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-          Financial Planning Tools
-        </h2>
-        <p className="text-gray-600 dark:text-gray-400 text-sm">
-          Calculate your expenses
-        </p>
+        <h2 className="mb-1 text-2xl font-bold text-gray-900 dark:text-white">Financial Planning Tools</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-400">Calculate your expenses</p>
       </div>
 
-      {/* Financial Tools Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* EMI Calculator */}
-        <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6">
-          <div className="flex items-center gap-2 mb-6">
-            <Calculator className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="rounded-2xl bg-gray-50 p-6 dark:bg-gray-900">
+          <div className="mb-6 flex items-center gap-2">
+            <Calculator className="h-5 w-5 text-gray-700 dark:text-gray-300" />
             <h3 className="font-bold text-gray-900 dark:text-white">EMI Calculator</h3>
           </div>
 
-          {/* Loan Amount Slider */}
           <div className="mb-6">
-            <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
-              Loan Amount ($)
-            </label>
+            <label className="mb-2 block text-sm text-gray-600 dark:text-gray-400">Loan Amount ($)</label>
             <input
               type="range"
               min="10000"
@@ -191,18 +174,13 @@ export default function VisaFinance() {
               step="1000"
               value={loanAmount}
               onChange={(e) => setLoanAmount(Number(e.target.value))}
-              className="w-full h-2 bg-gray-300 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-black dark:accent-white"
+              className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-300 accent-black dark:bg-gray-700 dark:accent-white"
             />
-            <p className="text-green-500 font-semibold mt-2">
-              ${loanAmount.toLocaleString()}
-            </p>
+            <p className="mt-2 font-semibold text-green-500">${loanAmount.toLocaleString()}</p>
           </div>
 
-          {/* Interest Rate Slider */}
           <div className="mb-6">
-            <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
-              Interest Rate (%)
-            </label>
+            <label className="mb-2 block text-sm text-gray-600 dark:text-gray-400">Interest Rate (%)</label>
             <input
               type="range"
               min="1"
@@ -210,18 +188,13 @@ export default function VisaFinance() {
               step="0.5"
               value={interestRate}
               onChange={(e) => setInterestRate(Number(e.target.value))}
-              className="w-full h-2 bg-gray-300 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-black dark:accent-white"
+              className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-300 accent-black dark:bg-gray-700 dark:accent-white"
             />
-            <p className="text-green-500 font-semibold mt-2">
-              {interestRate}%
-            </p>
+            <p className="mt-2 font-semibold text-green-500">{interestRate}%</p>
           </div>
 
-          {/* Loan Tenure Slider */}
           <div className="mb-6">
-            <label className="block text-sm text-gray-600 dark:text-gray-400 mb-2">
-              Loan Tenure (Years)
-            </label>
+            <label className="mb-2 block text-sm text-gray-600 dark:text-gray-400">Loan Tenure (Years)</label>
             <input
               type="range"
               min="1"
@@ -229,38 +202,36 @@ export default function VisaFinance() {
               step="1"
               value={loanTenure}
               onChange={(e) => setLoanTenure(Number(e.target.value))}
-              className="w-full h-2 bg-gray-300 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-black dark:accent-white"
+              className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-300 accent-black dark:bg-gray-700 dark:accent-white"
             />
-            <p className="text-green-500 font-semibold mt-2">
-              {loanTenure} years
-            </p>
+            <p className="mt-2 font-semibold text-green-500">{loanTenure} years</p>
           </div>
 
-          {/* EMI Result */}
-          <div className="bg-black dark:bg-white text-white dark:text-black rounded-xl py-3 px-4 text-center">
+          <div className="rounded-xl bg-black px-4 py-3 text-center text-white dark:bg-white dark:text-black">
             <span className="font-medium">Monthly EMI : </span>
             <span className="font-bold">${monthlyEMI.toLocaleString()}</span>
           </div>
         </div>
 
-        {/* Cost Estimator */}
-        <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6">
-          <div className="flex items-center gap-2 mb-6">
-            <Globe className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+        <div className="rounded-2xl bg-gray-50 p-6 dark:bg-gray-900">
+          <div className="mb-6 flex items-center gap-2">
+            <Globe className="h-5 w-5 text-gray-700 dark:text-gray-300" />
             <h3 className="font-bold text-gray-900 dark:text-white">Cost Estimator</h3>
           </div>
 
           <div className="space-y-4">
-            {costItems.map((item, index) => (
-              <div key={index} className="flex items-center justify-between py-2 border-b border-gray-200 dark:border-gray-700 last:border-0">
+            {costItems.map((item) => (
+              <div
+                key={item.label}
+                className="flex items-center justify-between border-b border-gray-200 py-2 last:border-0 dark:border-gray-700"
+              >
                 <span className="text-sm text-gray-600 dark:text-gray-400">{item.label}</span>
                 <span className="text-sm font-medium text-gray-900 dark:text-white">{item.amount}</span>
               </div>
             ))}
           </div>
 
-          {/* Total */}
-          <div className="mt-6 pt-4 border-t border-gray-300 dark:border-gray-600">
+          <div className="mt-6 border-t border-gray-300 pt-4 dark:border-gray-600">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Annual cost</span>
               <span className="text-2xl font-bold text-green-500">${totalCost.toLocaleString()}</span>
