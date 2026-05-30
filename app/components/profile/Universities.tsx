@@ -1,11 +1,12 @@
 'use client'
 
 import React, { useState, useEffect, useMemo } from 'react'
-import { Search, ChevronDown, X } from 'lucide-react'
+import { Search, ChevronDown, X, Heart } from 'lucide-react'
 import { hasFlag } from 'country-flag-icons'
 import * as Flags from 'country-flag-icons/react/3x2'
 import type { UniversityInterface } from '@/store/universitystore'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { useAuth } from '@/app/context/AuthContext'
 import { toast } from 'sonner'
 import CourseSelectionModal from '@/app/components/Select/Models/CourseSelectionModal'
@@ -45,7 +46,7 @@ export default function Universities() {
   const router = useRouter()
   const { user, isAuthenticated } = useAuth()
   const [searchQuery, setSearchQuery] = useState('')
-  const [universities, setUniversities] = useState<UniversityInterface[]>([])
+  const [allUniversities, setAllUniversities] = useState<UniversityInterface[]>([])
   const [filteredUniversities, setFilteredUniversities] = useState<UniversityInterface[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedCountry, setSelectedCountry] = useState('')
@@ -57,6 +58,8 @@ export default function Universities() {
   const [compareWithUniversity, setCompareWithUniversity] = useState<UniversityInterface | null>(null)
   const [isCourseModalOpen, setIsCourseModalOpen] = useState(false)
   const [selectedUniversityForWishlist, setSelectedUniversityForWishlist] = useState<UniversityInterface | null>(null)
+  const [showWishlistOnly, setShowWishlistOnly] = useState(false)
+  const [wishlistUniversityIds, setWishlistUniversityIds] = useState<string[]>([])
 
   // Preferred countries - ONLY these will be shown
   const preferredCountries = useMemo(() => [
@@ -76,6 +79,34 @@ export default function Universities() {
     fetchUniversities()
   }, [])
 
+  useEffect(() => {
+    if (!isAuthenticated || !user?.id) {
+      setWishlistUniversityIds([])
+      return
+    }
+
+    const fetchWishlistUniversityIds = async () => {
+      try {
+        const response = await fetch(`/api/auth/fav-courses?userId=${user.id}`)
+        const data = await response.json()
+        if (!response.ok) return
+
+        const uniqueIds = Array.from(
+          new Set(
+            (data as Array<{ universityId?: string }>)
+              .map((item) => item.universityId)
+              .filter((id): id is string => Boolean(id))
+          )
+        )
+        setWishlistUniversityIds(uniqueIds)
+      } catch (error) {
+        console.error('Error fetching wishlist state:', error)
+      }
+    }
+
+    fetchWishlistUniversityIds()
+  }, [isAuthenticated, user?.id])
+
   const fetchUniversities = async () => {
     try {
       setIsLoading(true)
@@ -89,7 +120,7 @@ export default function Universities() {
             uni.country?.toLowerCase() === country.toLowerCase()
           )
         )
-        setUniversities(filtered)
+        setAllUniversities(filtered)
         setFilteredUniversities(filtered)
       }
     } catch (error) {
@@ -101,7 +132,11 @@ export default function Universities() {
 
   // Handle search and filter
   useEffect(() => {
-    let filtered = universities
+    const baseUniversities = showWishlistOnly
+      ? allUniversities.filter((uni) => wishlistUniversityIds.includes(uni.id))
+      : allUniversities
+
+    let filtered = baseUniversities
 
     // Filter by country
     if (selectedCountry) {
@@ -117,7 +152,7 @@ export default function Universities() {
     }
 
     setFilteredUniversities(filtered)
-  }, [searchQuery, selectedCountry, universities])
+  }, [searchQuery, selectedCountry, allUniversities, wishlistUniversityIds, showWishlistOnly])
 
   const filteredCountries = preferredCountries.filter(country =>
     country.toLowerCase().includes(countrySearchQuery.toLowerCase())
@@ -185,7 +220,47 @@ export default function Universities() {
       return
     }
 
+    setWishlistUniversityIds((prev) =>
+      prev.includes(selectedUniversityForWishlist.id)
+        ? prev
+        : [...prev, selectedUniversityForWishlist.id]
+    )
     toast.success('Added to your wishlist')
+  }
+
+  const handleWishlistHeaderClick = async () => {
+    if (!isAuthenticated || !user) {
+      toast.error('Please login to view wishlist')
+      return
+    }
+
+    try {
+      setIsLoading(true)
+      const response = await fetch(`/api/auth/fav-courses?userId=${user.id}`)
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to load wishlist')
+      }
+
+      const uniqueIds = Array.from(
+        new Set(
+          (data as Array<{ universityId?: string }>)
+            .map((item) => item.universityId)
+            .filter((id): id is string => Boolean(id))
+        )
+      )
+
+      setWishlistUniversityIds(uniqueIds)
+      setShowWishlistOnly((prev) => !prev)
+      setSelectedCountry('')
+      setSearchQuery('')
+    } catch (error) {
+      console.error('Error loading wishlist universities:', error)
+      toast.error(error instanceof Error ? error.message : 'Failed to load wishlist')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const compareCandidates = useMemo(() => {
@@ -205,16 +280,38 @@ export default function Universities() {
     })
   }, [filteredUniversities, selectedUniversityForCompare, compareSearchQuery])
 
+  const displayedUniversities = useMemo(() => {
+    const shuffled = [...filteredUniversities]
+    for (let i = shuffled.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+    return shuffled.slice(0, 12)
+  }, [filteredUniversities])
+
   return (
     <section className="p-8 bg-white dark:bg-black min-h-screen">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          University Selection
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Discover and compare your dream universities
-        </p>
+      <div className="mb-8 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            University Selection
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Discover and compare your dream universities
+          </p>
+        </div>
+        <button
+          onClick={handleWishlistHeaderClick}
+          className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold transition-colors ${
+            showWishlistOnly
+              ? 'border-black dark:border-white bg-black dark:bg-white text-white dark:text-black'
+              : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800'
+          }`}
+        >
+          <Heart className="w-4 h-4" fill={showWishlistOnly ? 'currentColor' : 'none'} />
+          {showWishlistOnly ? 'Showing Wihlisted' : 'Wihlisted'}
+        </button>
       </div>
 
       {/* Filters Section */}
@@ -336,24 +433,38 @@ export default function Universities() {
       {/* Universities Grid */}
       {!isLoading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredUniversities.map(university => (
+          {displayedUniversities.map(university => (
             <UniversityCard
               key={university.id}
               university={university}
               onCompare={handleCompare}
               onApply={handleApply}
               onWishlist={handleWishlist}
+              isWishlisted={wishlistUniversityIds.includes(university.id)}
             />
           ))}
         </div>
       )}
 
       {/* No Results */}
-      {!isLoading && filteredUniversities.length === 0 && (
+      {!isLoading && displayedUniversities.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-gray-500 dark:text-gray-400">No universities found</p>
+          <p className="text-gray-500 dark:text-gray-400">
+            {showWishlistOnly ? 'No wishlisted universities found' : 'No universities found'}
+          </p>
         </div>
       )}
+
+      {/* Explore All */}
+      <div className="text-center mt-12">
+        <Link
+          href="/select"
+          className="inline-flex items-center gap-2 px-8 py-4 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl"
+        >
+          Explore All Programs
+          <span>→</span>
+        </Link>
+      </div>
 
       {selectedUniversityForCompare && (
         <ProfileUniversityCompareModal
@@ -393,75 +504,96 @@ function UniversityCard({
   onCompare,
   onApply,
   onWishlist,
+  isWishlisted,
 }: {
   university: UniversityInterface
   onCompare: (university: UniversityInterface) => void
   onApply: (university: UniversityInterface) => void
   onWishlist: (university: UniversityInterface) => void
+  isWishlisted: boolean
 }) {
   const courseCount = university.courses?.length || 0
+  const establishedYear = university.established ? new Date(university.established).getFullYear() : null
+  const universityImage = university.banner || university.imageUrls?.[0] || university.logoUrl || ''
+  const gradients = [
+    'from-blue-500 to-indigo-600',
+    'from-purple-500 to-pink-500',
+    'from-emerald-500 to-teal-500',
+    'from-orange-500 to-red-500',
+    'from-cyan-500 to-blue-500',
+    'from-rose-500 to-pink-500',
+  ]
+  const gradientClass = gradients[(university.name?.length || 0) % gradients.length]
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
-      {/* Image */}
-      <div className="h-40 bg-gradient-to-br from-blue-400 to-purple-500 relative overflow-hidden">
-        {university.imageUrls?.[0] && (
-          <img
-            src={university.imageUrls[0]}
-            alt={university.name}
-            className="w-full h-full object-cover"
+    <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-white border border-gray-200 hover:border-gray-300 hover:shadow-xl transition-all duration-500 hover:-translate-y-1 sm:hover:-translate-y-2 h-full flex flex-col">
+      <div className={`h-36 sm:h-44 bg-gradient-to-br ${gradientClass} relative overflow-hidden`}>
+        {universityImage && (
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${universityImage})` }}
           />
         )}
-        <div className="absolute top-3 right-3 bg-black text-white text-xs px-3 py-1 rounded-full font-semibold">
-          {university.country}
+        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-2">
+          <span className="inline-flex items-center px-3 py-1.5 bg-white/95 backdrop-blur-sm rounded-full text-gray-900 text-xs font-medium shadow-sm">
+            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-[10px] font-bold flex-shrink-0">
+              {university.name.charAt(0)}
+            </div>
+          </span>
+          <button
+            onClick={() => onWishlist(university)}
+            className={`inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/95 backdrop-blur-sm transition-colors hover:bg-white ${
+              isWishlisted ? 'text-red-500' : 'text-gray-800'
+            }`}
+            aria-label="Add to wishlist"
+          >
+            <Heart className="w-4 h-4" fill={isWishlisted ? 'currentColor' : 'none'} />
+          </button>
+        </div>
+        <div className="absolute bottom-4 right-4">
+          <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-gray-900 text-xs font-medium">
+            {university.country}
+          </span>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-4">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 truncate">
+      <div className="p-4 sm:p-6 flex flex-col flex-1">
+        <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 line-clamp-2 min-h-[3.5rem]">
           {university.name}
         </h3>
-        
-        <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
-          {university.country} • {university.location}
+
+        <p className="text-gray-600 text-sm mb-4 line-clamp-2 min-h-[2.5rem]">
+          {university.location}, {university.country}
+          {establishedYear ? ` • Est. ${establishedYear}` : ''}
         </p>
 
-        {/* Courses & QS Ranking */}
-        <div className="space-y-2 mb-4">
-          {courseCount > 0 && (
-            <div className="text-sm text-gray-700 dark:text-gray-300">
-              <span className="font-semibold">{courseCount}</span>
-              <span className="text-xs text-gray-500"> courses available</span>
-            </div>
-          )}
+        <div className="flex flex-wrap items-center gap-2 mb-5 min-h-[2.25rem]">
+          <span className="px-2.5 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium">
+            {courseCount} course{courseCount !== 1 ? 's' : ''}
+          </span>
           {university.qsRanking && (
-            <div className="text-sm text-gray-700 dark:text-gray-300">
-              <span className="font-semibold">QS Ranking:</span>
-              <span className="text-xs text-gray-500"> {university.qsRanking}</span>
-            </div>
+            <span className="px-2.5 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-medium">
+              {university.qsRanking}
+            </span>
           )}
+          <span className="px-2.5 py-1 bg-green-50 text-green-700 rounded-full text-xs font-medium">
+            {getFeesRange(university)}
+          </span>
         </div>
 
-        {/* Buttons */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 mt-auto">
           <button
             onClick={() => onApply(university)}
-            className="flex-1 px-3 py-2 bg-black dark:bg-white text-white dark:text-black text-sm font-semibold rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+            className="flex-1 px-3 py-2 bg-black text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors"
           >
             Apply Now
           </button>
           <button
             onClick={() => onCompare(university)}
-            className="flex-1 px-3 py-2 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white text-sm font-semibold rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
+            className="flex-1 px-3 py-2 bg-gray-200 text-gray-900 text-sm font-semibold rounded-lg hover:bg-gray-300 transition-colors"
           >
             Compare
-          </button>
-          <button
-            onClick={() => onWishlist(university)}
-            className="px-3 py-2 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
-          >
-            ♡
           </button>
         </div>
       </div>
