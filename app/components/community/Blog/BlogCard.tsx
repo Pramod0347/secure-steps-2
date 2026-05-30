@@ -14,6 +14,7 @@ interface BlogCardProps {
 
 export default function BlogCard({ url, fileName, uploadDate, onClick, onPreview }: BlogCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+  const [showPdfPreview, setShowPdfPreview] = useState(true)
 
   // Format the title from filename
   const formatTitle = (fileName: string) => {
@@ -76,14 +77,25 @@ export default function BlogCard({ url, fileName, uploadDate, onClick, onPreview
     >
       {/* PDF Cover */}
       <div className={`relative h-[200px] w-full overflow-hidden ${getRandomColor()}`}>
-        <div className="absolute inset-0 bg-black/10"></div>
-
-        {/* PDF Icon */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="rounded-lg bg-white/90 p-4 shadow-lg">
-            <FileText className="h-12 w-12 text-gray-800" />
+        {showPdfPreview ? (
+          <iframe
+            src={`${url}#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
+            title={`${formatTitle(fileName)} preview`}
+            className="h-full w-full pointer-events-none"
+            loading="lazy"
+            onError={() => setShowPdfPreview(false)}
+          />
+        ) : (
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="rounded-lg bg-white/90 p-4 shadow-lg">
+                <FileText className="h-12 w-12 text-gray-800" />
+              </div>
+            </div>
           </div>
-        </div>
+        )}
+        <div className="absolute inset-0 bg-black/10 pointer-events-none"></div>
 
         {/* Hover Overlay */}
         <div

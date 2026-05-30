@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Loader2, FileText, X, Building2 } from "lucide-react"
+import { Loader2, FileText, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import BlogCard from "./BlogCard"
 import { useAuth } from "@/app/context/AuthContext"
 import Link from "next/link"
@@ -184,6 +184,9 @@ export default function BlogList() {
             {/* PDF Viewer Dialog */}
             <Dialog open={showPdfDialog} onOpenChange={setShowPdfDialog}>
                 <DialogContent className="h-[90vh] w-[90vw] max-w-5xl p-0">
+                    <DialogTitle className="sr-only">
+                        {selectedBlog ? `Viewing ${formatTitle(selectedBlog.fileName)}` : "Viewing blog PDF"}
+                    </DialogTitle>
                     {selectedBlog && (
                         <iframe
                             src={`${selectedBlog.url}#toolbar=0`}
@@ -197,6 +200,9 @@ export default function BlogList() {
             {/* PDF Preview Dialog */}
             <Dialog open={showPreviewDialog} onOpenChange={setShowPreviewDialog}>
                 <DialogContent className="h-[80vh] w-[90vw] max-w-5xl p-0">
+                    <DialogTitle className="sr-only">
+                        {previewBlog ? `Previewing ${formatTitle(previewBlog.fileName)}` : "Previewing blog PDF"}
+                    </DialogTitle>
                     <div className="relative h-full w-full">
                         {previewBlog && (
                             <iframe
