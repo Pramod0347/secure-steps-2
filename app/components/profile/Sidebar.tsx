@@ -23,8 +23,8 @@ export default function Sidebar() {
   ]
 
   return (
-    <aside className="w-full rounded-2xl bg-black p-4 text-white shadow-[0_16px_40px_-24px_rgba(0,0,0,0.7)] md:sticky md:top-4 md:h-[70vh] md:w-64 md:overflow-y-auto md:scrollbar-hide md:p-6">
-      <div className="mb-4 flex items-center gap-3 md:mb-6">
+    <aside className="bg-black text-white p-6 sticky top-0 overflow-y-auto w-64 flex flex-col rounded-2xl scrollbar-hide h-[70%]">
+      <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
           <span className="text-white font-bold text-lg">S</span>
         </div>
@@ -34,24 +34,23 @@ export default function Sidebar() {
         </div>
       </div>
 
-      <div className="mb-3 px-1 text-xs font-semibold uppercase tracking-wider text-gray-500 md:mb-4 md:px-2">Menu</div>
+      <div className="text-xs text-gray-500 uppercase tracking-wider mb-4 px-2 font-semibold">Menu</div>
 
-      <nav className="scrollbar-hide flex gap-2 overflow-x-auto pb-1 md:block md:space-y-2 md:overflow-visible md:pb-0">
+      <nav className="space-y-2 flex-1">
         {menuItems.map((item) => (
           <Link
             key={item.section}
             href={`/profile?section=${item.section}`}
-            className="shrink-0 md:block"
           >
             <div
-              className={`flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm transition-all md:gap-3 ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all text-sm ${
                 activeSection === item.section
-                  ? 'bg-white font-semibold text-black'
+                  ? 'bg-white text-black font-semibold'
                   : 'text-gray-300 hover:bg-gray-900'
               }`}
             >
               <span className="text-base flex-shrink-0">{item.icon}</span>
-              <span className="whitespace-nowrap md:truncate">{item.label}</span>
+              <span className="truncate">{item.label}</span>
             </div>
           </Link>
         ))}

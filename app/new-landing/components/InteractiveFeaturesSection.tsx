@@ -7,11 +7,11 @@ import { ArrowRight, FileText, Upload } from "lucide-react";
 const InteractiveFeaturesSection = () => {
   const [activeTab, setActiveTab] = useState("icebreaker");
   const [activeGuidanceSubTab, setActiveGuidanceSubTab] = useState("future");
-  const takeTestUrl = "https://personalityassessmentv1.vercel.app";
+  const takeTestUrl = "https://tally.so/r/GxYAqk";
 
   const tabs = [
     { id: "icebreaker", label: "Ice Breaker" },
-    { id: "routes", label: "Routes Test" },
+    { id: "prism", label: "Prism Test" },
     { id: "guidance", label: "Guidance" },
     { id: "applications", label: "Applications" },
   ];
@@ -137,10 +137,10 @@ const InteractiveFeaturesSection = () => {
         </div>
       ),
     },
-    routes: {
-      title: "Routes Test",
+    prism: {
+      title: "Which colour are you?",
       description:
-        "Explore your strongest route based on how you think, work, and make decisions, so you can choose a direction with confidence.",
+        "Discover, validate your interests on a much deeper level, unlocking your true potential and creating positive impact on your career and personality.",
       content: (
         <div className="space-y-3">
           {/* Red - The Director */}

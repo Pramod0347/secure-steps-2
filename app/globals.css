@@ -1,6 +1,17 @@
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Soft glow for hero Education text */
+.hero-glow {
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.1),
+    0 0 30px rgba(206, 147, 216, 0.35),
+    0 0 60px rgba(206, 147, 216, 0.15);
+}
 
 
 @layer base {
@@ -27,22 +38,34 @@
   font-family: "konnectMedium";
   src: url("./assets/Fonts/KonnectMedium.otf"), format("truetype");
 }
+
 @font-face {
   font-family: "konnectRegular";
   src: url("./assets/Fonts/KonnectRegular.otf"), format("truetype");
 }
+
 @font-face {
   font-family: "konnectSemiBold";
   src: url("./assets/Fonts/KonnectSemiBold.otf"), format("truetype");
 }
 
-.konnectMedium{
+@font-face {
+  font-family: "Orpheus Pro";
+  src: url("./fonts/Orpheus-Pro.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.konnectMedium {
   font-family: "konnectMedium";
 }
-.konnectRegular{
+
+.konnectRegular {
   font-family: "konnectRegular";
 }
-.konnectSemiBold{
+
+.konnectSemiBold {
   font-family: "konnectSemiBold";
 }
 
@@ -56,11 +79,15 @@
   font-family: "inter";
 }
 
-:root{
+:root {
   --primary-red-color: #BE243C;
 
 }
 
+
+html, body {
+  touch-action: pan-x pan-y;
+}
 
 body {
   display: flex;
@@ -132,6 +159,7 @@ h6 {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -142,6 +170,7 @@ h6 {
     opacity: 0;
     transform: translate3d(0, -20px, 0);
   }
+
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0);
@@ -156,6 +185,7 @@ h6 {
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(-100%);
   }
@@ -170,6 +200,7 @@ h6 {
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-50%);
   }
@@ -190,6 +221,7 @@ h6 {
   0% {
     transform: translateY(0);
   }
+
   100% {
     transform: translateY(-50%);
   }
@@ -210,19 +242,15 @@ h6 {
 }
 
 .bt-c {
-  background: linear-gradient(
-    90deg,
-    rgba(218, 32, 46, 1) 0%,
-    rgba(59, 54, 125, 1) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(218, 32, 46, 1) 0%,
+      rgba(59, 54, 125, 1) 100%);
 }
 
 .text-col {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(160, 185, 215, 1) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(160, 185, 215, 1) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -241,9 +269,12 @@ h6 {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
   .no-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
 }
 
@@ -251,11 +282,9 @@ h6 {
   width: 500px;
   aspect-ratio: 1;
   background-color: black;
-  background-image: radial-gradient(
-    circle at 100% 100%,
-    red 500px,
-    transparent 500px
-  );
+  background-image: radial-gradient(circle at 100% 100%,
+      red 500px,
+      transparent 500px);
 }
 
 .card-div {
@@ -270,11 +299,9 @@ h6 {
   position: absolute;
   width: var(--size);
   aspect-ratio: 1;
-  background-image: radial-gradient(
-    circle at 100% 100%,
-    transparent var(--size),
-    red var(--size)
-  );
+  background-image: radial-gradient(circle at 100% 100%,
+      transparent var(--size),
+      red var(--size));
 }
 
 .card-image {
@@ -317,6 +344,7 @@ h6 {
   z-index: 50;
   box-shadow: 0px -7px 0px 0px white;
 }
+
 .invert-curve-top::after {
   content: "";
   position: absolute;
@@ -343,6 +371,7 @@ h6 {
   z-index: 50;
   box-shadow: -4px 4px 0px white;
 }
+
 .invert-curve-bottom::after {
   content: "";
   position: absolute;
@@ -356,6 +385,7 @@ h6 {
   z-index: 50;
   box-shadow: -4px 4px 0px white;
 }
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -384,6 +414,7 @@ h6 {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 224 71.4% 4.1%;
     --foreground: 210 20% 98%;
@@ -411,10 +442,12 @@ h6 {
     --chart-5: 340 75% 55%;
   }
 }
+
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -425,30 +458,38 @@ h6 {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
 }
 
 .shining-button {
-  background: linear-gradient(
-    90deg,
-    #ff9999, /* Light Red */
-    #99ff99, /* Light Green */
-    #9999ff, /* Light Blue */
-    #d1b3ff, /* Light Violet */
-    #ffccf2, /* Light Pink */
-    #ff9999  /* Light Red (loop) */
-  );
+  background: linear-gradient(90deg,
+      #ff9999,
+      /* Light Red */
+      #99ff99,
+      /* Light Green */
+      #9999ff,
+      /* Light Blue */
+      #d1b3ff,
+      /* Light Violet */
+      #ffccf2,
+      /* Light Pink */
+      #ff9999
+      /* Light Red (loop) */
+    );
   background-size: 300% 300%;
   animation: shine 3s infinite;
   border: none;
   color: white;
   transition: transform 0.2s;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add soft shadow */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  /* Add soft shadow */
 }
 
 .shining-button:hover {
@@ -457,9 +498,7 @@ h6 {
 
 /* Quiz page */
 .stars {
-  background: transparent
-    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjQxMjlFMkZBQjk5RDExRTBCQzAwQzhDOEM4MTY5REY5IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjQxMjlFMkZCQjk5RDExRTBCQzAwQzhDOEM4MTY5REY5Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6NDEyOUUyRjhCOTlEMTFFMEJDMDBDOEM4MTY5REY5IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjQxMjlFMkY5Qjk5RDExRTBCQzAwQzhDOEM4MTY5REY5Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+3rW+rAAAADNJREFUeNpiYGBg2MzAwPCfgQj4n4GBYTMTAwUAZKgDE0UGwowlyhsw58L8S5J3AAIMAC+/Ct7HxUEmAAAAAElFTkSuQmCC)
-    repeat top left;
+  background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjQxMjlFMkZBQjk5RDExRTBCQzAwQzhDOEM4MTY5REY5IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjQxMjlFMkZCQjk5RDExRTBCQzAwQzhDOEM4MTY5REY5Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6NDEyOUUyRjhCOTlEMTFFMEJDMDBDOEM4MTY5REY5IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjQxMjlFMkY5Qjk5RDExRTBCQzAwQzhDOEM4MTY5REY5Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+3rW+rAAAADNJREFUeNpiYGBg2MzAwPCfgQj4n4GBYTMTAwUAZKgDE0UGwowlyhsw58L8S5J3AAIMAC+/Ct7HxUEmAAAAAElFTkSuQmCC) repeat top left;
   animation: stars-animation 10s linear infinite;
 }
 
@@ -467,6 +506,7 @@ h6 {
   from {
     background-position: 0 0;
   }
+
   to {
     background-position: 100% 100%;
   }
@@ -490,22 +530,41 @@ h6 {
 /* scrollbar customization */
 /* For WebKit Browsers (Chrome, Edge, Safari) */
 ::-webkit-scrollbar {
-  width: 8px; /* Width of the scrollbar */
+  width: 8px;
+  /* Width of the scrollbar */
 }
 
 /* Track (background) */
 ::-webkit-scrollbar-track {
-  background: #f0f0f0; /* Light grey background */
-  border-radius: 10px; /* Rounded corners */
+  background: #f0f0f0;
+  /* Light grey background */
+  border-radius: 10px;
+  /* Rounded corners */
 }
 
 /* Handle (scrollbar thumb) */
 ::-webkit-scrollbar-thumb {
-  background: #9f9f9f; /* Scrollbar color */
-  border-radius: 10px; /* Rounded edges */
+  background: #9f9f9f;
+  /* Scrollbar color */
+  border-radius: 10px;
+  /* Rounded edges */
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #7e7e7e; /* Darker blue on hover */
+  background: #7e7e7e;
+  /* Darker blue on hover */
+}
+
+/* Globe edge fade mask (absolute pixel radius to keep consistent on all screens) */
+.globe-mask {
+  mask-image: radial-gradient(circle 190px at center, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 42%, rgba(0,0,0,0) 100%);
+  -webkit-mask-image: radial-gradient(circle 190px at center, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 42%, rgba(0,0,0,0) 100%);
+}
+
+@media (min-width: 640px) {
+  .globe-mask {
+    mask-image: radial-gradient(circle 420px at center, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 46%, rgba(0,0,0,0) 100%);
+    -webkit-mask-image: radial-gradient(circle 420px at center, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 46%, rgba(0,0,0,0) 100%);
+  }
 }

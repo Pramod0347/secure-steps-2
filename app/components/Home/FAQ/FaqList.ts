@@ -16,7 +16,7 @@ const FaqList = [
     },
     {
         id:4,
-        question:"Can I get collateral-free loans?",
+        question:"Can I get collateral-free loans?Can I get collateral-free loans?",
         answer:"Some universities have tie-ups with public and private sector banks in India. Be cautious of false advertisements claiming that collateral-free loans are available for everyone and for all universities. Check the list of eligible universities to determine if you qualify."
     },
     {

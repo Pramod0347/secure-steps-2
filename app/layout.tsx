@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from "react";
 // import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Script from "next/script";
@@ -62,12 +63,54 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  useEffect(() => {
+    // 1. Prevent zoom on wheel/trackpad (Ctrl + scroll / Cmd + scroll)
+    const handleWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+      }
+    };
+
+    // 2. Prevent mobile pinch-to-zoom (multi-touch gesture)
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    };
+
+    // 3. Prevent keyboard shortcuts for zooming (Ctrl/Cmd + Plus, Minus, Zero)
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key === '=' || e.key === '-' || e.key === '+' || e.key === '0')) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener("wheel", handleWheel, { passive: false });
+    document.addEventListener("touchstart", handleTouchStart, { passive: false });
+    document.addEventListener("touchmove", handleTouchMove, { passive: false });
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("wheel", handleWheel);
+      document.removeEventListener("touchstart", handleTouchStart);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <html
       lang="en"
       className={`${inter.variable} ${geistSans.variable} ${geistMono.variable}`}
     >
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <link rel="icon" href={BRAND_ASSETS.LOGO_URL} type="image/png" />
         <link rel="apple-touch-icon" href={BRAND_ASSETS.LOGO_URL} />
         {/* Add global head tags like meta tags, styles, and Google script */}
