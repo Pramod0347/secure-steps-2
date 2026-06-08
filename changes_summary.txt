@@ -1,0 +1,25 @@
+# Comprehensive Project Updates
+
+## 1. Landing Page & Home Features
+- **Hero Section**: Massive overhaul (`app/new-landing/components/HeroSection.tsx`) with updated messaging and layout.
+- **Interactive Globe**: Added a 3D interactive spinning globe feature (`spinning-globe.html`).
+- **About & Features**: Updated the `AboutSection` and `InteractiveFeaturesSection` for better functionality and widget integration.
+- **FAQ**: Fixed a duplicate question regarding collateral-free loans.
+
+## 2. Profile & Dashboard Enhancements
+- **Universities View**: Major layout and functional improvements to `app/components/profile/Universities.tsx`.
+- **Visa & Finance**: Completely refactored `VisaFinance.tsx` to integrate a new visa framework and improve the country selection interface.
+- **Sidebar**: Tweaked the `Sidebar.tsx` navigation styling.
+
+## 3. Community & Connect
+- **Alumni Profiles**: Refactored the layout across `ProfileNav`, `ProfileSessions`, `ProfileTabs`, and `ProfileTopCards` for a cleaner, more engaging user experience.
+- **Blogs**: Styling updates applied to `BlogCard.tsx` and `BlogList.tsx`.
+
+## 4. Global Styling & Layout
+- **Navigation & Layout**: Minor adjustments to the global `Navbar.tsx` and root `layout.tsx`.
+- **CSS**: Significant additions to `globals.css` and the inclusion of a new font (`Orpheus-Pro.otf`).
+
+## 5. Infrastructure & Database Fixes (Latest)
+- **Environment Setup**: Created `.env` (copied from `var.env`) to correctly expose `DATABASE_URL` and other required variables to the Next.js server.
+- **Cache Clearing**: Deleted the broken `.next/` build cache.
+- **Prisma Regeneration**: Ran `npx prisma generate` so the backend could correctly initialize the database client, resolving the `500 Internal Server Error` and `401 Unauthorized` bugs.
