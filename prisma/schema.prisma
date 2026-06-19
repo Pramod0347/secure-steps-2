@@ -1304,6 +1304,7 @@ model PortfolioItem {
     title           String
     description     String?
     category        String?
+    section         String        @default("PORTFOLIO")
     
     // Media
     imageUrl        String?
