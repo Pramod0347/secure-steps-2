@@ -7,36 +7,24 @@ import { getSessionUser } from "@/app/lib/auth-helper"
  */
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getSessionUser(req)
-    if (!session?.userId) {
+    if (!session?.userId || session.role !== "ADMIN") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    let userProfile = await prisma.userProfile.findUnique({
-      where: { userId: session.userId },
-    })
-
-    if (!userProfile) {
-      userProfile = await prisma.userProfile.create({
-        data: {
-          userId: session.userId,
-          profileStatus: "IN_PROGRESS",
-        },
-      })
-    }
-
     const item = await prisma.portfolioItem.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
-    if (!item || item.userProfileId !== userProfile.id) {
-      return NextResponse.json({ error: "Not authorized" }, { status: 403 })
+    if (!item) {
+      return NextResponse.json({ error: "Portfolio item not found" }, { status: 404 })
     }
 
-    await prisma.portfolioItem.delete({ where: { id: params.id } })
+    await prisma.portfolioItem.delete({ where: { id } })
 
     return NextResponse.json({ message: "Item deleted" }, { status: 200 })
   } catch (error) {
@@ -53,39 +41,27 @@ export async function DELETE(
  */
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getSessionUser(req)
-    if (!session?.userId) {
+    if (!session?.userId || session.role !== "ADMIN") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const body = await req.json()
 
-    let userProfile = await prisma.userProfile.findUnique({
-      where: { userId: session.userId },
-    })
-
-    if (!userProfile) {
-      userProfile = await prisma.userProfile.create({
-        data: {
-          userId: session.userId,
-          profileStatus: "IN_PROGRESS",
-        },
-      })
-    }
-
     const item = await prisma.portfolioItem.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
-    if (!item || item.userProfileId !== userProfile.id) {
-      return NextResponse.json({ error: "Not authorized" }, { status: 403 })
+    if (!item) {
+      return NextResponse.json({ error: "Portfolio item not found" }, { status: 404 })
     }
 
     const updated = await prisma.portfolioItem.update({
-      where: { id: params.id },
+      where: { id },
       data: body,
     })
 
