@@ -47,9 +47,12 @@ export default function ContentManager() {
   const loadItems = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/profile/portfolio')
+      const res = await fetch('/api/profile/portfolio', {
+        credentials: 'include',
+      })
       if (!res.ok) {
-        throw new Error('Failed to load portfolio items')
+        const error = await res.json().catch(() => null)
+        throw new Error(error?.error || 'Failed to load portfolio items')
       }
 
       const data: PortfolioItem[] = await res.json()
@@ -96,6 +99,7 @@ export default function ContentManager() {
 
       const uploadRes = await fetch('/api/upload', {
         method: 'POST',
+        credentials: 'include',
         body: formData,
       })
 
@@ -111,6 +115,7 @@ export default function ContentManager() {
 
       const saveRes = await fetch('/api/profile/portfolio', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: uploadTitle,
@@ -149,11 +154,12 @@ export default function ContentManager() {
     try {
       const res = await fetch(`/api/profile/portfolio/${id}`, {
         method: 'DELETE',
+        credentials: 'include',
       })
 
       if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error.error || 'Delete failed')
+        const error = await res.json().catch(() => null)
+        throw new Error(error?.error || `Delete failed (${res.status})`)
       }
 
       toast.success('Content deleted')
@@ -169,6 +175,7 @@ export default function ContentManager() {
     try {
       const res = await fetch(`/api/profile/portfolio/${item.id}`, {
         method: 'PUT',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: item.title,

@@ -30,7 +30,6 @@ export async function GET(req: NextRequest) {
             university: true,
           },
         },
-        portfolio: { orderBy: { order: "asc" } },
         journeyMilestones: { orderBy: { order: "asc" } },
         visaChecklists: {
           include: { items: { orderBy: { order: "asc" } } },

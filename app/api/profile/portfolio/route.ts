@@ -12,22 +12,9 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    let userProfile = await prisma.userProfile.findUnique({
-      where: { userId: session.userId },
-    })
-
-    if (!userProfile) {
-      userProfile = await prisma.userProfile.create({
-        data: {
-          userId: session.userId,
-          profileStatus: "IN_PROGRESS",
-        },
-      })
-    }
-
     const portfolio = await prisma.portfolioItem.findMany({
-      where: { userProfileId: userProfile.id },
-      orderBy: { order: "asc" },
+      where: { isPublic: true },
+      orderBy: [{ section: "asc" }, { order: "asc" }],
     })
 
     return NextResponse.json(portfolio)
@@ -46,7 +33,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const session = await getSessionUser(req)
-    if (!session?.userId) {
+    if (!session?.userId || session.role !== "ADMIN") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -54,22 +41,8 @@ export async function POST(req: NextRequest) {
     const { title, description, category, section, imageUrl, attachmentUrl, order } =
       body
 
-    let userProfile = await prisma.userProfile.findUnique({
-      where: { userId: session.userId },
-    })
-
-    if (!userProfile) {
-      userProfile = await prisma.userProfile.create({
-        data: {
-          userId: session.userId,
-          profileStatus: "IN_PROGRESS",
-        },
-      })
-    }
-
     const item = await prisma.portfolioItem.create({
       data: {
-        userProfileId: userProfile.id,
         title,
         description,
         category,
@@ -77,12 +50,8 @@ export async function POST(req: NextRequest) {
         imageUrl,
         attachmentUrl,
         order: order || 0,
+        isPublic: true,
       },
-    })
-
-    await prisma.userProfile.update({
-      where: { id: userProfile.id },
-      data: { lastUpdatedSection: "portfolio" },
     })
 
     return NextResponse.json(item, { status: 201 })
