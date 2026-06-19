@@ -3,11 +3,7 @@ import slugify from 'slugify'
 
 const prismaClientSingleton = () => {
   if (!process.env.DATABASE_URL) {
-    if (process.env.NEXT_PHASE === 'phase-production-build') {
-      console.warn('Warning: DATABASE_URL is not defined at build-time.')
-    } else {
-      throw new Error('DATABASE_URL is not defined')
-    }
+    throw new Error('DATABASE_URL is not defined')
   }
 
   // Production environments may have slower database connections

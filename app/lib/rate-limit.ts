@@ -1,16 +1,14 @@
 import { Redis } from "@upstash/redis";
 import { Ratelimit } from "@upstash/ratelimit";
 
-const hasRedisCredentials = !!(process.env.UPSTASH_REDIS_URL && process.env.UPSTASH_REDIS_TOKEN);
-
-if (!hasRedisCredentials && process.env.NEXT_PHASE !== 'phase-production-build') {
+if (!process.env.UPSTASH_REDIS_URL || !process.env.UPSTASH_REDIS_TOKEN) {
   throw new Error("Redis credentials are not properly configured");
 }
 
 // Create a new ratelimiter that allows 10 requests per 10 seconds
 const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_URL || "https://dummy.upstash.io",
-  token: process.env.UPSTASH_REDIS_TOKEN || "dummy",
+  url: process.env.UPSTASH_REDIS_URL!,
+  token: process.env.UPSTASH_REDIS_TOKEN!,
 });
 
 export const authLimiter = new Ratelimit({
