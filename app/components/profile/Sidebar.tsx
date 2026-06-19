@@ -26,8 +26,8 @@ export default function Sidebar() {
   ]
 
   return (
-    <aside className="w-full rounded-2xl bg-black p-4 text-white shadow-[0_16px_40px_-24px_rgba(0,0,0,0.7)] md:sticky md:top-4 md:h-[70vh] md:w-64 md:overflow-y-auto md:scrollbar-hide md:p-6">
-      <div className="mb-4 flex items-center gap-3 md:mb-6">
+    <aside className="w-full rounded-2xl bg-black p-4 text-white shadow-[0_16px_40px_-24px_rgba(0,0,0,0.7)] lg:sticky lg:top-4 lg:h-[70vh] lg:w-64 lg:overflow-y-auto lg:scrollbar-hide lg:p-6">
+      <div className="mb-4 flex items-center gap-3 lg:mb-6">
         <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
           <span className="text-white font-bold text-lg">S</span>
         </div>
@@ -37,24 +37,24 @@ export default function Sidebar() {
         </div>
       </div>
 
-      <div className="mb-3 px-1 text-xs font-semibold uppercase tracking-wider text-gray-500 md:mb-4 md:px-2">Menu</div>
+      <div className="mb-3 px-1 text-xs font-semibold uppercase tracking-wider text-gray-500 lg:mb-4 lg:px-2">Menu</div>
 
-      <nav className="scrollbar-hide flex gap-2 overflow-x-auto pb-1 md:block md:space-y-2 md:overflow-visible md:pb-0">
+      <nav className="scrollbar-hide flex gap-2 overflow-x-auto pb-1 lg:block lg:space-y-2 lg:overflow-visible lg:pb-0">
         {menuItems.map((item) => (
           <Link
             key={item.section}
             href={`/profile?section=${item.section}`}
-            className="shrink-0 md:block"
+            className="shrink-0 lg:block"
           >
             <div
-              className={`flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm transition-all md:gap-3 ${
+              className={`flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm transition-all lg:gap-3 ${
                 activeSection === item.section
                   ? 'bg-white font-semibold text-black'
                   : 'text-gray-300 hover:bg-gray-900'
               }`}
             >
               <span className="text-base flex-shrink-0">{item.icon}</span>
-              <span className="whitespace-nowrap md:truncate">{item.label}</span>
+              <span className="whitespace-nowrap lg:truncate">{item.label}</span>
             </div>
           </Link>
         ))}

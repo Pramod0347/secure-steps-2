@@ -15,6 +15,7 @@ import {
   LogOut,
   X,
   Users,
+  BookOpen,
 } from "lucide-react";
 
 const Navbar: React.FC = () => {
@@ -40,7 +41,7 @@ const Navbar: React.FC = () => {
     { path: "/stay", label: "Stay", icon: Home },
     { path: "/connect", label: "Connect", icon: LinkIcon },
     { path: "/community", label: "Community", icon: Users },
-    { path: "/lenders", label: "Lenders", icon: Building },
+    { path: "/our-story", label: "Our Story", icon: BookOpen },
   ];
   const mobilePrimaryItem = navItems[0];
   const mobileMenuItems = navItems.slice(1);

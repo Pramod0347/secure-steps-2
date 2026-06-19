@@ -32,8 +32,10 @@ const founders = [
 
 const FounderScrollCard = ({
   children,
+  flat = false,
 }: {
   children: React.ReactNode;
+  flat?: boolean;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -58,11 +60,19 @@ const FounderScrollCard = ({
   const scale = useTransform(
     scrollYProgress,
     [0, 0.5, 1],
-    isMobile ? [0.94, 1, 0.97] : [0.92, 1, 0.985]
+    flat ? [1, 1, 1] : (isMobile ? [0.94, 1, 0.97] : [0.92, 1, 0.985])
   );
   // Keep the entrance tilt, but let the card settle flat while it is in view.
-  const rotateX = useTransform(scrollYProgress, [0, 0.18, 1], [14, 0, 0]);
-  const translateY = useTransform(scrollYProgress, [0, 0.5, 1], [56, 0, -32]);
+  const rotateX = useTransform(
+    scrollYProgress,
+    [0, 0.18, 1],
+    flat ? [0, 0, 0] : [14, 0, 0]
+  );
+  const translateY = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    flat ? [0, 0, 0] : [56, 0, -32]
+  );
 
   return (
     <div ref={containerRef} className="relative [perspective:1200px]">
@@ -71,7 +81,7 @@ const FounderScrollCard = ({
           rotateX,
           scale,
           y: translateY,
-          transformStyle: "preserve-3d",
+          transformStyle: flat ? undefined : "preserve-3d",
         }}
       >
         {children}
@@ -80,9 +90,9 @@ const FounderScrollCard = ({
   );
 };
 
-const AboutSection = () => {
+const AboutSection = ({ flat = false }: { flat?: boolean }) => {
   const profileCard = (founder: (typeof founders)[number], index: number) => (
-    <FounderScrollCard key={founder.name}>
+    <FounderScrollCard key={founder.name} flat={flat}>
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -99,6 +109,7 @@ const AboutSection = () => {
                   src={founder.image}
                   alt=""
                   fill
+                  quality={90}
                   aria-hidden="true"
                   className={
                     founder.imageClassName ??
@@ -118,6 +129,8 @@ const AboutSection = () => {
                   src={founder.image}
                   alt={`${founder.name} - Co Founder`}
                   fill
+                  priority
+                  quality={95}
                   className={
                     founder.imageClassName ??
                     "object-contain object-center scale-[1.02] sm:scale-[1.06] lg:scale-[1.1]"
