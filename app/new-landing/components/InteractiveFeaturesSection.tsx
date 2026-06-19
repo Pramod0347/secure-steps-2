@@ -7,7 +7,7 @@ import { ArrowRight, FileText, Upload } from "lucide-react";
 const InteractiveFeaturesSection = () => {
   const [activeTab, setActiveTab] = useState("icebreaker");
   const [activeGuidanceSubTab, setActiveGuidanceSubTab] = useState("future");
-  const takeTestUrl = "https://tally.so/r/GxYAqk";
+  const takeTestUrl = "https://personalityassessmentv1.vercel.app";
 
   const tabs = [
     { id: "icebreaker", label: "Ice Breaker" },
