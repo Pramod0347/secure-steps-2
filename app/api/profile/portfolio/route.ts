@@ -12,12 +12,17 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const userProfile = await prisma.userProfile.findUnique({
+    let userProfile = await prisma.userProfile.findUnique({
       where: { userId: session.userId },
     })
 
     if (!userProfile) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 404 })
+      userProfile = await prisma.userProfile.create({
+        data: {
+          userId: session.userId,
+          profileStatus: "IN_PROGRESS",
+        },
+      })
     }
 
     const portfolio = await prisma.portfolioItem.findMany({
@@ -46,15 +51,20 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json()
-    const { title, description, category, imageUrl, attachmentUrl, order } =
+    const { title, description, category, section, imageUrl, attachmentUrl, order } =
       body
 
-    const userProfile = await prisma.userProfile.findUnique({
+    let userProfile = await prisma.userProfile.findUnique({
       where: { userId: session.userId },
     })
 
     if (!userProfile) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 404 })
+      userProfile = await prisma.userProfile.create({
+        data: {
+          userId: session.userId,
+          profileStatus: "IN_PROGRESS",
+        },
+      })
     }
 
     const item = await prisma.portfolioItem.create({
@@ -63,6 +73,7 @@ export async function POST(req: NextRequest) {
         title,
         description,
         category,
+        section: section || category || "PORTFOLIO",
         imageUrl,
         attachmentUrl,
         order: order || 0,

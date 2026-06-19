@@ -15,12 +15,17 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const userProfile = await prisma.userProfile.findUnique({
+    let userProfile = await prisma.userProfile.findUnique({
       where: { userId: session.userId },
     })
 
     if (!userProfile) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 404 })
+      userProfile = await prisma.userProfile.create({
+        data: {
+          userId: session.userId,
+          profileStatus: "IN_PROGRESS",
+        },
+      })
     }
 
     const item = await prisma.portfolioItem.findUnique({
@@ -58,12 +63,17 @@ export async function PUT(
 
     const body = await req.json()
 
-    const userProfile = await prisma.userProfile.findUnique({
+    let userProfile = await prisma.userProfile.findUnique({
       where: { userId: session.userId },
     })
 
     if (!userProfile) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 404 })
+      userProfile = await prisma.userProfile.create({
+        data: {
+          userId: session.userId,
+          profileStatus: "IN_PROGRESS",
+        },
+      })
     }
 
     const item = await prisma.portfolioItem.findUnique({
