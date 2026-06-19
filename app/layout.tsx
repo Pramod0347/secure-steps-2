@@ -120,32 +120,32 @@ export default function RootLayout({
         ></script>
       </head>
       <body className={`antialiased min-h-screen flex flex-col overflow-x-hidden ${inter.className}`}>
-          <Script
-            async
-            src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
-            strategy="afterInteractive"
-          />
-          <Script id="google-ads-config" strategy="afterInteractive">
-            {`
+        <Script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads-config" strategy="afterInteractive">
+          {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               window.gtag = gtag;
               gtag('js', new Date());
               gtag('config', '${GOOGLE_ADS_ID}');
             `}
-          </Script>
+        </Script>
 
-          <AuthProvider>
-            <AuthWrapper>
-              <Navbar />
-              <main className="flex-grow w-full">
-              <Toaster/>
-                {children}
-                <SpeedInsights />
-              </main>
-              <Footer />
-            </AuthWrapper>
-          </AuthProvider>
+        <AuthProvider>
+          <AuthWrapper>
+            <Navbar />
+            <main className="flex-grow w-full">
+              <Toaster />
+              {children}
+              <SpeedInsights />
+            </main>
+            <Footer />
+          </AuthWrapper>
+        </AuthProvider>
         {/* <SessionProvider>
         </SessionProvider> */}
       </body>

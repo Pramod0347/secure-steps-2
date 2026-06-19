@@ -56,12 +56,12 @@ function ProfileContent() {
   }
 
   return (
-    <div className="flex min-h-screen bg-white dark:bg-black m-32">
+    <div className="mx-0 mt-24 flex min-h-screen flex-col gap-4 bg-gradient-to-b from-white to-gray-50 px-3 py-3 dark:from-black dark:to-gray-950 sm:px-4 lg:mx-16 lg:my-12 lg:flex-row lg:gap-6 lg:px-0">
       {/* Sidebar - Fixed on left */}
       <Sidebar />
       
       {/* Main Content - Scrollable on right */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="w-full flex-1 overflow-visible lg:overflow-y-auto lg:scrollbar-hide">
         {renderSection()}
       </main>
     </div>
