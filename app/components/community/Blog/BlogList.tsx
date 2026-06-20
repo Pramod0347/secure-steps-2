@@ -1,21 +1,43 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Loader2, FileText, X, Building2 } from "lucide-react"
+import { useState, useEffect, useCallback } from "react"
+import { Loader2, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import BlogCard from "./BlogCard"
 import { useAuth } from "@/app/context/AuthContext"
 import Link from "next/link"
 
+const thumbnails = [
+    "https://images.unsplash.com/photo-1499750310107-5fef28a66643",
+    "https://images.unsplash.com/photo-1455390582262-044cdead277a",
+    "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
+    "https://images.unsplash.com/photo-1516321318423-f06f85e504b3",
+    "https://images.unsplash.com/photo-1501504905252-473c47e087f8",
+    "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2",
+    "https://images.unsplash.com/photo-1519389950473-47ba0277781c",
+    "https://images.unsplash.com/photo-1522202176988-66273c2fd55f",
+    "https://images.unsplash.com/photo-1517694712202-14dd9538aa97",
+    "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
+    "https://images.unsplash.com/photo-1555066931-4365d14bab8c",
+    "https://images.unsplash.com/photo-1516321497487-e288fb19713f",
+    "https://images.unsplash.com/photo-1504384308090-c894fdcc538d",
+    "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+    "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
+]
+
 // Define the expected structure of blog data
 interface Blog {
+    id?: string
+    title?: string
     url: string
     fileName: string
     uploadDate: string
+    summary?: string
+    coverImage?: string | null
+    published?: boolean
     // Add any other fields that might be in the API response
     size?: number
-    id?: string
     originalFileName?: string
 }
 
@@ -25,13 +47,11 @@ export default function BlogList() {
     const [error, setError] = useState<string | null>(null)
     const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null)
     const [showPdfDialog, setShowPdfDialog] = useState(false)
-    const [previewBlog, setPreviewBlog] = useState<Blog | null>(null)
-    const [showPreviewDialog, setShowPreviewDialog] = useState(false)
 
     const { user, isAuthenticated } = useAuth()
 
     // Fetch blogs from the server
-    const fetchBlogs = async () => {
+    const fetchBlogs = useCallback(async () => {
         try {
             setLoading(true)
 
@@ -50,40 +70,14 @@ export default function BlogList() {
                 return
             }
 
-            // Process the data based on its structure
-            let processedBlogs: Blog[] = []
-
-            if (Array.isArray(data)) {
-                // If data is already an array, use it directly
-                processedBlogs = data.map((blog: any) => ({
-                    url: blog.url || "",
-                    fileName: blog.fileName || "Untitled Blog",
-                    uploadDate: blog.uploadDate || new Date().toISOString(),
-                    // Include any other fields from the API
+            const processedBlogs: Blog[] = Array.isArray(data)
+                ? data.map((blog: Blog) => ({
                     ...blog,
+                    url: blog.url || "",
+                    fileName: blog.fileName || blog.title || "Untitled Blog",
+                    uploadDate: blog.uploadDate || new Date().toISOString(),
                 }))
-            } else if (data && typeof data === "object") {
-                // If data is an object, try to extract blogs array
-                if (Array.isArray(data.blogs)) {
-                    processedBlogs = data.blogs.map((blog: any) => ({
-                        url: blog.url || "",
-                        fileName: blog.fileName || "Untitled Blog",
-                        uploadDate: blog.uploadDate || new Date().toISOString(),
-                        ...blog,
-                    }))
-                } else {
-                    // Try to convert object to array if it has blog-like properties
-                    const keys = Object.keys(data)
-                    if (keys.length > 0 && data[keys[0]] && typeof data[keys[0]] === "object") {
-                        processedBlogs = Object.values(data).map((blog: any) => ({
-                            url: blog.url || "",
-                            fileName: blog.fileName || "Untitled Blog",
-                            uploadDate: blog.uploadDate || new Date().toISOString(),
-                            ...blog,
-                        }))
-                    }
-                }
-            }
+                : []
 
             setBlogs(processedBlogs)
             setError(null)
@@ -93,20 +87,15 @@ export default function BlogList() {
         } finally {
             setLoading(false)
         }
-    }
+    }, [])
 
     useEffect(() => {
         fetchBlogs()
-    }, [])
+    }, [fetchBlogs])
 
     const openPdf = (blog: Blog) => {
         setSelectedBlog(blog)
         setShowPdfDialog(true)
-    }
-
-    const previewPdf = (blog: Blog) => {
-        setPreviewBlog(blog)
-        setShowPreviewDialog(true)
     }
 
     // Format the title from filename
@@ -173,8 +162,9 @@ export default function BlogList() {
                                 url={blog.url || ""}
                                 fileName={blog.fileName || "Untitled Blog"}
                                 uploadDate={blog.uploadDate || new Date().toISOString()}
+                                thumbnail={thumbnails[index % thumbnails.length]}
                                 onClick={() => openPdf(blog)}
-                                onPreview={() => previewPdf(blog)}
+                                onPreview={() => openPdf(blog)}
                             />
                         ))}
                     </div>
@@ -191,29 +181,6 @@ export default function BlogList() {
                             className="h-full w-full"
                         />
                     )}
-                </DialogContent>
-            </Dialog>
-
-            {/* PDF Preview Dialog */}
-            <Dialog open={showPreviewDialog} onOpenChange={setShowPreviewDialog}>
-                <DialogContent className="h-[80vh] w-[90vw] max-w-5xl p-0">
-                    <div className="relative h-full w-full">
-                        {previewBlog && (
-                            <iframe
-                                src={`${previewBlog.url}#toolbar=0`}
-                                title={formatTitle(previewBlog.fileName)}
-                                className="h-full w-full"
-                            />
-                        )}
-                        <Button
-                            variant="outline"
-
-                            className="absolute right-2 top-2 h-8 w-8 rounded-full bg-white"
-                            onClick={() => setShowPreviewDialog(false)}
-                        >
-                            <X className="h-4 w-4" />
-                        </Button>
-                    </div>
                 </DialogContent>
             </Dialog>
         </div>

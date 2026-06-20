@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { FileText, Upload, Trash2, AlertCircle, CheckCircle, X, Loader2, Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -13,11 +13,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 
 interface Blog {
+  id: string
+  title: string
   url: string
   fileName: string
-  originalFileName: string
   uploadDate: string
-  id: string // Unique identifier for the blog
+  summary?: string
+  coverImage?: string | null
+  published?: boolean
 }
 
 export default function BlogManager() {
@@ -36,25 +39,21 @@ export default function BlogManager() {
   const editInputRef = useRef<HTMLInputElement>(null)
 
   // Fetch blogs from the server
-  const fetchBlogs = async () => {
+  const fetchBlogs = useCallback(async () => {
     try {
-      // Fetch blogs from the API
-      const response = await fetch("/api/community/blog")
+      const response = await fetch("/api/community/blog", {
+        credentials: "include",
+      })
 
       if (!response.ok) {
         throw new Error(`Failed to fetch blogs: ${response.status}`)
       }
 
-      const data = await response.json()
-
-
-      // Transform the data to match our interface
-      const transformedBlogs = data.map((blog: any) => ({
-        url: blog.url,
-        fileName: blog.fileName,
-        originalFileName: blog.fileName, // We don't have this info from the API
-        uploadDate: blog.uploadDate,
-        id: blog.url, // Use URL as ID since it's unique
+      const data: Blog[] = await response.json()
+      const transformedBlogs = data.map((blog) => ({
+        ...blog,
+        title: blog.title || blog.fileName || "Untitled Blog",
+        fileName: blog.fileName || blog.title || "Untitled Blog",
       }))
 
       setBlogs(transformedBlogs)
@@ -62,11 +61,11 @@ export default function BlogManager() {
       console.error("Error fetching blogs:", error)
       showNotification("error", "Failed to fetch blogs")
     }
-  }
+  }, [])
 
   useEffect(() => {
     fetchBlogs()
-  }, [])
+  }, [fetchBlogs])
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -97,11 +96,12 @@ export default function BlogManager() {
 
       const response = await fetch("/api/upload", {
         method: "POST",
+        credentials: "include",
         body: formData,
       })
 
       const responseText = await response.text()
-      let result: { error?: string } = {}
+      let result: { error?: string; url?: string } = {}
       if (responseText) {
         try {
           result = JSON.parse(responseText)
@@ -113,6 +113,36 @@ export default function BlogManager() {
 
       if (!response.ok) {
         throw new Error(result.error || `Failed to upload blog (HTTP ${response.status})`)
+      }
+
+      const blogResponse = await fetch("/api/community/blog", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: customFileName.trim().replace(/\.pdf$/i, ""),
+          fileName: fileToUpload.name,
+          fileUrl: result.url,
+          summary: "",
+          coverImage: null,
+          published: true,
+        }),
+      })
+
+      const blogResult = await blogResponse.json()
+
+      if (!blogResponse.ok) {
+        await fetch("/api/upload", {
+          method: "DELETE",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ fileUrl: result.url }),
+        }).catch(() => null)
+        throw new Error(blogResult.error || `Failed to create blog entry (HTTP ${blogResponse.status})`)
       }
 
       showNotification("success", "Blog uploaded successfully")
@@ -135,15 +165,17 @@ export default function BlogManager() {
     }
   }
 
-  const handleDelete = async (url: string) => {
+  const handleDelete = async (id: string, url: string) => {
     try {
       setIsDeleting(url)
-      const response = await fetch("/api/upload", {
+      const blog = blogs.find((item) => item.id === id)
+      if (!blog) {
+        throw new Error("Blog not found")
+      }
+
+      const response = await fetch(`/api/community/blog/${blog.id}`, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ fileUrl: url }),
+        credentials: "include",
       })
 
       const result = await response.json()
@@ -153,7 +185,7 @@ export default function BlogManager() {
       }
 
       // Remove the blog from the list
-      setBlogs((prev) => prev.filter((blog) => blog.url !== url))
+      setBlogs((prev) => prev.filter((item) => item.id !== id))
       showNotification("success", "Blog deleted successfully")
     } catch (error) {
       console.error("Delete error:", error)
@@ -184,15 +216,15 @@ export default function BlogManager() {
       // Ensure the filename has .pdf extension
       const formattedFileName = newFileName.endsWith(".pdf") ? newFileName : newFileName + ".pdf"
 
-      // Call the rename API
-      const response = await fetch("/api/community/blog", {
-        method: "POST",
+      const response = await fetch(`/api/community/blog/${blog.id}`, {
+        method: "PUT",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          currentUrl: blog.url,
-          newFileName: formattedFileName,
+          title: formattedFileName.replace(/\.pdf$/i, ""),
+          fileName: formattedFileName,
         }),
       })
 
@@ -204,7 +236,15 @@ export default function BlogManager() {
 
       // Update the blog in the list
       setBlogs((prev) =>
-        prev.map((b) => (b.id === blog.id ? { ...b, fileName: formattedFileName, url: result.url } : b)),
+        prev.map((b) =>
+          b.id === blog.id
+            ? {
+                ...b,
+                title: formattedFileName.replace(/\.pdf$/i, ""),
+                fileName: formattedFileName,
+              }
+            : b,
+        ),
       )
 
       showNotification("success", "Blog renamed successfully")
@@ -347,7 +387,7 @@ export default function BlogManager() {
                           <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                           <Input
                             ref={editInputRef}
-                            defaultValue={blog.fileName.replace(/\.pdf$/i, "")}
+                            defaultValue={(blog.fileName || blog.title).replace(/\.pdf$/i, "")}
                             className="h-8 py-1"
                             onKeyDown={(e) => {
                               if (e.key === "Enter") {
@@ -368,7 +408,7 @@ export default function BlogManager() {
                             rel="noopener noreferrer"
                             className="hover:underline text-blue-600"
                           >
-                            {blog.fileName}
+                            {blog.fileName || blog.title}
                           </a>
                         </div>
                       )}
@@ -389,7 +429,7 @@ export default function BlogManager() {
                         <Button
                           
                           size="sm"
-                          onClick={() => handleDelete(blog.url)}
+                          onClick={() => handleDelete(blog.id, blog.url)}
                           disabled={isDeleting === blog.url}
                         >
                           {isDeleting === blog.url ? (
