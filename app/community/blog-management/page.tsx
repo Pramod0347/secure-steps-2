@@ -101,7 +101,7 @@ export default function BlogManager() {
       })
 
       const responseText = await response.text()
-      let result: { error?: string } = {}
+      let result: { error?: string; url?: string } = {}
       if (responseText) {
         try {
           result = JSON.parse(responseText)
