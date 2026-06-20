@@ -124,8 +124,12 @@ const FloatingParticle = ({ type, color, shadow, size, delay: initialDelay }: Fl
     </motion.span>
   );
 };
+const PHRASES = [
+  { text: "Too many options?", isGradient: false },
+  { text: "Too much pressure?", isGradient: false },
+  { text: "Secure Steps got you.", isGradient: true }
+];
 
-;
 
 const HeroSection = () => {
   const [studentCount, setStudentCount] = useState(0);
@@ -137,6 +141,14 @@ const HeroSection = () => {
   const hasAnimatedRef = React.useRef(false);
   const isInView = useInView(sectionRef, { amount: 0.35, once: true });
   const countMotionValue = useMotionValue(0);
+  const [phraseIndex, setPhraseIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPhraseIndex((prev) => (prev + 1) % PHRASES.length);
+    }, 2200);
+    return () => clearTimeout(timer);
+  }, [phraseIndex]);
 
 
 
@@ -409,7 +421,7 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_42%,rgba(244,114,182,0.18)_0%,rgba(244,114,182,0.12)_18%,transparent_42%),radial-gradient(circle_at_80%_44%,rgba(147,197,253,0.22)_0%,rgba(196,181,253,0.12)_22%,transparent_46%),radial-gradient(circle_at_50%_42%,rgba(249,168,212,0.22)_0%,rgba(252,231,243,0.2)_26%,rgba(255,255,255,0.72)_58%,rgba(255,255,255,0.96)_100%)]" />
 
       {/* Adding pointer-events-none so click/drag pass through the title overlay text */}
-      <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 lg:pt-32 pointer-events-none">
+      <div className="relative z-20 w-full px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 lg:pt-32 pointer-events-none">
         {/* Trust Badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -451,16 +463,40 @@ const HeroSection = () => {
           </h1>
         </motion.div>
 
-        {/* Subtitle */}
+        {/* Subtitle - Desktop (Static) */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-6 text-base sm:text-lg text-gray-700 text-center max-w-2xl mx-auto leading-relaxed"
+          className="hidden sm:block mt-6 text-base sm:text-lg text-gray-700 text-center max-w-2xl mx-auto leading-relaxed px-4"
         >
           Too many options. Too many opinions. Too much pressure.
           We simplify the noise and help you design a clear path that fits who you are and where you want to go.
         </motion.p>
+
+        {/* Subtitle - Mobile (Animated Slideshow) */}
+        <div className="block sm:hidden mt-6 min-h-[36px] flex items-center justify-center pointer-events-none">
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={phraseIndex}
+              initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -10, filter: "blur(6px)" }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="text-base text-center max-w-2xl mx-auto leading-relaxed px-4 font-medium"
+            >
+              {PHRASES[phraseIndex].isGradient ? (
+                <span className="bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 bg-clip-text text-transparent font-bold text-lg hero-glow">
+                  {PHRASES[phraseIndex].text}
+                </span>
+              ) : (
+                <span className="text-gray-600">
+                  {PHRASES[phraseIndex].text}
+                </span>
+              )}
+            </motion.p>
+          </AnimatePresence>
+        </div>
 
         {/* CTA Buttons */}
         <motion.div
@@ -488,7 +524,7 @@ const HeroSection = () => {
 
       {/* Interactive 3D Spinning Globe */}
       <div
-        className="absolute bottom-[-20px] sm:bottom-[-200px] left-0 right-0 z-0 w-full h-[400px] sm:h-[720px] pointer-events-none sm:pointer-events-auto select-none opacity-70 sm:opacity-100"
+        className="absolute bottom-[-50px] sm:bottom-[-200px] left-0 right-0 z-0 w-full h-[280px] sm:h-[720px] pointer-events-none sm:pointer-events-auto select-none opacity-70 sm:opacity-100"
       >
         <iframe
           ref={iframeRef}
@@ -504,6 +540,20 @@ const HeroSection = () => {
 
       {/* Bottom fade */}
       <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-white via-white/80 to-transparent z-10 pointer-events-none" />
+
+      {/* Backdrop blur overlay when FAB is open */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            onClick={() => setIsOpen(false)}
+            className="fixed inset-0 bg-black/10 backdrop-blur-[6px] z-40 pointer-events-auto"
+          />
+        )}
+      </AnimatePresence>
 
       {/* Floating Action Button (FAB) */}
       <div className="fixed bottom-8 right-8 z-50 w-[71px] h-[71px]">
@@ -540,7 +590,7 @@ const HeroSection = () => {
                   href="https://personalityassessmentv1.vercel.app/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-pink-400 to-fuchsia-500 text-white font-medium rounded-full shadow-lg shadow-pink-500/25 transition-all duration-200 hover:scale-105 whitespace-nowrap text-sm"
+                  className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 text-white font-medium rounded-full shadow-lg shadow-purple-500/30 transition-all duration-200 hover:scale-105 whitespace-nowrap text-sm"
                 >
                   <Compass size={14} />
                   Know who you are

@@ -744,6 +744,10 @@
         n: { tip: 0xfbbf24, stem: 0xfbbf24, ring: 0xfbbf24, tipR: 1.05, tipScale: 0.032, baseScale: 0.018, stemOp: 0.5 }
       };
 
+      if (isMobile) {
+        PINS = PINS.filter(function (pin) { return pin.tier === 'c'; });
+      }
+
       PINS.forEach(function (pin, idx) {
         var st = COLORS[pin.tier];
         var n = latLonToVec3(pin.lat, pin.lon);
