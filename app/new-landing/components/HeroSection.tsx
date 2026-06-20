@@ -144,9 +144,8 @@ const HeroSection = () => {
   const [phraseIndex, setPhraseIndex] = useState(0);
 
   useEffect(() => {
-    if (phraseIndex >= PHRASES.length - 1) return;
     const timer = setTimeout(() => {
-      setPhraseIndex((prev) => prev + 1);
+      setPhraseIndex((prev) => (prev + 1) % PHRASES.length);
     }, 2200);
     return () => clearTimeout(timer);
   }, [phraseIndex]);
