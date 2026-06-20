@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { Loader2, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import BlogCard from "./BlogCard"
 import { useAuth } from "@/app/context/AuthContext"
 import Link from "next/link"
@@ -174,9 +174,6 @@ export default function BlogList() {
             {/* PDF Viewer Dialog */}
             <Dialog open={showPdfDialog} onOpenChange={setShowPdfDialog}>
                 <DialogContent className="h-[90vh] w-[90vw] max-w-5xl p-0">
-                    <DialogTitle className="sr-only">
-                        {selectedBlog ? `Viewing ${formatTitle(selectedBlog.fileName)}` : "Viewing blog PDF"}
-                    </DialogTitle>
                     {selectedBlog && (
                         <iframe
                             src={`${selectedBlog.url}#toolbar=0`}

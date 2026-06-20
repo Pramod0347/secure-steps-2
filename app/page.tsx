@@ -8,7 +8,6 @@ import {
   TestimonialsSection,
   KeyBenefitsSection,
   PricingSection,
-  AboutSection,
   FAQSection,
   CourseTopicsSection,
   CommunitySection,
@@ -21,7 +20,6 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-white">
       <HeroSection />
-      <AboutSection />
       <CourseTopicsSection />
       <FinalCTASection />
       <InteractiveFeaturesSection />
