@@ -507,7 +507,7 @@ const HeroSection = () => {
         >
           <Link
             href="/quizform"
-            className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white font-semibold rounded-full shadow-[0_4px_20px_rgba(236,72,153,0.3)] hover:shadow-[0_6px_24px_rgba(236,72,153,0.45)] transition-all duration-300 hover:scale-[1.03] text-base"
+            className="inline-flex w-[75%] items-center justify-center gap-2 rounded-full bg-gradient-to-r from-fuchsia-500 via-violet-500 to-indigo-500 px-6 py-3.5 text-sm font-semibold text-white shadow-[0_18px_40px_-18px_rgba(99,102,241,0.75)] transition-transform duration-200 hover:scale-[1.02] hover:shadow-[0_22px_48px_-18px_rgba(99,102,241,0.9)] sm:w-auto"
           >
             Consult Now
           </Link>
@@ -515,7 +515,7 @@ const HeroSection = () => {
             href="https://personalityassessmentv1.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 bg-white/80 hover:bg-white border border-pink-200 text-gray-800 font-semibold rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.04)] hover:shadow-[0_6px_20px_rgba(236,72,153,0.1)] transition-all duration-300 hover:scale-[1.03] text-base"
+            className="inline-flex w-[75%] items-center justify-center px-8 py-3.5 bg-white/80 hover:bg-white border border-pink-200 text-gray-800 font-semibold rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.04)] hover:shadow-[0_6px_20px_rgba(236,72,153,0.1)] transition-all duration-300 hover:scale-[1.03] text-base sm:w-auto"
           >
             Try Out Personality Test
           </Link>
@@ -524,22 +524,22 @@ const HeroSection = () => {
 
       {/* Interactive 3D Spinning Globe */}
       <div
-        className="absolute bottom-[-50px] sm:bottom-[-200px] left-0 right-0 z-0 w-full h-[280px] sm:h-[720px] pointer-events-none sm:pointer-events-auto select-none opacity-70 sm:opacity-100"
+        className="absolute bottom-[-60px] sm:bottom-[-200px] left-0 right-0 z-0 w-full h-[320px] sm:h-[720px] pointer-events-none sm:pointer-events-auto select-none opacity-85 sm:opacity-100"
       >
         <iframe
           ref={iframeRef}
           src="/spinning-globe.html"
-          className="w-full h-full border-none pointer-events-none sm:pointer-events-auto"
+          className="w-full h-full border-none pointer-events-none sm:pointer-events-auto opacity-100"
           title="3D Globe"
         />
       </div>
 
       {/* Screen-Edge Cloud Overlays (Left/Right Sides of the Screen Viewport) */}
-      <div className="absolute left-[-100px] bottom-[-100px] w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] bg-gradient-to-tr from-white/95 via-pink-100/40 to-transparent rounded-full blur-[80px] sm:blur-[130px] z-10 pointer-events-none" />
-      <div className="absolute right-[-100px] bottom-[-100px] w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] bg-gradient-to-tl from-white/95 via-pink-100/40 to-transparent rounded-full blur-[80px] sm:blur-[130px] z-10 pointer-events-none" />
+      <div className="absolute left-[-100px] bottom-[-100px] w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] bg-gradient-to-tr from-white/55 via-pink-100/25 to-transparent rounded-full blur-[80px] sm:blur-[130px] z-10 pointer-events-none" />
+      <div className="absolute right-[-100px] bottom-[-100px] w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] bg-gradient-to-tl from-white/55 via-pink-100/25 to-transparent rounded-full blur-[80px] sm:blur-[130px] z-10 pointer-events-none" />
 
       {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-white via-white/80 to-transparent z-10 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-28 sm:h-48 bg-gradient-to-t from-white/80 sm:from-white to-transparent z-10 pointer-events-none" />
 
       {/* Backdrop blur overlay when FAB is open */}
       <AnimatePresence>

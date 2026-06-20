@@ -1,9 +1,12 @@
 
+import { motion } from "framer-motion";
+import Link from "next/link";
 import { FaSearch as SearchIcon } from "react-icons/fa";
-import { FiFilter as FilterIcon } from "react-icons/fi";
 
 // Asset Imports
 import LenderBanner from "@/app/assets/groups/banner.png";
+
+const WHATSAPP_COMMUNITY_URL = "https://chat.whatsapp.com/LMR90Zvq4PMLvsTZZqCiGx";
 
 // Hero Section Component
 const Hero: React.FC = () => {
@@ -31,12 +34,21 @@ const Hero: React.FC = () => {
               <SearchIcon className="md:text-[21px]" />
             </div>
           </div>
-          {/* Filter btn */}
-          <div className="flex gap-1 md:py-0  py-2 cursor-pointer items-center w-[140px] justify-center rounded-full text-[21px]
-           bg-black text-white">
-            <FilterIcon />
-            <p>Filter</p>
-          </div>
+          {/* Community CTA */}
+          <Link
+            href={WHATSAPP_COMMUNITY_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="group flex w-[70%] items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3 font-semibold text-white transition-all duration-300 hover:scale-105 md:w-[240px] md:py-4 md:text-[21px]"
+          >
+            Join our community
+            <motion.span
+              animate={{ x: [0, 5, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              →
+            </motion.span>
+          </Link>
         </div>
       </div>
     </div>
