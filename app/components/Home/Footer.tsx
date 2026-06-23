@@ -110,8 +110,10 @@ const Footer = () => {
         </p>
       </Link>
             </div>
-            <div className="   flex flex-col md:gap-4 gap-4 text-[14px] text-[#909090]">
-              <p>Our Story</p>
+            <div className="flex flex-col md:gap-4 gap-4 text-[14px] text-[#909090]">
+              <Link href="/our-story">
+                <p className="cursor-pointer hover:text-blue-600 duration-200">Our Story</p>
+              </Link>
               <p>Contact with Us</p>
               <p>Blog</p>
               <p>F.A.Q</p>
