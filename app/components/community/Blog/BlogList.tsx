@@ -8,24 +8,6 @@ import BlogCard from "./BlogCard"
 import { useAuth } from "@/app/context/AuthContext"
 import Link from "next/link"
 
-const thumbnails = [
-    "https://images.unsplash.com/photo-1499750310107-5fef28a66643",
-    "https://images.unsplash.com/photo-1455390582262-044cdead277a",
-    "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
-    "https://images.unsplash.com/photo-1516321318423-f06f85e504b3",
-    "https://images.unsplash.com/photo-1501504905252-473c47e087f8",
-    "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2",
-    "https://images.unsplash.com/photo-1519389950473-47ba0277781c",
-    "https://images.unsplash.com/photo-1522202176988-66273c2fd55f",
-    "https://images.unsplash.com/photo-1517694712202-14dd9538aa97",
-    "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
-    "https://images.unsplash.com/photo-1555066931-4365d14bab8c",
-    "https://images.unsplash.com/photo-1516321497487-e288fb19713f",
-    "https://images.unsplash.com/photo-1504384308090-c894fdcc538d",
-    "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
-    "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
-]
-
 // Define the expected structure of blog data
 interface Blog {
     id?: string
@@ -160,9 +142,9 @@ export default function BlogList() {
                             <BlogCard
                                 key={blog.url || `blog-${index}`}
                                 url={blog.url || ""}
-                                fileName={blog.fileName || "Untitled Blog"}
+                                fileName={blog.title || "Untitled Blog"}
                                 uploadDate={blog.uploadDate || new Date().toISOString()}
-                                thumbnail={thumbnails[index % thumbnails.length]}
+                                thumbnail={blog.coverImage || null}
                                 onClick={() => openPdf(blog)}
                                 onPreview={() => openPdf(blog)}
                             />
