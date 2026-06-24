@@ -1,13 +1,13 @@
 "use client"
 
-import { Calendar, Download, Eye } from "lucide-react"
+import { Calendar, Download, Eye, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface BlogCardProps {
   url: string
   fileName: string
   uploadDate: string
-  thumbnail: string
+  thumbnail?: string | null
   onClick: () => void
   onPreview: () => void
 }
@@ -46,12 +46,20 @@ export default function BlogCard({ url, fileName, uploadDate, thumbnail, onClick
       onClick={onClick}
     >
       <div className="relative h-[200px] w-full overflow-hidden bg-gray-100">
-        <img
-          src={thumbnail}
-          alt={`${formatTitle(fileName)} thumbnail`}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
-        />
+        {thumbnail ? (
+          <img
+            src={thumbnail}
+            alt={`${formatTitle(fileName)} cover`}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-100 via-white to-rose-50">
+            <div className="rounded-2xl bg-white/80 p-5 shadow-sm">
+              <FileText className="h-12 w-12 text-slate-600" />
+            </div>
+          </div>
+        )}
         <div className="absolute inset-0 bg-black/15" />
 
         <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
