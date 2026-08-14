@@ -8,7 +8,7 @@ const PricingSection = () => {
   const plans = [
     {
       name: "Starter Plan",
-      price: "₹18,567",
+      price: "₹1,497",
       subtitle: "One session only",
       features: [
         "One to one counselling",

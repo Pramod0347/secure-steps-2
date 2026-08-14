@@ -481,7 +481,7 @@ const HeroSection = () => {
 
       {/* Interactive 3D Spinning Globe */}
       <div
-        className="absolute bottom-[-5svh] sm:bottom-[-200px] left-0 right-0 z-0 w-full h-[42svh] sm:h-[720px] pointer-events-none sm:pointer-events-auto select-none opacity-85 sm:opacity-100"
+        className="absolute bottom-[-50px] sm:bottom-[-200px] left-0 right-0 z-0 w-full h-[280px] sm:h-[min(720px,calc(90vh-250px))] pointer-events-none sm:pointer-events-auto select-none opacity-70 sm:opacity-100"
       >
         <iframe
           ref={iframeRef}
