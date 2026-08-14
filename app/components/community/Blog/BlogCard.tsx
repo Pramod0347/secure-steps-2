@@ -1,20 +1,18 @@
 "use client"
 
-import { useState } from "react"
-import { FileText, Calendar, Download, Eye } from "lucide-react"
+import { Calendar, Download, Eye, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface BlogCardProps {
   url: string
   fileName: string
   uploadDate: string
+  thumbnail?: string | null
   onClick: () => void
   onPreview: () => void
 }
 
-export default function BlogCard({ url, fileName, uploadDate, onClick, onPreview }: BlogCardProps) {
-  const [isHovered, setIsHovered] = useState(false)
-
+export default function BlogCard({ url, fileName, uploadDate, thumbnail, onClick, onPreview }: BlogCardProps) {
   // Format the title from filename
   const formatTitle = (fileName: string) => {
     if (!fileName) return "Untitled Blog"
@@ -42,58 +40,31 @@ export default function BlogCard({ url, fileName, uploadDate, onClick, onPreview
     }
   }
 
-  // Generate a random color for the PDF cover
-  const getRandomColor = () => {
-    const colors = [
-      "bg-orange-500",
-      "bg-blue-500",
-      "bg-red-500",
-      "bg-emerald-500",
-      "bg-purple-500",
-      "bg-amber-500",
-      "bg-rose-500",
-    ]
-
-    // Use a hash of the filename to get a consistent color for the same file
-    const hashCode = (str: string) => {
-      let hash = 0
-      for (let i = 0; i < str.length; i++) {
-        hash = str.charCodeAt(i) + ((hash << 5) - hash)
-      }
-      return Math.abs(hash)
-    }
-
-    const colorIndex = hashCode(fileName || "default") % colors.length
-    return colors[colorIndex]
-  }
-
   return (
     <div
       className="group relative h-full overflow-hidden rounded-xl bg-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
       onClick={onClick}
     >
-      {/* PDF Cover */}
-      <div className={`relative h-[200px] w-full overflow-hidden ${getRandomColor()}`}>
-        <div className="absolute inset-0 bg-black/10"></div>
-
-        {/* PDF Icon */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="rounded-lg bg-white/90 p-4 shadow-lg">
-            <FileText className="h-12 w-12 text-gray-800" />
+      <div className="relative h-[200px] w-full overflow-hidden bg-gray-100">
+        {thumbnail ? (
+          <img
+            src={thumbnail}
+            alt={`${formatTitle(fileName)} cover`}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-100 via-white to-rose-50">
+            <div className="rounded-2xl bg-white/80 p-5 shadow-sm">
+              <FileText className="h-12 w-12 text-slate-600" />
+            </div>
           </div>
-        </div>
+        )}
+        <div className="absolute inset-0 bg-black/15" />
 
-        {/* Hover Overlay */}
-        <div
-          className={`absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity duration-300 ${
-            isHovered ? "opacity-100" : "opacity-0"
-          }`}
-        >
+        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
           <Button
             size="sm"
-          
             className="flex items-center gap-1"
             onClick={(e) => {
               e.stopPropagation()

@@ -11,6 +11,7 @@ import PackageCards from '@/app/components/profile/PackageCards';
 import Universities from '@/app/components/profile/Universities';
 import Documents from '@/app/components/profile/Documents';
 import Portfolio from '@/app/components/profile/Portfolio';
+import ContentManager from '@/app/components/profile/ContentManager';
 import VisaFinance from '@/app/components/profile/VisaFinance';
 
 function ProfileContent() {
@@ -35,6 +36,8 @@ function ProfileContent() {
       case 'journey':
       case 'portfolio':
         return <Portfolio />
+      case 'content':
+        return <ContentManager />
       case 'applications':
         return <div className="p-8 text-center text-gray-500">Application Tracking - Coming soon</div>
       case 'visa':

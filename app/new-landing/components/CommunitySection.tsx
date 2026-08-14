@@ -38,7 +38,7 @@ const CommunitySection = () => {
             rel="noreferrer"
             className="group flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-[#25D366] text-white font-semibold rounded-full hover:scale-105 transition-all duration-300 text-sm sm:text-base shadow-[0_18px_40px_-20px_rgba(37,211,102,0.9)]"
           >
-            Join ur community
+            Join our community
             <motion.span
               animate={{ x: [0, 5, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}

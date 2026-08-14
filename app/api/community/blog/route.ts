@@ -1,117 +1,104 @@
-import { NextResponse } from "next/server"
-import { S3Client, ListObjectsV2Command, CopyObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3"
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/app/lib/prisma"
+import { getSessionUser } from "@/app/lib/auth-helper"
 
-// Initialize the S3 client for Cloudflare R2
-const r2Client = new S3Client({
-  region: "auto",
-  endpoint: process.env.CLOUDFLARE_END_POINT!,
-  credentials: {
-    accessKeyId: process.env.CLOUDFLARE_ACCESS_KEY!,
-    secretAccessKey: process.env.CLOUDFLARE_SECRET_KEY!,
-  },
-})
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+}
 
-export async function GET() {
+function buildUniqueSlug(base: string) {
+  const stamp = Date.now().toString(36)
+  const slug = slugify(base || "blog")
+  return `${slug || "blog"}-${stamp}`
+}
+
+/**
+ * GET /api/community/blog
+ */
+export async function GET(req: NextRequest) {
   try {
-    // List all objects in the bucket
-    const command = new ListObjectsV2Command({
-      Bucket: process.env.CLOUDFLARE_BUCKET_NAME || "secure-steps-db",
-      Prefix: "pdf-", // Only list objects with the pdf- prefix
+    const session = await getSessionUser(req)
+    const isAdmin = session?.userId && session.role === "ADMIN"
+
+    const blogs = await prisma.blog.findMany({
+      where: {
+        ...(isAdmin ? {} : { published: true }),
+        fileUrl: { not: null },
+      },
+      orderBy: { createdAt: "desc" },
     })
 
-    const response = await r2Client.send(command)
-
-    // Format the response
-    const blogs =
-      response.Contents?.map((item) => {
-        // Extract the original filename from the key
-        // Assuming format: pdf-timestamp-originalname.pdf
-        const key = item.Key || ""
-        const parts = key.split("-")
-        let fileName = key
-
-        // If the key follows our naming convention, extract the original filename
-        if (parts.length >= 3) {
-          // Remove the prefix and timestamp
-          fileName = parts.slice(2).join("-")
-        }
-
-        return {
-          url: `${process.env.CLOUDFLARE_PUBLIC_URL}/${key}`,
-          fileName: fileName,
-          uploadDate: item.LastModified?.toISOString() || new Date().toISOString(),
-          size: item.Size || 0,
-        }
-      }) || []
-
-    // Sort by upload date (newest first)
-    blogs.sort((a, b) => new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime())
-
-    return NextResponse.json(blogs)
+    return NextResponse.json(
+      blogs.map((blog) => ({
+        id: blog.id,
+        title: blog.title,
+        slug: blog.slug,
+        summary: blog.summary,
+        url: blog.fileUrl ? encodeURI(blog.fileUrl) : "",
+        fileName: blog.fileName || blog.title,
+        uploadDate: blog.createdAt.toISOString(),
+        coverImage: blog.coverImage,
+        published: blog.published,
+      }))
+    )
   } catch (error) {
-    console.error("Error listing objects from Cloudflare R2:", error)
-    return NextResponse.json({ error: "Failed to fetch blogs" }, { status: 500 })
+    console.error("[BLOG_GET]", error)
+    return NextResponse.json(
+      { error: "Failed to fetch blogs" },
+      { status: 500 }
+    )
   }
 }
 
-// rename
-export async function POST(req: Request) {
+/**
+ * POST /api/community/blog
+ */
+export async function POST(req: NextRequest) {
   try {
-    const { currentUrl, newFileName } = await req.json()
-
-    // Validate inputs
-    if (!currentUrl || !newFileName) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
+    const session = await getSessionUser(req)
+    if (!session?.userId || session.role !== "ADMIN") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Extract the current key from the URL
-    const publicUrl = process.env.CLOUDFLARE_PUBLIC_URL!
-    if (!currentUrl.startsWith(publicUrl)) {
-      return NextResponse.json({ error: "Invalid file URL" }, { status: 400 })
+    const body = await req.json()
+    const {
+      title,
+      fileName,
+      fileUrl,
+      summary = "",
+      coverImage = null,
+      published = true,
+    } = body
+
+    if (!title || !fileUrl) {
+      return NextResponse.json(
+        { error: "Title and fileUrl are required" },
+        { status: 400 }
+      )
     }
 
-    const currentKey = currentUrl.replace(publicUrl + "/", "")
-
-    // Create the new key with the same prefix but new filename
-    // Assuming format: pdf-timestamp-originalname.pdf
-    const parts = currentKey.split("-")
-    if (parts.length < 3) {
-      return NextResponse.json({ error: "Invalid file key format" }, { status: 400 })
-    }
-
-    // Keep the prefix and timestamp, replace the filename
-    const newKey = `${parts[0]}-${parts[1]}-${newFileName}`
-
-    // Copy the object with the new key
-    const copyParams = {
-      Bucket: process.env.CLOUDFLARE_BUCKET_NAME || "secure-steps-db",
-      CopySource: `${process.env.CLOUDFLARE_BUCKET_NAME || "secure-steps-db"}/${currentKey}`,
-      Key: newKey,
-    }
-
-    await r2Client.send(new CopyObjectCommand(copyParams))
-
-    // Delete the original object
-    const deleteParams = {
-      Bucket: process.env.CLOUDFLARE_BUCKET_NAME || "secure-steps-db",
-      Key: currentKey,
-    }
-
-    await r2Client.send(new DeleteObjectCommand(deleteParams))
-
-    // Return the new URL
-    const newUrl = `${publicUrl}/${newKey}`
-
-    return NextResponse.json({
-      success: true,
-      url: newUrl,
-      fileName: newFileName,
+    const blog = await prisma.blog.create({
+      data: {
+        title,
+        slug: buildUniqueSlug(fileName || title),
+        summary,
+        coverImage,
+        fileName: fileName || title,
+        fileUrl,
+        published,
+      },
     })
+
+    return NextResponse.json(blog, { status: 201 })
   } catch (error) {
-    console.error("Error renaming file in Cloudflare R2:", error)
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
-    }
-    return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 })
+    console.error("[BLOG_POST]", error)
+    return NextResponse.json(
+      { error: "Failed to create blog entry" },
+      { status: 500 }
+    )
   }
 }

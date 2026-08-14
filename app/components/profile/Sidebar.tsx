@@ -16,6 +16,9 @@ export default function Sidebar() {
     { icon: '🎓', label: 'Universities', section: 'universities' },
     { icon: '📄', label: 'Documents', section: 'documents' },
     { icon: '🎯', label: 'Portfolio', section: 'portfolio' },
+    ...(user?.role === 'ADMIN'
+      ? [{ icon: '🛠️', label: 'Content Manager', section: 'content' }]
+      : []),
     { icon: '📊', label: 'Application Tracking', section: 'applications' },
     { icon: '💳', label: 'Visa & Finance', section: 'visa' },
     { icon: '📚', label: 'E-Books', section: 'ebooks' },

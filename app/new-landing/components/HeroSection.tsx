@@ -124,13 +124,6 @@ const FloatingParticle = ({ type, color, shadow, size, delay: initialDelay }: Fl
     </motion.span>
   );
 };
-const PHRASES = [
-  { text: "Too many options?", isGradient: false },
-  { text: "Too much pressure?", isGradient: false },
-  { text: "Secure Steps got you.", isGradient: true }
-];
-
-
 const HeroSection = () => {
   const [studentCount, setStudentCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -141,18 +134,6 @@ const HeroSection = () => {
   const hasAnimatedRef = React.useRef(false);
   const isInView = useInView(sectionRef, { amount: 0.35, once: true });
   const countMotionValue = useMotionValue(0);
-  const [phraseIndex, setPhraseIndex] = useState(0);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setPhraseIndex((prev) => (prev + 1) % PHRASES.length);
-    }, 2200);
-    return () => clearTimeout(timer);
-  }, [phraseIndex]);
-
-
-
-
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -175,7 +156,7 @@ const HeroSection = () => {
       rotSpeed: number;
     }
 
-    let particles: Particle[] = [];
+    const particles: Particle[] = [];
     let lastX: number | null = null;
     let lastY: number | null = null;
     const colors = [
@@ -409,7 +390,7 @@ const HeroSection = () => {
   }, [countMotionValue, isInView]);
 
   return (
-    <section ref={sectionRef} className="relative min-h-[75vh] w-full overflow-hidden bg-pink-100 sm:min-h-[90vh]">
+    <section ref={sectionRef} className="relative min-h-[75svh] w-full overflow-hidden bg-pink-100 sm:min-h-[90vh]">
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full pointer-events-none z-[5]"
@@ -474,40 +455,16 @@ const HeroSection = () => {
           We simplify the noise and help you design a clear path that fits who you are and where you want to go.
         </motion.p>
 
-        {/* Subtitle - Mobile (Animated Slideshow) */}
-        <div className="block sm:hidden mt-6 min-h-[36px] flex items-center justify-center pointer-events-none">
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={phraseIndex}
-              initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -10, filter: "blur(6px)" }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="text-base text-center max-w-2xl mx-auto leading-relaxed px-4 font-medium"
-            >
-              {PHRASES[phraseIndex].isGradient ? (
-                <span className="bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 bg-clip-text text-transparent font-bold text-lg hero-glow">
-                  {PHRASES[phraseIndex].text}
-                </span>
-              ) : (
-                <span className="text-gray-600">
-                  {PHRASES[phraseIndex].text}
-                </span>
-              )}
-            </motion.p>
-          </AnimatePresence>
-        </div>
-
         {/* CTA Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 pointer-events-auto"
+          className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 pointer-events-auto sm:mt-8"
         >
           <Link
             href="/quizform"
-            className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white font-semibold rounded-full shadow-[0_4px_20px_rgba(236,72,153,0.3)] hover:shadow-[0_6px_24px_rgba(236,72,153,0.45)] transition-all duration-300 hover:scale-[1.03] text-base"
+            className="inline-flex w-[75%] items-center justify-center gap-2 rounded-full bg-gradient-to-r from-fuchsia-500 via-violet-500 to-indigo-500 px-6 py-3.5 text-sm font-semibold text-white shadow-[0_18px_40px_-18px_rgba(99,102,241,0.75)] transition-transform duration-200 hover:scale-[1.02] hover:shadow-[0_22px_48px_-18px_rgba(99,102,241,0.9)] sm:w-auto"
           >
             Consult Now
           </Link>
@@ -515,7 +472,7 @@ const HeroSection = () => {
             href="https://personalityassessmentv1.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 bg-white/80 hover:bg-white border border-pink-200 text-gray-800 font-semibold rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.04)] hover:shadow-[0_6px_20px_rgba(236,72,153,0.1)] transition-all duration-300 hover:scale-[1.03] text-base"
+            className="inline-flex w-[75%] items-center justify-center px-8 py-3.5 bg-white/80 hover:bg-white border border-pink-200 text-gray-800 font-semibold rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.04)] hover:shadow-[0_6px_20px_rgba(236,72,153,0.1)] transition-all duration-300 hover:scale-[1.03] text-base sm:w-auto"
           >
             Try Out Personality Test
           </Link>
@@ -529,17 +486,17 @@ const HeroSection = () => {
         <iframe
           ref={iframeRef}
           src="/spinning-globe.html"
-          className="w-full h-full border-none pointer-events-none sm:pointer-events-auto"
+          className="w-full h-full border-none pointer-events-none sm:pointer-events-auto opacity-100"
           title="3D Globe"
         />
       </div>
 
       {/* Screen-Edge Cloud Overlays (Left/Right Sides of the Screen Viewport) */}
-      <div className="absolute left-[-100px] bottom-[-100px] w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] bg-gradient-to-tr from-white/95 via-pink-100/40 to-transparent rounded-full blur-[80px] sm:blur-[130px] z-10 pointer-events-none" />
-      <div className="absolute right-[-100px] bottom-[-100px] w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] bg-gradient-to-tl from-white/95 via-pink-100/40 to-transparent rounded-full blur-[80px] sm:blur-[130px] z-10 pointer-events-none" />
+      <div className="absolute left-[-100px] bottom-[-100px] w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] bg-gradient-to-tr from-white/55 via-pink-100/25 to-transparent rounded-full blur-[80px] sm:blur-[130px] z-10 pointer-events-none" />
+      <div className="absolute right-[-100px] bottom-[-100px] w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] bg-gradient-to-tl from-white/55 via-pink-100/25 to-transparent rounded-full blur-[80px] sm:blur-[130px] z-10 pointer-events-none" />
 
       {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-white via-white/80 to-transparent z-10 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-28 sm:h-48 bg-gradient-to-t from-white/80 sm:from-white to-transparent z-10 pointer-events-none" />
 
       {/* Backdrop blur overlay when FAB is open */}
       <AnimatePresence>
@@ -556,7 +513,7 @@ const HeroSection = () => {
       </AnimatePresence>
 
       {/* Floating Action Button (FAB) */}
-      <div className="fixed bottom-8 right-8 z-50 w-[71px] h-[71px]">
+      <div className="fixed bottom-4 right-4 z-50 h-14 w-14 sm:bottom-8 sm:right-8 sm:h-[71px] sm:w-[71px]">
         {/* Main Floating Trigger */}
         <motion.button
           onClick={() => setIsOpen(!isOpen)}
@@ -581,7 +538,7 @@ const HeroSection = () => {
               {/* Button 1: Know who you are (Flyout Left) */}
               <motion.div
                 initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-                animate={{ opacity: 1, scale: 1, x: -160, y: 0 }}
+                animate={{ opacity: 1, scale: 1, x: -122, y: 0 }}
                 exit={{ opacity: 0, scale: 0, x: 0, y: 0 }}
                 transition={{ type: "spring", stiffness: 450, damping: 28 }}
                 className="absolute right-0 bottom-0 z-40"
@@ -590,7 +547,7 @@ const HeroSection = () => {
                   href="https://personalityassessmentv1.vercel.app/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 text-white font-medium rounded-full shadow-lg shadow-purple-500/30 transition-all duration-200 hover:scale-105 whitespace-nowrap text-sm"
+                  className="flex items-center gap-2 rounded-full bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 px-4 py-2 text-xs font-medium whitespace-nowrap text-white shadow-lg shadow-purple-500/30 transition-all duration-200 hover:scale-105 sm:px-5 sm:py-2.5 sm:text-sm"
                 >
                   <Compass size={14} />
                   Know who you are
@@ -600,14 +557,14 @@ const HeroSection = () => {
               {/* Button 2: What's next after college? (Flyout Up-Left) */}
               <motion.div
                 initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-                animate={{ opacity: 1, scale: 1, x: -120, y: -75 }}
+                animate={{ opacity: 1, scale: 1, x: -92, y: -60 }}
                 exit={{ opacity: 0, scale: 0, x: 0, y: 0 }}
                 transition={{ type: "spring", stiffness: 450, damping: 28, delay: 0.03 }}
                 className="absolute right-0 bottom-0 z-40"
               >
                 <Link
                   href={isAuthenticated ? "/profile" : "/quizform"}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-pink-100 hover:bg-pink-200 text-pink-900 font-medium rounded-full border border-pink-200/40 shadow-lg transition-all duration-200 hover:scale-105 whitespace-nowrap text-sm"
+                  className="flex items-center gap-2 rounded-full border border-pink-200/40 bg-pink-100 px-4 py-2 text-xs font-medium whitespace-nowrap text-pink-900 shadow-lg transition-all duration-200 hover:scale-105 sm:px-5 sm:py-2.5 sm:text-sm"
                 >
                   <HelpCircle size={14} />
                   What&apos;s next after college?
@@ -617,14 +574,14 @@ const HeroSection = () => {
               {/* Button 3: Contact Us (Flyout Up) */}
               <motion.div
                 initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-                animate={{ opacity: 1, scale: 1, x: 0, y: -125 }}
+                animate={{ opacity: 1, scale: 1, x: 0, y: -100 }}
                 exit={{ opacity: 0, scale: 0, x: 0, y: 0 }}
                 transition={{ type: "spring", stiffness: 450, damping: 28, delay: 0.06 }}
                 className="absolute right-0 bottom-0 z-40"
               >
                 <Link
                   href="tel:+917093568336"
-                  className="flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-pink-50 text-pink-500 font-medium rounded-full border border-pink-200/30 shadow-lg transition-all duration-200 hover:scale-105 whitespace-nowrap text-sm"
+                  className="flex items-center gap-2 rounded-full border border-pink-200/30 bg-white px-4 py-2 text-xs font-medium whitespace-nowrap text-pink-500 shadow-lg transition-all duration-200 hover:scale-105 sm:px-5 sm:py-2.5 sm:text-sm"
                 >
                   <Phone size={14} />
                   Contact Us

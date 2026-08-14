@@ -72,6 +72,35 @@ function validateFile(file: File, fileType: string) {
   }
 };
 
+function getUploadErrorMessage(error: unknown) {
+  if (error instanceof Error) {
+    const message = error.message.toLowerCase()
+    if (
+      message.includes("expected boundary after body") ||
+      message.includes("failed to parse body as formdata") ||
+      message.includes("request body exceeded")
+    ) {
+      return {
+        status: 413,
+        message: "File is too large for the current upload limit. Please upload a smaller file.",
+      }
+    }
+
+    return {
+      status:
+        error.message.startsWith("Please") || error.message.startsWith("Unsupported")
+          ? 400
+          : 500,
+      message: error.message,
+    }
+  }
+
+  return {
+    status: 500,
+    message: "An unknown error occurred",
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const endpoint = process.env.CLOUDFLARE_END_POINT;
@@ -115,11 +144,8 @@ export async function POST(req: NextRequest) {
     })
   } catch (error) {
     console.error("Error uploading to Cloudflare R2:", error)
-    if (error instanceof Error) {
-      const status = error.message.startsWith("Please") || error.message.startsWith("Unsupported") ? 400 : 500
-      return NextResponse.json({ error: error.message }, { status })
-    }
-    return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 })
+    const uploadError = getUploadErrorMessage(error)
+    return NextResponse.json({ error: uploadError.message }, { status: uploadError.status })
   }
 };
 
